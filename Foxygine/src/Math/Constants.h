@@ -1,0 +1,10 @@
+#pragma once
+
+#define PI 3.14159265f;
+#define HALF_PI 1.57079632679f;
+#define QUARTER_PI 0.78539816339;
+
+#define SQRT2 1.41421356237f;
+#define SQRT3 1.73205080757f;
+
+#define EULER 0.5772156649f;
