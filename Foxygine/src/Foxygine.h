@@ -30,6 +30,9 @@
 #include "Scene/Scene.h"
 
 #include "Peripherals/Window.h"
+#include "Peripherals/Keyboard.h"
+#include "Peripherals/Mouse.h"
+#include "Peripherals/GamePad.h"
 
 
 class Foxygine

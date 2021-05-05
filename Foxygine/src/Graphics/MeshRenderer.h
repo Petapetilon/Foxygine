@@ -6,6 +6,7 @@
 #include "Shaders/Shader.h"
 
 
+class Material;
 
 class MeshRenderer final : public Component, public Renderer
 {
@@ -17,9 +18,8 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	void SetMesh(std::shared_ptr<Mesh>);
+	void SetMesh(std::shared_ptr<Mesh> _mesh);
 
-
-	void Draw(std::shared_ptr<Camera>) override;
+	void Draw(std::shared_ptr<Camera> _drawingCamera) override;
 };
 

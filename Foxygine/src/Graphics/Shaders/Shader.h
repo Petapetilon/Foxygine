@@ -16,16 +16,29 @@ protected:
 	std::list<ShaderPass*> shaderPasses;
 	void AddShaderPass(ShaderPass* newPass);
 	ShaderPass* GetShaderPass(std::string uniformName);
-
-public:
-	std::string name;
 	Shader(std::string);
 	Shader();
+
+public:
+	enum class ShaderType {
+		VertexShader,
+		GeometryShader,
+		FragmentShader
+	};
+
+	std::string name;
 
 	unsigned int GL_GetShaderProgram();
 	void GL_BindProgram();
 	void SetShaderPass(ShaderPass* pass);
+	void LoadShaderResource(std::string shaderFilePath, ShaderType shaderType);
 
+
+	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);
+	static std::shared_ptr<Shader> CreateBasicUnlitShader(std::string _name);
+	static std::shared_ptr<Shader> CreateBasicLitUIShader(std::string _name);
+	static std::shared_ptr<Shader> CreateBasicUnlitUIShader(std::string _name);
+	static void GL_UnbindPrograms();
 
 
 	virtual void GL_SetUniforms();

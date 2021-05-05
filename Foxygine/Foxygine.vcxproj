@@ -150,6 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Peripherals\GamePad.cpp" />
+    <ClCompile Include="src\Peripherals\Mouse.cpp" />
+    <ClCompile Include="src\Peripherals\Keyboard.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Scene\SceneHandler.cpp" />
     <ClCompile Include="src\Foxygine.cpp" />
@@ -180,6 +183,9 @@
     <None Include="res\VertexShader\BasicVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Peripherals\GamePad.h" />
+    <ClInclude Include="src\Peripherals\Mouse.h" />
+    <ClInclude Include="src\Peripherals\Keyboard.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Graphics\SerializedMesh.h" />
     <ClInclude Include="src\Graphics\Textures\stb_image.h" />

@@ -15,8 +15,14 @@ Material::Material(std::string materialName, std::string _shaderName)
 	//In case Shader does not exist
 	if (shader == nullptr) {
 		std::cout << "Shader not found! Creating Shader with given Name: " << shaderName << std::endl;
-		shader = std::unique_ptr<Shader>(new Shader(shaderName));
+		shader = std::shared_ptr<Shader>(Shader::CreateBasicLitShader(shaderName));
 	}
+
+	std::cout << shader->name << std::endl;
+	mainColor.a = 1;
+	mainColor.r = 1;
+	mainColor.g = 1;
+	mainColor.b = 1;
 }
 
 

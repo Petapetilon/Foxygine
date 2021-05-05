@@ -1,14 +1,15 @@
 #include "MeshRenderer.h"
 #include "Graphics.h"
-#include "Shaders/BasicShader.h"
+#include "Shaders/Shader.h"
 #include "Shaders/ShaderPass.h"
+#include "Material.h"
 #include <iostream>
 
 
 
 MeshRenderer::MeshRenderer(const std::string& objFile)
 {
-	std::cout << "creating MeshRenderer";
+	std::cout << "creating MeshRenderer" << std::endl;
 
 	//GL VAO
 	glGenVertexArrays(1, &GL_VertexArrayObject);
@@ -27,7 +28,7 @@ MeshRenderer::MeshRenderer(const std::string& objFile)
 
 MeshRenderer::MeshRenderer()
 {
-	std::cout << "creating MeshRenderer";
+	std::cout << "creating MeshRenderer" << std::endl;
 
 	//GL VAO
 	glGenVertexArrays(1, &GL_VertexArrayObject);
@@ -66,15 +67,6 @@ void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 	glBufferData(GL_ARRAY_BUFFER, 
 		GL_BufferData->serializedVertexData.size() * sizeof(GL_FLOAT),
 		&GL_BufferData->serializedVertexData[0], GL_STATIC_DRAW);
-
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (4 + 4 + 2) * sizeof(GL_FLOAT), 0);
-	//
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 + 4 + 2) * sizeof(GL_FLOAT), (void*)(4 * sizeof(GL_FLOAT)));
-	//
-	//glEnableVertexAttribArray(2);
-	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (4 + 4 + 2) * sizeof(GL_FLOAT), (void*)((4 + 4) * sizeof(GL_FLOAT)));
 
 
 	//Vertex Buffer Object Layout 
@@ -116,13 +108,14 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_IndexBufferObject);
 
 	//Binding GL ShaderProg
+	//std::cout << shader->name << std::endl;
 	shader->GL_BindProgram();
 	
 	//Material Uniforms
 	material->GL_SetProperties();
 
 	//Camera Uniforms
-	drawingCam->GL_SetCameraUniform(*shader);
+	drawingCam->GL_SetCameraUniform(std::shared_ptr<Shader>(shader));
 
 	//Graphics Uniforms
 	int renderedFrames = Graphics::renderedFrames;

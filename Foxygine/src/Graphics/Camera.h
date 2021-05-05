@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "../GameObject/Transform.h"
 #include "../GameObject/Component.h"
 #include "GL.h"
@@ -17,5 +18,5 @@ public:
 
 	void OnPreRender() override;
 	void SetupCamera(float fov, float screenRatio, float nearClip, float farClip);
-	void GL_SetCameraUniform(Shader& shader);
+	void GL_SetCameraUniform(std::shared_ptr<Shader> shader);
 };

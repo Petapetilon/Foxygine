@@ -33,14 +33,22 @@ void GameObjectHandler::UnregisterGameObject(std::shared_ptr<GameObject> gameObj
 	}
 }
 
+
 void GameObjectHandler::TickHandler(Foxygine& foxygine)
 {
+	//Measures Time
 	currentSystemTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
+	//Frame Update
+	InvokeOnPreRender();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Graphics::DrawRenderer();
+	InvokeOnPostRender();
+	Keyboard::JoinInputThreads();
 	lastUpdateDeltaTime = (double)(currentSystemTime - lastUpdateSystemTime) / 1000.0;
 	InvokeUpdate((float)lastUpdateDeltaTime, foxygine);
 
-
+	//Fixed Update
 	if (currentSystemTime - lastFixedUpdateSystemTime >= 19) {
 		lastFixedUpdateDeltaTime = (currentSystemTime - lastFixedUpdateSystemTime) / 1000.0;
 		lastFixedUpdateSystemTime = currentSystemTime;
@@ -49,6 +57,7 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 
 	lastUpdateSystemTime = currentSystemTime;
 }
+
 
 void GameObjectHandler::InitHandler()
 {

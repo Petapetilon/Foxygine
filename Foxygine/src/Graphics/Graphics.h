@@ -8,13 +8,14 @@
 class Graphics
 {
 private:
-	static std::list<MeshRenderer*> meshRenderers;
 
 public:
+	static std::list<MeshRenderer*> meshRenderers;
 	static std::shared_ptr<Camera> camera;
 	static long renderedFrames;
+	static unsigned int GL_CurrentlyBoundShaderProgram;
 
-	void static DrawMeshRenderer();
+	void static DrawRenderer();
 	void static RegisterMeshRenderer(MeshRenderer*);
 	void static UnregeisterMeshRenderer(MeshRenderer*);
 };

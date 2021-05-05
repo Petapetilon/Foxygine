@@ -14,7 +14,10 @@ const int WHEIGHT = 900;
 
 int main(void)
 {
+    Graphics::GL_CurrentlyBoundShaderProgram = -2;
     Window::GetInstance()->SetupWindow(Vector2I(WWIDTH, WHEIGHT), "Foxygine");
+    Keyboard::SetupKeyboard();
+    Mouse::SetupMouse();
     Foxygine foxygine;
 
     if (glewInit() != GLEW_OK)   std::cout << "GlewInit Error" << std::endl;
@@ -32,20 +35,18 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(Window::GetInstance()->GLFW_GetWindow()))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
+        // 1.Invokes PreRender
+        // 2.Invokes Render
+        // 3.Joins Input Threads
+        // 4.Invokes Update
+        // 5.Invokes FixeUpdate if needed 
         GameObjectHandler::TickHandler(foxygine);
-        GameObjectHandler::InvokeOnPreRender();
-        Graphics::DrawMeshRenderer();		
-        GameObjectHandler::InvokeOnPostRender();
 
-        /* Swap front and back buffers */
+        // 1.Swap front and back buffers 
+        // 2.Displays FPS
+        // 3.Polls Events
         glfwSwapBuffers(Window::GetInstance()->GLFW_GetWindow());
         Window::GetInstance()->DisplayFPS();
-
-        /* Poll for and process events */
         glfwPollEvents();
     }
 

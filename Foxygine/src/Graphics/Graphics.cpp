@@ -1,10 +1,14 @@
 #include "Graphics.h"
+#include <thread>
+
 
 std::list<MeshRenderer*> Graphics::meshRenderers;
 std::shared_ptr<Camera> Graphics::camera;
 long Graphics::renderedFrames;
+unsigned int Graphics::GL_CurrentlyBoundShaderProgram;
 
-void Graphics::DrawMeshRenderer() {
+
+void Graphics::DrawRenderer() {
 	for (const auto& renderer : meshRenderers) {
 		renderer->Draw(camera);
 	}

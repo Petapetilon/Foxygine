@@ -20,6 +20,8 @@ void Foxygine::StartFoxygine()
     cam->SetupCamera(glm::radians(60.f), 192.f / 108.f, .001f, 1000.f);
     
     
+    Shader::CreateBasicLitShader("shader");
+
 
     auto basicMaterial = new Material("basicMaterial1", "shader");
     basicMaterial->SetMainColor(Color(1.f, 0.f, 1.f, 1.f));

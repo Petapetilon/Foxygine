@@ -23,9 +23,9 @@ void Camera::SetupCamera(float fov, float screenRatio, float nearClip, float far
 }
 
 
-void Camera::GL_SetCameraUniform(Shader& shader)
+void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 {
-	shader.SetShaderPass(new ShaderPassMat4(&combinedMatrix, "u_CameraWorldToScreen"));
-	shader.SetShaderPass(new ShaderPassVec4(&position, "u_CameraPosition"));
-	shader.SetShaderPass(new ShaderPassVec4(&direction, "u_CameraDirection"));
+	shader->SetShaderPass(new ShaderPassMat4(&combinedMatrix, "u_CameraWorldToScreen"));
+	shader->SetShaderPass(new ShaderPassVec4(&position, "u_CameraPosition"));
+	shader->SetShaderPass(new ShaderPassVec4(&direction, "u_CameraDirection"));
 }
