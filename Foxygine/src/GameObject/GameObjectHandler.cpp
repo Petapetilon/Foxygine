@@ -45,6 +45,7 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 	Graphics::DrawRenderer();
 	InvokeOnPostRender();
 	Keyboard::JoinInputThreads();
+	Mouse::JoinInputThreads();
 	lastUpdateDeltaTime = (double)(currentSystemTime - lastUpdateSystemTime) / 1000.0;
 	InvokeUpdate((float)lastUpdateDeltaTime, foxygine);
 

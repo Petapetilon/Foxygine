@@ -23,10 +23,6 @@ void Foxygine::StartFoxygine()
     Shader::CreateBasicLitShader("shader");
 
 
-    auto basicMaterial = new Material("basicMaterial1", "shader");
-    basicMaterial->SetMainColor(Color(1.f, 0.f, 1.f, 1.f));
-    basicMaterial->CreateMaterialProperty("Glossiness", "glossiness", 0);
-
     auto basicMaterial2 = new Material("basicMaterial2", "shader");
     basicMaterial2->CreateMaterialProperty("Glossiness", "glossiness", .75);
     basicMaterial2->CreateMaterialProperty("Metallic", "metallic", .75f);
@@ -35,9 +31,7 @@ void Foxygine::StartFoxygine()
     basicMaterial3->SetMainColor(Color(1.f, 1.f, 1.f, 1.f));
     basicMaterial3->CreateMaterialProperty("Glossiness", "glossiness", .5f);
     basicMaterial3->CreateMaterialProperty("Metallic", "metallic", 0);
-    //auto tex = std::shared_ptr<Texture>(new Texture());
-    //tex->LoadTexture("res\\textures\\sonaa small.png", "sona", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    //basicMaterial3->CreateTextureProperty("color", std::shared_ptr<Texture>(tex), Material::TextureType::BaseColor);
+
     auto colorTex = std::shared_ptr<Texture>(new Texture());
     colorTex->LoadTexture("res\\textures\\rockCol.jpg", "brickCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
     basicMaterial3->CreateTextureProperty("color", std::shared_ptr<Texture>(colorTex), Material::TextureSlot::BaseColor);
@@ -46,10 +40,6 @@ void Foxygine::StartFoxygine()
     basicMaterial3->CreateTextureProperty("normal", std::shared_ptr<Texture>(colorNrm), Material::TextureSlot::NormalMap);
 
 
-    //auto sphere = new GameObject("sphere");
-    //sphere->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\Ico.obj"));
-    //sphere->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial));
-    //sphere->transform->SetPosition(Vector3(5, 0, 0));
     
     auto smoothSphere2 = new GameObject("smoothSphere");
     smoothSphere2->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj"));
