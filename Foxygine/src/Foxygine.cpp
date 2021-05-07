@@ -1,4 +1,5 @@
 #include "Foxygine.h"
+#include "GameObject/SimpleCamera.h"
 
 
 Foxygine::Foxygine() {
@@ -15,9 +16,10 @@ void Foxygine::StartFoxygine()
     auto cameraGo = new GameObject("cameraGO");
     cameraGo->AddComponent<Camera>(new Camera());
     auto cam = cameraGo->GetComponent<Camera>();
-    cameraGo->transform->SetPosition(Vector3(0, -3, -10));
+    cameraGo->transform->SetPosition(Vector3(0, -1.5, -10));
     cam->transform->Rotate(Vector3(1, 0, 0), 20.f);
     cam->SetupCamera(glm::radians(60.f), 192.f / 108.f, .001f, 1000.f);
+    cameraGo->AddComponent<SimpleCamera>(new SimpleCamera());
     
     
     Shader::CreateBasicLitShader("shader");
@@ -49,7 +51,6 @@ void Foxygine::StartFoxygine()
     auto cube = new GameObject("cube");
     cube->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\cube.obj"));
     cube->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial3));
-    cube->transform->SetPosition(Vector3(1, 0, 0));
 }
 
 
@@ -80,7 +81,7 @@ void Foxygine::UpdateFoxygine(float deltaTime)
 
     
     GameObjectHandler::GetGameObject("smoothSphere")->GetComponent<MeshRenderer>()->GetMaterial()->SetMainColor(Color(r, g, b, 1));
-    GameObjectHandler::GetGameObject("smoothSphere")->transform->Rotate(Vector3(0, 1, 0), glm::degrees(deltaTime));
+    GameObjectHandler::GetGameObject("smoothSphere")->transform->RotateAround(Vector3(0, 0, 0), Vector3(0, 1, 0), glm::degrees(deltaTime));
     GameObjectHandler::GetGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
 }
 

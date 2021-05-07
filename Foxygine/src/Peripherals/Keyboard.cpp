@@ -191,6 +191,7 @@ void Keyboard::KeyPressJoinThread()
 		keyInputThread.join();
 	}
 
+
 	for (auto func : toUnregister_KNF_D_Functions) {
 		registered_KNF_D_Functions.remove(func);
 	}

@@ -27,6 +27,7 @@ public:
 	void SetRotation(Vector3);
 	void SetRotation(float, float, float);
 	void Rotate(Vector3, float);
+	void RotateAround(Vector3, Vector3, float);
 
 	void SetPosition(Vector3);
 	void SetPosition(float, float, float);

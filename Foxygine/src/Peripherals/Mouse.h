@@ -8,24 +8,22 @@
 
 
 enum class ButtonCode {
-	Left,
-	Right,
-	Middle,
-	Custom1,
-	Custom2,
-	Custom3,
-	Custom4,
-	Custom5,
-	Custom6,
-	Custom7,
-	Custom8,
-	Custom9,
-	Custom10,
-	Custom11,
-	Custom12,
-	Custom13,
-	Custom14,
-	Custom15
+	Left = 0,
+	Right = 1,
+	Middle = 2,
+	Custom_1 = 3,
+	Custom_2 = 4,
+	Custom_3 = 5,
+	Custom_4 = 6,
+	Custom_5 = 7,
+	Custom_6 = 8,
+	Custom_7 = 9,
+	Custom_8 = 10,
+	Custom_9 = 11,
+	Custom_10 = 12,
+	Custom_11 = 13,
+	Custom_12 = 14,
+	Custom_13 = 15,
 };
 
 
@@ -43,6 +41,10 @@ private:
 	static double lastMousePosY;
 	static double velocityX;
 	static double velocityY;
+	static double currentScrollX;
+	static double currentScrollY;
+	static int currentButton;
+	static int currentAction;
 
 	static std::thread moveThread;
 	static std::thread scrollThread;
@@ -62,6 +64,7 @@ private:
 
 	static void MouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 	static void MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	static void SendMoveEvents();
 	static void SendScrollEvents();
 	static void SendButtonEvents();

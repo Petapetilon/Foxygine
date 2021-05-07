@@ -8,6 +8,7 @@
 #include "GameObject/GameObjectHandler.h"
 #include "GameObject/Component.h"
 #include "GameObject/Transform.h"
+//#include "GameObject/SimpleCamera.h"
 
 #include "Graphics/MeshRenderer.h"
 #include "Graphics/Material.h"

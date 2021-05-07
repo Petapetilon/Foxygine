@@ -11,6 +11,10 @@
 const int WWIDTH  = 1600;
 const int WHEIGHT = 900;
 
+void func(Vector2) {
+
+}
+
 
 int main(void)
 {
@@ -31,15 +35,17 @@ int main(void)
 
     foxygine.StartFoxygine();
     GameObjectHandler::InitHandler();
+    Mouse::RegisterOnMove(func);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(Window::GetInstance()->GLFW_GetWindow()))
     {
         // 1.Invokes PreRender
         // 2.Invokes Render
-        // 3.Joins Input Threads
-        // 4.Invokes Update
-        // 5.Invokes FixeUpdate if needed 
+        // 3.Invokes PostRender
+        // 4.Joins Input Threads
+        // 5.Invokes Update
+        // 6.Invokes FixeUpdate if needed 
         GameObjectHandler::TickHandler(foxygine);
 
         // 1.Swap front and back buffers 

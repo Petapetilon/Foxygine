@@ -22,13 +22,23 @@ void Transform::SetRotation(float, float, float)
 {
 }
 
+
 void Transform::Rotate(Vector3 axis, float angle)
 {
-	globalTransformation = translate(globalTransformation, -(vec3)position);
 	globalTransformation = rotate(globalTransformation, glm::radians(angle), (vec3)axis);
-	globalTransformation = translate(globalTransformation, (vec3)position);
 	extractEulerAngleXYZ(globalTransformation, rotation.x, rotation.y, rotation.z);
 }
+
+
+void Transform::RotateAround(Vector3 pos, Vector3 axis, float angle)
+{
+	vec3 translation = pos - position;
+	globalTransformation = translate(globalTransformation, translation);
+	globalTransformation = rotate(globalTransformation, glm::radians(angle), (vec3)axis);
+	globalTransformation = translate(globalTransformation, -translation);
+	extractEulerAngleXYZ(globalTransformation, rotation.x, rotation.y, rotation.z);
+}
+
 
 void Transform::SetPosition(Vector3 pos)
 {
@@ -36,6 +46,7 @@ void Transform::SetPosition(Vector3 pos)
 	globalTransformation = translate(globalTransformation, translation);
 	position = pos;
 }
+
 
 void Transform::SetPosition(float _x, float _y, float _z)
 {
@@ -45,12 +56,14 @@ void Transform::SetPosition(float _x, float _y, float _z)
 	position = pos;
 }
 
+
 void Transform::Translate(Vector3 translation)
 {
 	glm::vec3 trans = translation;
 	globalTransformation = translate(globalTransformation, trans);
 	position = position + translation;
 }
+
 
 void Transform::Translate(float _x, float _y, float _z)
 {

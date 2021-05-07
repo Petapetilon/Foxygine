@@ -9,6 +9,10 @@ double Mouse::lastMousePosX;
 double Mouse::lastMousePosY;
 double Mouse::velocityX;
 double Mouse::velocityY;
+double Mouse::currentScrollX;
+double Mouse::currentScrollY;
+int Mouse::currentButton;
+int Mouse::currentAction;
 
 std::thread Mouse::moveThread;
 std::thread Mouse::scrollThread;
@@ -29,37 +33,60 @@ std::list<ClickNotifyFunc> Mouse::toUnregister_CNF_Functions;
 
 void Mouse::MouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 {
-	//std::cout << xPos << ", " << yPos << std::endl;
+	JoinMoveThread();
 	lastMousePosX = currentMousePosX;
 	lastMousePosY = currentMousePosY;
 	currentMousePosX = xPos;
 	currentMousePosY = yPos;
 
-	//auto vel = Velocity();
-	//std::cout << vel.x << ", " << vel.y << std::endl;
+	SendMoveEvents();
 }
 
 
 void Mouse::MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	std::cout << xOffset << ", " << yOffset << std::endl;
+	JoinScrollThread();
+	currentScrollX = xOffset;
+	currentScrollY = yOffset;
+	SendScrollEvents();
+}
+
+void Mouse::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	JoinButtonThread();
+	currentButton = button;
+	currentAction = action;
+	SendButtonEvents();
 }
  
 
 void Mouse::SendMoveEvents()
 {
-
+	for (auto func : registered_Move_Functions) {
+		func(Position());
+	}
 }
 
 
 void Mouse::SendScrollEvents()
 {
+	for (auto func : registered_Scroll_Functions) {
+		func(Vector2(currentScrollX, currentScrollY));
+	}
 }
 
 
 void Mouse::SendButtonEvents()
 {
+	for (auto func : registered_SCF_Functions) {
+		if ((int)func._Myfirst._Val == currentButton) {
+			func._Get_rest()._Myfirst._Val(currentAction);
+		}
+	}
 
+	for (auto func : registered_CNF_Functions) {
+		func((ButtonCode)currentButton, currentAction);
+	}
 }
 
 
@@ -118,6 +145,7 @@ void Mouse::SetupMouse()
 {
 	glfwSetCursorPosCallback(Window::GetInstance()->GLFW_GetWindow(), MouseMoveCallback);
 	glfwSetScrollCallback(Window::GetInstance()->GLFW_GetWindow(), MouseScrollCallback);
+	glfwSetMouseButtonCallback(Window::GetInstance()->GLFW_GetWindow(), MouseButtonCallback);
 }
 
 
@@ -155,29 +183,39 @@ void Mouse::RegisterOnScroll(TwoAxisFunc func)
 
 void Mouse::UnregisterOnSCroll(TwoAxisFunc func)
 {
+	toUnregister_Scroll_Functions.push_back(func);
 }
 
 
-void Mouse::RegisterOnSpecificButtonPress(SpecificClickFunc, ButtonCode)
+void Mouse::RegisterOnSpecificButtonPress(SpecificClickFunc func, ButtonCode code)
 {
+	JoinButtonThread();
+	registered_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
 }
 
 
-void Mouse::UnregisterOnSpecificButtonPress(SpecificClickFunc, ButtonCode)
+void Mouse::UnregisterOnSpecificButtonPress(SpecificClickFunc func, ButtonCode code)
 {
+	toUnregister_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
 }
 
 
-void Mouse::RegisterOnButtonPress(ClickNotifyFunc)
+void Mouse::RegisterOnButtonPress(ClickNotifyFunc func)
 {
+	JoinButtonThread();
+	registered_CNF_Functions.push_back(func);
 }
 
 
-void Mouse::UnregisterOnButtonPress(ClickNotifyFunc)
+void Mouse::UnregisterOnButtonPress(ClickNotifyFunc func)
 {
+	toUnregister_CNF_Functions.push_back(func);
 }
 
 
 void Mouse::JoinInputThreads()
 {
+	JoinMoveThread();
+	JoinScrollThread();
+	JoinButtonThread();
 }
