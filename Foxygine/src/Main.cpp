@@ -11,15 +11,29 @@
 const int WWIDTH  = 1600;
 const int WHEIGHT = 900;
 
-void func(Vector2) {
 
+
+#ifdef FOXYGINE_DEBUG
+bool cursorShown = false;
+void Pause(KeyCode key, KeyState state) {
+    if (key == KeyCode::Esc && state == KeyState::Down) {
+        if (cursorShown)
+            glfwSetInputMode(Window::GetInstance()->GLFW_GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(Window::GetInstance()->GLFW_GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        cursorShown = !cursorShown;
+    }
 }
+#endif
+
+
 
 
 int main(void)
 {
     Graphics::GL_CurrentlyBoundShaderProgram = -2;
     Window::GetInstance()->SetupWindow(Vector2I(WWIDTH, WHEIGHT), "Foxygine");
+    Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
     Keyboard::SetupKeyboard();
     Mouse::SetupMouse();
     Foxygine foxygine;
@@ -28,14 +42,18 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
     
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_FRONT);
     glCullFace(GL_BACK);
 
     foxygine.StartFoxygine();
     GameObjectHandler::InitHandler();
-    Mouse::RegisterOnMove(func);
+
+#ifdef FOXYGINE_DEBUG
+    Keyboard::RegisterOnAnyKeyCallback(Pause);
+#endif // FOXYGINE_DEBUG
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(Window::GetInstance()->GLFW_GetWindow()))
@@ -60,3 +78,6 @@ int main(void)
     glfwTerminate();
     return 0;
 }
+
+
+

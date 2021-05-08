@@ -1,13 +1,15 @@
-#include "Texture.h"
+#include "Texture2D.h"
 #include "../Shaders/Shader.h"
 #include <iostream>
 
+
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#endif // !STB_IMAGE_IMPLEMENTATION
 
 
-
-Texture::Texture()
+Texture2D::Texture2D()
 {
 	GL_TextureID = -2;
 	texData == nullptr;
@@ -17,13 +19,13 @@ Texture::Texture()
 	name = "unnamedTexture";
 }
 
-Texture::~Texture()
+Texture2D::~Texture2D()
 {
 	FreeImageData();
 }
 
 
-void Texture::LoadTexture(std::string filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+void Texture2D::LoadTexture2D(std::string filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
 	stbi_set_flip_vertically_on_load(true);
 	name = _name;
@@ -52,7 +54,7 @@ void Texture::LoadTexture(std::string filePath, std::string _name, Wrapping text
 }
 
 
-void Texture::SetWrapping(Wrapping wrappingMode)
+void Texture2D::SetWrapping(Wrapping wrappingMode)
 {
 	if (GL_TextureID == -2) {
 		std::cout << "Texture was not inited!" << std::endl;
@@ -65,22 +67,22 @@ void Texture::SetWrapping(Wrapping wrappingMode)
 
 	switch (wrappingMode)
 	{
-	case Texture::Wrapping::Repeat:
+	case Texture2D::Wrapping::Repeat:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		break;
 
-	case Texture::Wrapping::Mirror:
+	case Texture2D::Wrapping::Mirror:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 		break;
 
-	case Texture::Wrapping::ClampEdge:
+	case Texture2D::Wrapping::ClampEdge:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		break;
 
-	case Texture::Wrapping::ClampBorder:
+	case Texture2D::Wrapping::ClampBorder:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		break;
@@ -90,7 +92,7 @@ void Texture::SetWrapping(Wrapping wrappingMode)
 	}
 }
 
-void Texture::SetFiltering(Filtering textureFiltering)
+void Texture2D::SetFiltering(Filtering textureFiltering)
 {
 	if (GL_TextureID == -2) {
 		std::cout << "Texture was not inited!" << std::endl;
@@ -101,7 +103,7 @@ void Texture::SetFiltering(Filtering textureFiltering)
 
 	glBindTexture(GL_TEXTURE_2D, GL_TextureID);
 
-	if (textureFiltering == Texture::Filtering::Nearest) {
+	if (textureFiltering == Filtering::Nearest) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 	else {
@@ -109,22 +111,24 @@ void Texture::SetFiltering(Filtering textureFiltering)
 	}
 }
 
-void Texture::FreeImageData()
+void Texture2D::FreeImageData()
 {
 	if (texData) {
 		stbi_image_free(texData);
 	}
+
+	glDeleteTextures(1, &GL_TextureID);
 }
 
 
-void Texture::GL_GetUniform(std::shared_ptr<Shader> shader, std::string uniformName)
+void Texture2D::GL_GetUniform(std::shared_ptr<Shader> shader, std::string uniformName)
 {
 	shader->GL_BindProgram();
 	GL_UniformLocation = glGetUniformLocation(shader->GL_GetShaderProgram(), uniformName.c_str());
 }
 
 
-void Texture::GL_BindTexture(unsigned int GL_TextureIndex)
+void Texture2D::GL_BindTexture(unsigned int GL_TextureIndex)
 {
 	if (GL_TextureIndex <= 15) {
 		glUniform1i(GL_UniformLocation, GL_TextureIndex);

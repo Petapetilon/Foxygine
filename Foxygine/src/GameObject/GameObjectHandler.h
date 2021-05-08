@@ -20,14 +20,15 @@ public:
 	static double lastUpdateDeltaTime;
 	static double lastFixedUpdateDeltaTime;
 
-	static void RegisterGameObject(std::shared_ptr<GameObject>);
+	static std::shared_ptr<GameObject> RegisterGameObject(std::shared_ptr<GameObject>);
 	static void UnregisterGameObject(std::shared_ptr<GameObject>);
 	static void TickHandler(Foxygine&);
 	static void InitHandler();
 	static void InvokeOnPreRender();
 	static void InvokeOnPostRender();
 
-	static std::shared_ptr<GameObject> GetGameObject(std::string);
+	static std::shared_ptr<GameObject> FindGameObject(std::string name);
+	static bool FindAllGameObjects(std::string name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results);
 
 private:
 	static void InvokeUpdate(float, Foxygine&);

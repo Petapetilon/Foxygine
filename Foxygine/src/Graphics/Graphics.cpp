@@ -2,6 +2,7 @@
 #include <thread>
 
 
+std::shared_ptr<GameObject> Graphics::skyBoxGo;
 std::list<MeshRenderer*> Graphics::meshRenderers;
 std::shared_ptr<Camera> Graphics::camera;
 long Graphics::renderedFrames;
@@ -13,6 +14,7 @@ void Graphics::DrawRenderer() {
 		renderer->Draw(camera);
 	}
 
+	skyBoxGo->GetComponent<SkyBoxRenderer>()->Draw(camera);
 	renderedFrames++;
 }
 
@@ -24,4 +26,19 @@ void Graphics::RegisterMeshRenderer(MeshRenderer* meshRenderer) {
 
 void Graphics::UnregeisterMeshRenderer(MeshRenderer* meshRenderer) {
 	meshRenderers.remove(meshRenderer);
+}
+
+
+void Graphics::SetSkybox(std::vector<std::string> filePaths)
+{
+	skyBoxGo = GameObject::CreateGameObject("skyBoxGo");
+	skyBoxGo->AddComponent<SkyBoxRenderer>(new SkyBoxRenderer());
+	skyBoxGo->GetComponent<SkyBoxRenderer>()->SetSkybox(filePaths);
+}
+
+void Graphics::OnWindowResize(int width, int height)
+{
+	camera->ResetCamera(width / height);
+	glViewport(0, 0, width, height);
+	DrawRenderer();
 }

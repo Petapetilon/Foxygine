@@ -1,5 +1,6 @@
 #include "Transform.h"
 #include "gtx/matrix_decompose.hpp"
+#include "gtx/rotate_vector.hpp"
 #include "gtx/euler_angles.hpp"
 #include "gtc/quaternion.hpp"
 #include "../glm/common.hpp"
@@ -18,15 +19,46 @@ void Transform::SetRotation(Vector3 eulerAngles)
 {
 }
 
-void Transform::SetRotation(float, float, float)
+
+void Transform::SetRotation(float x , float y, float z, bool localy)
 {
+	globalTransformation = mat4(1);
+	auto rotationMatrix = rotate(glm::radians(x), glm::vec3(1, 0, 0));
+	rotationMatrix *= rotate(glm::radians(y), glm::vec3(0, 1, 0));
+	rotationMatrix *= rotate(glm::radians(z), glm::vec3(0, 0, 1));
+	if (localy) {
+		globalTransformation = globalTransformation * rotationMatrix;
+		globalTransformation = translate(globalTransformation, (vec3)position);
+	}
+	else {
+		globalTransformation = rotationMatrix * globalTransformation;
+		globalTransformation = translate(globalTransformation, (vec3)position);
+	}
 }
 
 
 void Transform::Rotate(Vector3 axis, float angle)
 {
+	//globalTransformation = translate(globalTransformation, -(vec3)position);
 	globalTransformation = rotate(globalTransformation, glm::radians(angle), (vec3)axis);
+	//globalTransformation = translate(globalTransformation, (vec3)position);
 	extractEulerAngleXYZ(globalTransformation, rotation.x, rotation.y, rotation.z);
+}
+
+void Transform::Rotate(float x, float y, float z, bool localy)
+{
+	globalTransformation = mat4(1);
+	auto rotationMatrix = rotate(x, glm::vec3(1, 0, 0));
+	rotationMatrix *= rotate(y, glm::vec3(0, 1, 0));
+	rotationMatrix *= rotate(z, glm::vec3(0, 0, 1));
+	if (localy) {
+		globalTransformation = globalTransformation * rotationMatrix;
+		globalTransformation = translate(globalTransformation, (vec3)position);
+	}
+	else {
+		globalTransformation = rotationMatrix * globalTransformation;
+		globalTransformation = translate(globalTransformation, (vec3)position);
+	}
 }
 
 
@@ -84,6 +116,24 @@ glm::mat4* Transform::GetGlobalMatrix()
 	return &globalTransformation;
 }
 
+
+Vector3 Transform::Forward()
+{
+	mat4 inverted = glm::inverse(globalTransformation);
+	return Vector3(normalize(glm::vec3(inverted[2])));
+}
+
+Vector3 Transform::Right()
+{
+	mat4 inverted = glm::inverse(globalTransformation);
+	return Vector3(-normalize(glm::vec3(inverted[0])));
+}
+
+Vector3 Transform::Up()
+{
+	mat4 inverted = glm::inverse(globalTransformation);
+	return Vector3(-normalize(glm::vec3(inverted[1])));
+}
 
 Vector3 Transform::Position()
 {

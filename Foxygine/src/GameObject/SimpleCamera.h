@@ -6,10 +6,13 @@
 
 class SimpleCamera : public Component
 {
+private:
+	float deltaTime;
+	float xRot;
+	float yRot;
+
 public:
 	void Start() override;
-
-	static void OnMouseMove(Vector2);
-	void OnKeyPress(KeyCode, KeyState);
+	void Update(float _deltaTime) override;
 };
 

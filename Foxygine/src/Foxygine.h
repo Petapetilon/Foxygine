@@ -17,7 +17,7 @@
 #include "Graphics/Shaders/BasicShader.h"
 #include "Graphics/Shaders/ShaderPass.h"
 #include "Graphics/Shaders/ShaderLibrary.h"
-#include "Graphics/Textures/Texture.h"
+#include "Graphics/Textures/Texture2D.h"
 
 #include "Math/Constants.h"
 #include "Math/Quaternion.h"
@@ -34,6 +34,8 @@
 #include "Peripherals/Keyboard.h"
 #include "Peripherals/Mouse.h"
 #include "Peripherals/GamePad.h"
+
+#define FOXYGINE_DEBUG
 
 
 class Foxygine

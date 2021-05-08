@@ -27,9 +27,15 @@ enum class ButtonCode {
 };
 
 
-typedef void(*TwoAxisFunc)(Vector2);
-typedef void(*SpecificClickFunc)(bool);
-typedef void(*ClickNotifyFunc)(ButtonCode, bool);
+//typedef void(*TwoAxisFunc)(Vector2);
+//typedef void(*SpecificClickFunc)(bool);
+//typedef void(*ClickNotifyFunc)(ButtonCode, bool);
+
+typedef std::function<void(Vector2)> TwoAxisFunc;
+typedef std::function<void(bool)> SpecificClickFunc;
+typedef std::function<void(ButtonCode, bool)> ClickNotifyFunc;
+
+//delegate void TwoAxisNotifyDelegate(Vector2);
 
 
 class Mouse
@@ -41,10 +47,14 @@ private:
 	static double lastMousePosY;
 	static double velocityX;
 	static double velocityY;
+	static double lastVelocityX;
+	static double lastVelocityY;
 	static double currentScrollX;
 	static double currentScrollY;
 	static int currentButton;
 	static int currentAction;
+	static bool mouseMoved;
+	static bool mouseScrolled;
 
 	static std::thread moveThread;
 	static std::thread scrollThread;
@@ -65,6 +75,7 @@ private:
 	static void MouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 	static void MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	static void MouseEnteredCallback(GLFWwindow* window, int entered);
 	static void SendMoveEvents();
 	static void SendScrollEvents();
 	static void SendButtonEvents();
@@ -74,21 +85,23 @@ private:
 
 public:
 	static void SetupMouse();
+	static void FinishMouse();
 	static Vector2 Position();
 	static Vector2 Velocity();
 
-	static void RegisterOnMove(TwoAxisFunc);
-	static void UnregisterOneMove(TwoAxisFunc);
+	static void RegisterOnMove(const TwoAxisFunc);
+	static void UnregisterOneMove(const TwoAxisFunc);
 
-	static void RegisterOnScroll(TwoAxisFunc);
-	static void UnregisterOnSCroll(TwoAxisFunc);
+	static void RegisterOnScroll(const TwoAxisFunc);
+	static void UnregisterOnSCroll(const TwoAxisFunc);
 
-	static void RegisterOnSpecificButtonPress(SpecificClickFunc, ButtonCode);
-	static void UnregisterOnSpecificButtonPress(SpecificClickFunc, ButtonCode);
+	static void RegisterOnSpecificButtonPress(const SpecificClickFunc, ButtonCode);
+	static void UnregisterOnSpecificButtonPress(const SpecificClickFunc, ButtonCode);
 
-	static void RegisterOnButtonPress(ClickNotifyFunc);
-	static void UnregisterOnButtonPress(ClickNotifyFunc);
+	static void RegisterOnButtonPress(const ClickNotifyFunc);
+	static void UnregisterOnButtonPress(const ClickNotifyFunc);
 
 	static void JoinInputThreads();
+	static void Tick(float timeDelta);
 };
 

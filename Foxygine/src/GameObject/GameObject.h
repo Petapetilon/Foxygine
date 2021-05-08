@@ -28,12 +28,17 @@ private:
 	std::list<std::shared_ptr<ComponentNode>> components;
 	bool isActive;
 
+	GameObject(std::string _name);
+
 public:
 	Transform* transform;
 	std::string name;
 	
 	
-	GameObject(std::string _name);
+	static std::shared_ptr<GameObject> CreateGameObject(std::string _name);
+	static std::shared_ptr<GameObject> CreateGameObject();
+	static std::shared_ptr<GameObject> FindGameObject(std::string _name);
+	static bool FindAllGameObjects(std::string _name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results);
 
 
 	template<class Comp>

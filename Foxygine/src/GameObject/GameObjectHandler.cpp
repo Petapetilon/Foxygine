@@ -12,15 +12,10 @@ double GameObjectHandler::lastUpdateDeltaTime;
 double GameObjectHandler::lastFixedUpdateDeltaTime;
 
 
-void GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject> gameObject)
+std::shared_ptr<GameObject> GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject> gameObject)
 {
-	for (auto go : gameObjects) {
-		if (go->name == gameObject->name) {
-			return;
-		}
-	}
-
-	gameObjects.push_back(gameObject);
+	gameObjects.push_back(std::shared_ptr<GameObject>(gameObject));
+	return std::shared_ptr<GameObject>(gameObject);
 }
 
 
@@ -79,22 +74,17 @@ void GameObjectHandler::InvokeUpdate(float deltaTime, Foxygine& foxy)
 	for (auto go : gameObjects) {
 		go->Update(deltaTime);
 	}
-
-	//std::cout << "\x1B[2J\x1B[H";
-	//std::cout << "FrameTime: " << deltaTime;
 }
 
 
 void GameObjectHandler::InvokeFixedUpdate(float deltaTime, Foxygine& foxy)
 {
+	Mouse::Tick(deltaTime);
 	foxy.FixedUpdateFoxygine(deltaTime);
 
 	for (auto go : gameObjects) {
 		go->FixedUpdate(deltaTime);
 	}
-
-	//std::cout << "\x1B[2J\x1B[H";
-	//std::cout << "FixedTime: " << deltaTime;
 }
 
 
@@ -114,11 +104,24 @@ void GameObjectHandler::InvokeOnPostRender()
 }
 
 
-std::shared_ptr<GameObject> GameObjectHandler::GetGameObject(std::string _name)
+std::shared_ptr<GameObject> GameObjectHandler::FindGameObject(std::string name)
 {
 	for (auto go : gameObjects) {
-		if (_name == go->name) {
+		if (name == go->name) {
 			return go;
 		}
 	}
+}
+
+bool GameObjectHandler::FindAllGameObjects(std::string name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results)
+{
+	bool found = false;
+	for (auto go : gameObjects) {
+		if (name == go->name) {
+			results->push_back(std::shared_ptr<GameObject>(go));
+			found = true;
+		}
+	}
+
+	return found;
 }

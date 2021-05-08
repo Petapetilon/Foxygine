@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\Textures\CubeMap.cpp" />
+    <ClCompile Include="src\Graphics\SkyBoxRenderer.cpp" />
     <ClCompile Include="src\GameObject\SimpleCamera.cpp" />
     <ClCompile Include="src\Peripherals\GamePad.cpp" />
     <ClCompile Include="src\Peripherals\Mouse.cpp" />
@@ -165,7 +167,6 @@
     <ClCompile Include="src\Graphics\Material.cpp" />
     <ClCompile Include="src\Graphics\Shaders\BasicShader.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
-    <ClCompile Include="src\GameObject\Component.cpp" />
     <ClCompile Include="src\Graphics\Mesh.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
@@ -174,17 +175,22 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\GameObject\Transform.cpp" />
     <ClCompile Include="src\Peripherals\Window.cpp" />
-    <ClCompile Include="src\Graphics\Textures\Texture.cpp" />
+    <ClCompile Include="src\Graphics\Textures\Texture2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicFragment.shader" />
     <None Include="res\BasicVertex.shader" />
     <None Include="res\FragmentShader\BasicFrag.frag" />
+    <None Include="res\FragmentShader\SkyBoxFrag.frag" />
     <None Include="res\GeoShader\BasicGeometry.geom" />
     <None Include="res\VertexShader\BasicVert.vert" />
+    <None Include="res\VertexShader\SkyBoxVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\Textures\CubeMap.h" />
+    <ClInclude Include="src\Graphics\SkyBoxRenderer.h" />
     <ClInclude Include="src\GameObject\SimpleCamera.h" />
+    <ClInclude Include="src\Graphics\Textures\Texture.h" />
     <ClInclude Include="src\Peripherals\GamePad.h" />
     <ClInclude Include="src\Peripherals\Mouse.h" />
     <ClInclude Include="src\Peripherals\Keyboard.h" />
@@ -220,7 +226,7 @@
     <ClInclude Include="src\Math\Vector4.h" />
     <ClInclude Include="src\Math\Vector4I.h" />
     <ClInclude Include="src\Peripherals\Window.h" />
-    <ClInclude Include="src\Graphics\Textures\Texture.h" />
+    <ClInclude Include="src\Graphics\Textures\Texture2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

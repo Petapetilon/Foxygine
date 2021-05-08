@@ -192,39 +192,39 @@ void Keyboard::KeyPressJoinThread()
 	}
 
 
-	for (auto func : toUnregister_KNF_D_Functions) {
-		registered_KNF_D_Functions.remove(func);
-	}
-
-	toUnregister_KNF_D_Functions.clear();
-
-
-	for (auto func : toUnregister_KNF_H_Functions) {
-		registered_KNF_H_Functions.remove(func);
-	}
-
-	toUnregister_KNF_H_Functions.clear();
-
-
-	for (auto func : toUnregister_KNF_U_Functions) {
-		registered_KNF_U_Functions.remove(func);
-	}
-
-	toUnregister_KNF_U_Functions.clear();
-
-
-	for (auto func : toUnregister_KSF_Functions) {
-		registered_KSF_Functions.remove(func);
-	}
-
-	toUnregister_KSF_Functions.clear();
-
-
-	for (auto func : toUnregister_GKGSF_Functions) {
-		registered_GKGSF_Functions.remove(func);
-	}
-
-	toUnregister_GKGSF_Functions.clear();
+	//for (auto func : toUnregister_KNF_D_Functions) {
+	//	registered_KNF_D_Functions.remove(func);
+	//}
+	//
+	//toUnregister_KNF_D_Functions.clear();
+	//
+	//
+	//for (auto func : toUnregister_KNF_H_Functions) {
+	//	registered_KNF_H_Functions.remove(func);
+	//}
+	//
+	//toUnregister_KNF_H_Functions.clear();
+	//
+	//
+	//for (auto func : toUnregister_KNF_U_Functions) {
+	//	registered_KNF_U_Functions.remove(func);
+	//}
+	//
+	//toUnregister_KNF_U_Functions.clear();
+	//
+	//
+	//for (auto func : toUnregister_KSF_Functions) {
+	//	registered_KSF_Functions.remove(func);
+	//}
+	//
+	//toUnregister_KSF_Functions.clear();
+	//
+	//
+	//for (auto func : toUnregister_GKGSF_Functions) {
+	//	registered_GKGSF_Functions.remove(func);
+	//}
+	//
+	//toUnregister_GKGSF_Functions.clear();
 }
 
 
@@ -233,11 +233,11 @@ void Keyboard::TextInputJoinThread() {
 		textInputThread.join();
 	}
 
-	for (auto func : toUnregister_TICF_Functions) {
-		registered_TICF_Functions.remove(func);
-	}
-
-	toUnregister_TICF_Functions.clear();
+	//for (auto func : toUnregister_TICF_Functions) {
+	//	registered_TICF_Functions.remove(func);
+	//}
+	//
+	//toUnregister_TICF_Functions.clear();
 }
 
 

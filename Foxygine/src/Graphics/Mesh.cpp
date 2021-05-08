@@ -77,11 +77,11 @@ std::shared_ptr<SerializedMesh> Mesh::SerializeMeshData()
 								 
 		serialzedData.serializedVertexData.push_back(uvs[i].x);
 		serialzedData.serializedVertexData.push_back(uvs[i].y);
-
+		
 		serialzedData.serializedVertexData.push_back(tangents[i].x);
 		serialzedData.serializedVertexData.push_back(tangents[i].y);
 		serialzedData.serializedVertexData.push_back(tangents[i].z);
-
+		
 		serialzedData.serializedVertexData.push_back(bitangents[i].x);
 		serialzedData.serializedVertexData.push_back(bitangents[i].y);
 		serialzedData.serializedVertexData.push_back(bitangents[i].z);

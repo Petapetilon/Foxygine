@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <functional>
 
 
 Window* Window::instance;
@@ -15,6 +16,16 @@ Window::Window()
     windowName = "";
     GLFW_Window = nullptr;
     std::cout << "creating Window" << std::endl;
+}
+
+void Window::WindowResizeCallback(GLFWwindow* window, int width, int height)
+{
+    //Graphics::camera->ResetCamera();
+    Window::GetInstance()->windowWidth = width;
+    Window::GetInstance()->windowHeight = height;
+    Window::GetInstance()->resizeCallee(width, height);
+    glfwSwapBuffers(Window::GetInstance()->GLFW_GetWindow());
+    std::cout << "resize callback";
 }
 
 
@@ -38,6 +49,8 @@ bool Window::SetupWindow(Vector2I windowSize, std::string _windowName)
 
     /* Create a windowed mode window and its OpenGL context */
     //glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
+    windowWidth = windowSize.x;
+    windowHeight = windowSize.y;
     GLFW_Window = glfwCreateWindow(windowSize.x, windowSize.y, windowName.c_str(), NULL, NULL);
     if (!GLFW_Window)
     {
@@ -48,6 +61,8 @@ bool Window::SetupWindow(Vector2I windowSize, std::string _windowName)
     /* Make the window's context current */
     glfwMakeContextCurrent(GLFW_Window);
     glfwSwapInterval(0);
+    glfwSetWindowSizeCallback(GLFW_Window, WindowResizeCallback);
+
     std::setprecision(5);
     return true;
 }
@@ -59,9 +74,14 @@ GLFWwindow* Window::GLFW_GetWindow()
 }
 
 
-Vector2I Window::GetWindowRersolution()
+Vector2I Window::GetWindowResolution()
 {
     return Vector2I(windowWidth, windowHeight);
+}
+
+void Window::SetWindowResizeCallback(ResizeFunc callback)
+{
+    resizeCallee = callback;
 }
 
 

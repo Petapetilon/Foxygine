@@ -36,9 +36,6 @@
     <ClCompile Include="src\Graphics\Mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\Component.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\Graphics\Camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -75,7 +72,7 @@
     <ClCompile Include="src\Graphics\Renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Textures\Texture.cpp">
+    <ClCompile Include="src\Graphics\Textures\Texture2D.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Peripherals\Keyboard.cpp">
@@ -90,6 +87,12 @@
     <ClCompile Include="src\GameObject\SimpleCamera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\SkyBoxRenderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Textures\CubeMap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -97,6 +100,8 @@
     <None Include="res\FragmentShader\BasicFrag.frag" />
     <None Include="res\GeoShader\BasicGeometry.geom" />
     <None Include="res\VertexShader\BasicVert.vert" />
+    <None Include="res\FragmentShader\SkyBoxFrag.frag" />
+    <None Include="res\VertexShader\SkyBoxVert.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">
@@ -192,7 +197,7 @@
     <ClInclude Include="src\Math\Color.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Textures\Texture.h">
+    <ClInclude Include="src\Graphics\Textures\Texture2D.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Textures\stb_image.h">
@@ -208,6 +213,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\SimpleCamera.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\SkyBoxRenderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Textures\CubeMap.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Textures\Texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

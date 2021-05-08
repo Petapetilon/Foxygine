@@ -117,10 +117,15 @@ enum class KeyState {
 };
 
 
-typedef void(*GetKeyGetStateFunc)(KeyCode, KeyState);
-typedef void(*KeyStateFunc)(KeyState);
-typedef void(*KeyNotifyFunc)();
-typedef void(*TextInputCharFunc)(unsigned char);
+//typedef void(*GetKeyGetStateFunc)(KeyCode, KeyState);
+//typedef void(*KeyStateFunc)(KeyState);
+//typedef void(*KeyNotifyFunc)();
+//typedef void(*TextInputCharFunc)(unsigned char);
+
+typedef std::function<void(KeyCode, KeyState)> GetKeyGetStateFunc;
+typedef std::function<void(KeyState)> KeyStateFunc;
+typedef std::function<void()> KeyNotifyFunc;
+typedef std::function<void(unsigned char)> TextInputCharFunc;
 
 
 class Keyboard

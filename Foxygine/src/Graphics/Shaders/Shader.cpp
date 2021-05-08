@@ -23,24 +23,6 @@ Shader::Shader(std::string _name)
 
 	GL_ShaderProgram = glCreateProgram();
 	shaderPasses.clear();
-	//Graphics::GL_CurrentlyBoundShaderProgram = GL_ShaderProgram;
-
-
-
-
-
-
-
-	
-	//std::string vertexShaderSource;
-	//ShaderHandeling::LoadShaderSourceCode("res\\VertexShader\\BasicVert.vert", vertexShaderSource);
-	//auto vertexShader = ShaderHandeling::CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
-	//ShaderHandeling::BindShaderToProgram(GL_ShaderProgram, vertexShader);
-	//
-	//std::string fragmentShaderSource;
-	//ShaderHandeling::LoadShaderSourceCode("res\\FragmentShader\\BasicFrag.frag", fragmentShaderSource);
-	//auto fragmentShader = ShaderHandeling::CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-	//ShaderHandeling::BindShaderToProgram(GL_ShaderProgram, fragmentShader);
 }
 
 Shader::Shader()
@@ -66,7 +48,7 @@ void Shader::GL_BindProgram() {
 	if (Graphics::GL_CurrentlyBoundShaderProgram != GL_ShaderProgram) {
 		glUseProgram(GL_ShaderProgram); 
 		Graphics::GL_CurrentlyBoundShaderProgram = GL_ShaderProgram;
-		std::cout << "Binding shader program: " << name << std::endl;
+		//std::cout << "Binding shader program: " << name << std::endl;
 	}
 }
 
@@ -157,6 +139,15 @@ std::shared_ptr<Shader> Shader::CreateBasicLitUIShader(std::string _name)
 std::shared_ptr<Shader> Shader::CreateBasicUnlitUIShader(std::string _name)
 {
 	auto shader = ShaderLibrary::GetShader(_name);
+	return std::shared_ptr<Shader>(shader);
+}
+
+std::shared_ptr<Shader> Shader::CreateSkyboxShader(std::string _name)
+{
+	ShaderLibrary::RegisterShader(new Shader(_name));
+	auto shader = ShaderLibrary::GetShader(_name);
+	shader->LoadShaderResource("res\\VertexShader\\SkyBoxVert.vert", ShaderType::VertexShader);
+	shader->LoadShaderResource("res\\FragmentShader\\SkyBoxFrag.frag", ShaderType::FragmentShader);
 	return std::shared_ptr<Shader>(shader);
 }
 

@@ -8,7 +8,26 @@ GameObject::GameObject(std::string _name)
 {
 	name = _name;
 	transform = new Transform();
-	GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(this));
+}
+
+std::shared_ptr<GameObject> GameObject::CreateGameObject(std::string _name)
+{
+	return std::shared_ptr<GameObject>(GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(new GameObject(_name))));
+}
+
+std::shared_ptr<GameObject> GameObject::CreateGameObject()
+{
+	return std::shared_ptr<GameObject>(GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(new GameObject("unnamed"))));
+}
+
+std::shared_ptr<GameObject> GameObject::FindGameObject(std::string _name)
+{
+	return std::shared_ptr<GameObject>(GameObjectHandler::FindGameObject(_name));
+}
+
+bool GameObject::FindAllGameObjects(std::string _name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results)
+{
+	return GameObjectHandler::FindAllGameObjects(_name, results);
 }
 
 

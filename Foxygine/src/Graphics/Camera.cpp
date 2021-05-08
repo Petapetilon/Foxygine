@@ -16,16 +16,31 @@ void Camera::OnPreRender()
 }
 
 
-void Camera::SetupCamera(float fov, float screenRatio, float nearClip, float farClip)
+void Camera::SetupCamera(float _fov, float _screenRatio, float _nearClip, float _farClip)
 {
-	projectionMatrix = glm::perspective(fov, screenRatio, nearClip, farClip);
+	FOV = _fov;
+	nearClippingDistance = _nearClip;
+	farClippingDistance = _farClip;
+	projectionMatrix = glm::perspective(_fov, _screenRatio, _nearClip, _farClip);
 	Graphics::camera = std::shared_ptr<Camera>(this);
+}
+
+void Camera::ResetCamera(float _screenRatio)
+{
+	projectionMatrix = glm::perspective(FOV, _screenRatio, nearClippingDistance, farClippingDistance);
 }
 
 
 void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 {
+	combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
 	shader->SetShaderPass(new ShaderPassMat4(&combinedMatrix, "u_CameraWorldToScreen"));
 	shader->SetShaderPass(new ShaderPassVec4(&position, "u_CameraPosition"));
 	shader->SetShaderPass(new ShaderPassVec4(&direction, "u_CameraDirection"));
+}
+
+void Camera::GL_SetCameraUniformForSkybox(std::shared_ptr<Shader> shader)
+{
+	glm::mat4 ccombinedMatrix = projectionMatrix * transform->GetOrientationMatrix();
+	shader->SetShaderPass(new ShaderPassMat4(&ccombinedMatrix, "u_CameraWorldToScreen"));
 }

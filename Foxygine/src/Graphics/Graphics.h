@@ -3,20 +3,24 @@
 #include <list>
 #include <memory>
 #include "MeshRenderer.h"
+#include "SkyBoxRenderer.h"
 
 
 class Graphics
 {
 private:
+	static std::shared_ptr<GameObject> skyBoxGo;
+	static std::list<MeshRenderer*> meshRenderers;
 
 public:
-	static std::list<MeshRenderer*> meshRenderers;
 	static std::shared_ptr<Camera> camera;
 	static long renderedFrames;
 	static unsigned int GL_CurrentlyBoundShaderProgram;
 
-	void static DrawRenderer();
-	void static RegisterMeshRenderer(MeshRenderer*);
-	void static UnregeisterMeshRenderer(MeshRenderer*);
+	static void DrawRenderer();
+	static void RegisterMeshRenderer(MeshRenderer*);
+	static void UnregeisterMeshRenderer(MeshRenderer*);
+	static void SetSkybox(std::vector<std::string> filePaths);
+	static void OnWindowResize(int width, int height);
 };
 

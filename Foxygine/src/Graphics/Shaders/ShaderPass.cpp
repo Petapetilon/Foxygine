@@ -69,6 +69,38 @@ void ShaderPassMat4::CopyShaderPassValue(ShaderPass* source)
 
 
 
+ShaderPassMat3::ShaderPassMat3(glm::mat3* _val, std::string _GL_UniformName)
+{
+	val = std::make_shared<glm::mat3>(*_val);
+	GL_UniformName = _GL_UniformName;
+}
+
+void ShaderPassMat3::SetShaderPass()
+{
+	glUniformMatrix3fv(GL_UniformLocation, 1, GL_FALSE, &((*val)[0][0]));
+	//std::cout << "Setting Matrix: \n" << (*val)[0][0] << "	" << (*val)[1][0] << "	" << (*val)[2][0] << "	" << (*val)[3][0] << std::endl
+	//	<< (*val)[0][1] << "	" << (*val)[1][1] << "	" << (*val)[2][1] << "	" <<(*val)[3][1] << std::endl
+	//	<< (*val)[0][2] << "	" << (*val)[1][2] << "	" << (*val)[2][2] << "	" <<(*val)[3][2] << std::endl
+	//	<< (*val)[0][3] << "	" << (*val)[1][3] << "	" << (*val)[2][3] << "	" <<(*val)[3][3] << std::endl;
+}
+
+
+void ShaderPassMat3::CreateShaderPass(Shader* shader)
+{
+	GL_UniformLocation = glGetUniformLocation(shader->GL_GetShaderProgram(), GL_UniformName.c_str());
+}
+
+void ShaderPassMat3::CopyShaderPassValue(ShaderPass* source)
+{
+	if (source->GetShaderPassType() == this->GetShaderPassType()) {
+		val = ((ShaderPassMat3*)source)->val;
+	}
+}
+
+
+
+
+
 ShaderPassVec4I::ShaderPassVec4I(Vector4I* _val, std::string _GL_UniformName)
 {
 	val = std::make_shared<Vector4I>(*_val);

@@ -11,7 +11,7 @@ class Component
 public:
 	GameObject* gameObject;
 	Transform* transform;
-	bool isActive;
+	bool isActive = true;
 
 	virtual void Start() {}
 	virtual void Update(float deltaTime) {}

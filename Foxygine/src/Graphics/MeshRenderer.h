@@ -8,7 +8,7 @@
 
 class Material;
 
-class MeshRenderer final : public Component, public Renderer
+class MeshRenderer : public Component, public Renderer
 {
 private:
 	std::shared_ptr<Mesh> mesh;

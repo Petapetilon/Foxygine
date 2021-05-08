@@ -9,10 +9,14 @@ double Mouse::lastMousePosX;
 double Mouse::lastMousePosY;
 double Mouse::velocityX;
 double Mouse::velocityY;
+double Mouse::lastVelocityX;
+double Mouse::lastVelocityY;
 double Mouse::currentScrollX;
 double Mouse::currentScrollY;
 int Mouse::currentButton;
 int Mouse::currentAction;
+bool Mouse::mouseMoved;
+bool Mouse::mouseScrolled;
 
 std::thread Mouse::moveThread;
 std::thread Mouse::scrollThread;
@@ -38,8 +42,12 @@ void Mouse::MouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 	lastMousePosY = currentMousePosY;
 	currentMousePosX = xPos;
 	currentMousePosY = yPos;
-
 	SendMoveEvents();
+
+	mouseMoved = true;
+	auto vel = Velocity();
+	lastVelocityX = vel.x;
+	lastVelocityY = vel.y;
 }
 
 
@@ -49,6 +57,8 @@ void Mouse::MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffs
 	currentScrollX = xOffset;
 	currentScrollY = yOffset;
 	SendScrollEvents();
+
+	mouseScrolled = true;
 }
 
 void Mouse::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -57,6 +67,14 @@ void Mouse::MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 	currentButton = button;
 	currentAction = action;
 	SendButtonEvents();
+}
+
+void Mouse::MouseEnteredCallback(GLFWwindow* window, int entered)
+{
+	if (entered) {
+		lastMousePosX = currentMousePosX;
+		lastMousePosY = currentMousePosY;
+	}
 }
  
 
@@ -96,11 +114,11 @@ void Mouse::JoinMoveThread()
 		moveThread.join();
 	}
 
-	for (auto func : toUnregister_Move_Functions) {
-		registered_Move_Functions.remove(func);
-	}
-
-	toUnregister_Move_Functions.clear();
+	//for (auto func : toUnregister_Move_Functions) {
+	//	registered_Move_Functions.remove(func);
+	//}
+	//
+	//toUnregister_Move_Functions.clear();
 }
 
 
@@ -110,11 +128,11 @@ void Mouse::JoinScrollThread()
 		scrollThread.join();
 	}
 
-	for (auto func : toUnregister_Scroll_Functions) {
-		registered_Scroll_Functions.remove(func);
-	}
-
-	toUnregister_Scroll_Functions.clear();
+	//for (auto func : toUnregister_Scroll_Functions) {
+	//	registered_Scroll_Functions.remove(func);
+	//}
+	//
+	//toUnregister_Scroll_Functions.clear();
 }
 
 
@@ -124,18 +142,18 @@ void Mouse::JoinButtonThread()
 		buttonThread.join();
 	}
 
-	for (auto func : toUnregister_CNF_Functions) {
-		registered_CNF_Functions.remove(func);
-	}
-
-	toUnregister_CNF_Functions.clear();
-
-
-	for (auto func : toUnregister_SCF_Functions) {
-		registered_SCF_Functions.remove(func);
-	}
-
-	toUnregister_SCF_Functions.clear();
+	//for (auto func : toUnregister_CNF_Functions) {
+	//	registered_CNF_Functions.remove(func);
+	//}
+	//
+	//toUnregister_CNF_Functions.clear();
+	//
+	//
+	//for (auto func : toUnregister_SCF_Functions) {
+	//	registered_SCF_Functions.remove(func);
+	//}
+	//
+	//toUnregister_SCF_Functions.clear();
 }
 
 
@@ -146,6 +164,13 @@ void Mouse::SetupMouse()
 	glfwSetCursorPosCallback(Window::GetInstance()->GLFW_GetWindow(), MouseMoveCallback);
 	glfwSetScrollCallback(Window::GetInstance()->GLFW_GetWindow(), MouseScrollCallback);
 	glfwSetMouseButtonCallback(Window::GetInstance()->GLFW_GetWindow(), MouseButtonCallback);
+	glfwSetCursorEnterCallback(Window::GetInstance()->GLFW_GetWindow(), MouseEnteredCallback);
+	glfwSetInputMode(Window::GetInstance()->GLFW_GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Mouse::FinishMouse()
+{
+	glfwSetInputMode(Window::GetInstance()->GLFW_GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 
@@ -161,53 +186,53 @@ Vector2 Mouse::Velocity()
 }
 
 
-void Mouse::RegisterOnMove(TwoAxisFunc func)
+void Mouse::RegisterOnMove(const TwoAxisFunc func)
 {
 	JoinMoveThread();
 	registered_Move_Functions.push_back(func);
 }
 
 
-void Mouse::UnregisterOneMove(TwoAxisFunc func)
+void Mouse::UnregisterOneMove(const TwoAxisFunc func)
 {
 	toUnregister_Move_Functions.push_back(func);
 }
 
 
-void Mouse::RegisterOnScroll(TwoAxisFunc func)
+void Mouse::RegisterOnScroll(const TwoAxisFunc func)
 {
 	JoinScrollThread();
 	registered_Scroll_Functions.push_back(func);
 }
 
 
-void Mouse::UnregisterOnSCroll(TwoAxisFunc func)
+void Mouse::UnregisterOnSCroll(const TwoAxisFunc func)
 {
 	toUnregister_Scroll_Functions.push_back(func);
 }
 
 
-void Mouse::RegisterOnSpecificButtonPress(SpecificClickFunc func, ButtonCode code)
+void Mouse::RegisterOnSpecificButtonPress(const SpecificClickFunc func, ButtonCode code)
 {
 	JoinButtonThread();
 	registered_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
 }
 
 
-void Mouse::UnregisterOnSpecificButtonPress(SpecificClickFunc func, ButtonCode code)
+void Mouse::UnregisterOnSpecificButtonPress(const SpecificClickFunc func, ButtonCode code)
 {
 	toUnregister_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
 }
 
 
-void Mouse::RegisterOnButtonPress(ClickNotifyFunc func)
+void Mouse::RegisterOnButtonPress(const ClickNotifyFunc func)
 {
 	JoinButtonThread();
 	registered_CNF_Functions.push_back(func);
 }
 
 
-void Mouse::UnregisterOnButtonPress(ClickNotifyFunc func)
+void Mouse::UnregisterOnButtonPress(const ClickNotifyFunc func)
 {
 	toUnregister_CNF_Functions.push_back(func);
 }
@@ -218,4 +243,16 @@ void Mouse::JoinInputThreads()
 	JoinMoveThread();
 	JoinScrollThread();
 	JoinButtonThread();
+}
+
+void Mouse::Tick(float timeDelta)
+{
+	if (mouseMoved) {
+		auto vel = Velocity();
+		if (lastVelocityX == vel.x && lastVelocityY == vel.y) {
+			lastMousePosX = currentMousePosX;
+			lastMousePosY = currentMousePosY;
+			mouseMoved = false;
+		}
+	}
 }

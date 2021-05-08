@@ -26,6 +26,7 @@ protected:
 		Vec2I,
 		Vec3I,
 		Vec4I,
+		Mat3,
 		Mat4,
 		Color,
 		Bool
@@ -198,6 +199,23 @@ public:
 	void CopyShaderPassValue(ShaderPass* source) override;
 	ShaderPassType GetShaderPassType() override { return ShaderPassType::Mat4; }
 	std::shared_ptr<glm::mat4> GetValueRef() { return val; }
+};
+
+
+
+class ShaderPassMat3 : public ShaderPass{
+private:
+	std::shared_ptr < glm::mat3> val;
+
+public:
+	ShaderPassMat3(glm::mat3* _val, std::string _uniformName);
+	~ShaderPassMat3() { val.reset(); }
+
+	void SetShaderPass() override;
+	void CreateShaderPass(Shader* shader) override;
+	void CopyShaderPassValue(ShaderPass* source) override;
+	ShaderPassType GetShaderPassType() override { return ShaderPassType::Mat3; }
+	std::shared_ptr<glm::mat3> GetValueRef() { return val; }
 };
 
 

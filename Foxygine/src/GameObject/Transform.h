@@ -25,8 +25,9 @@ public:
 	Transform();
 
 	void SetRotation(Vector3);
-	void SetRotation(float, float, float);
+	void SetRotation(float, float, float, bool);
 	void Rotate(Vector3, float);
+	void Rotate(float x, float y, float z, bool localy);
 	void RotateAround(Vector3, Vector3, float);
 
 	void SetPosition(Vector3);
@@ -34,6 +35,9 @@ public:
 	void Translate(Vector3);
 	void Translate(float, float, float);
 
+	Vector3 Forward();
+	Vector3 Right();
+	Vector3 Up();
 	Vector3 Position();
 	Vector3 Rotation();
 	Vector3 Scale();
