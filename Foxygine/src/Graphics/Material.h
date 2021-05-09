@@ -8,12 +8,12 @@
 
 
 class Texture;
+class SkyboxRenderer;
 
 class Material
 {
 enum class TextureSlot;
 private:
-
 	struct MaterialProperty {
 		std::string propertyName;
 		std::string shaderPassName;
@@ -32,7 +32,7 @@ private:
 	std::shared_ptr<Shader> shader;
 	Color mainColor;
 
-	std::string textureSlotUniforms[16] = {
+	std::string textureSlotUniforms[17] = {
 		"u_ColorTexture",
 		"u_NormalMap",
 		"u_DisplacementMap",
@@ -49,26 +49,28 @@ private:
 		"Custom_9",
 		"Custom_10",
 		"Custom_11",
+		"u_Skybox"
 	};
 
 public:
 	enum class TextureSlot {
-		BaseColor,// = 0,
-		NormalMap,// = 1,
-		DisplacementMap,// = 2,
-		Specular,// = 3,
-		Metallic,// = 4,
-		Custom_1,// = 5,
-		Custom_2,// = 6,
-		Custom_3,// = 7,
-		Custom_4,// = 8,
-		Custom_5,// = 9,
-		Custom_6,// = 10,
-		Custom_7,// = 11,
-		Custom_8,// = 12,
-		Custom_9,// = 13,
-		Custom_10,// = 14,
-		Custom_11,// = 15
+		BaseColor = 0,
+		NormalMap = 1,
+		DisplacementMap = 2,
+		Specular = 3,
+		Metallic = 4,
+		Custom_1 = 5,
+		Custom_2 = 6,
+		Custom_3 = 7,
+		Custom_4 = 8,
+		Custom_5 = 9,
+		Custom_6 = 10,
+		Custom_7 = 11,
+		Custom_8 = 12,
+		Custom_9 = 13,
+		Custom_10 = 14,
+		Custom_11 = 15,
+		Skybox = 16
 	};
 
 

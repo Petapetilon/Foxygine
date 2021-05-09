@@ -8,13 +8,14 @@
 #include <GL/glew.h>
 #endif
 
-const int WWIDTH  = 1600;
+const int WWIDTH  = 2100;
 const int WHEIGHT = 900;
 
 
 
 #ifdef FOXYGINE_DEBUG
 bool cursorShown = false;
+int pauseFuncHandle = 0;
 void Pause(KeyCode key, KeyState state) {
     if (key == KeyCode::Esc && state == KeyState::Down) {
         if (cursorShown)
@@ -31,6 +32,8 @@ void Pause(KeyCode key, KeyState state) {
 
 int main(void)
 {
+    std::chrono::steady_clock::time_point engineBegin = std::chrono::steady_clock::now();
+
     Graphics::GL_CurrentlyBoundShaderProgram = -2;
     Window::GetInstance()->SetupWindow(Vector2I(WWIDTH, WHEIGHT), "Foxygine");
     Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
@@ -47,13 +50,16 @@ int main(void)
     glFrontFace(GL_FRONT);
     glCullFace(GL_BACK);
 
+
     foxygine.StartFoxygine();
     GameObjectHandler::InitHandler();
 
 #ifdef FOXYGINE_DEBUG
-    Keyboard::RegisterOnAnyKeyCallback(Pause);
+    pauseFuncHandle = Keyboard::RegisterOnAnyKeyCallback(Pause);
 #endif // FOXYGINE_DEBUG
 
+    std::chrono::steady_clock::time_point engineEnd = std::chrono::steady_clock::now();
+    std::cout << "Time for Engine Start = " << std::chrono::duration_cast<std::chrono::milliseconds>(engineEnd - engineBegin).count() << "[ms]" << std::endl;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(Window::GetInstance()->GLFW_GetWindow()))
@@ -78,6 +84,3 @@ int main(void)
     glfwTerminate();
     return 0;
 }
-
-
-

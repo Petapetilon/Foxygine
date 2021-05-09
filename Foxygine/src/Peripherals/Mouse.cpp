@@ -17,22 +17,21 @@ int Mouse::currentButton;
 int Mouse::currentAction;
 bool Mouse::mouseMoved;
 bool Mouse::mouseScrolled;
-
 std::thread Mouse::moveThread;
 std::thread Mouse::scrollThread;
 std::thread Mouse::buttonThread;
+int Mouse::latestMoveHandle;
+int Mouse::latestScrollHandle;
+int Mouse::latestButtonHandle;
 
-std::list<std::tuple<ButtonCode, SpecificClickFunc>> Mouse::registered_SCF_Functions;
-std::list<std::tuple<ButtonCode, SpecificClickFunc>> Mouse::toUnregister_SCF_Functions;
-
-std::list<TwoAxisFunc> Mouse::registered_Move_Functions;
-std::list<TwoAxisFunc> Mouse::toUnregister_Move_Functions;
-
-std::list<TwoAxisFunc> Mouse::registered_Scroll_Functions;
-std::list<TwoAxisFunc> Mouse::toUnregister_Scroll_Functions;
-
-std::list<ClickNotifyFunc> Mouse::registered_CNF_Functions;
-std::list<ClickNotifyFunc> Mouse::toUnregister_CNF_Functions;
+std::vector<std::tuple<TwoAxisFunc, int>> Mouse::registered_Move_Functions;
+std::vector<int> Mouse::toUnregister_Move_Functions;
+			
+std::vector<std::tuple<TwoAxisFunc, int>> Mouse::registered_Scroll_Functions;
+std::vector<int> Mouse::toUnregister_Scroll_Functions;
+			
+std::vector<std::tuple<ClickNotifyFunc, int>> Mouse::registered_CNF_Functions;
+std::vector<int> Mouse::toUnregister_CNF_Functions;
 
 
 void Mouse::MouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
@@ -42,7 +41,7 @@ void Mouse::MouseMoveCallback(GLFWwindow* window, double xPos, double yPos)
 	lastMousePosY = currentMousePosY;
 	currentMousePosX = xPos;
 	currentMousePosY = yPos;
-	SendMoveEvents();
+	//SendMoveEvents();
 
 	mouseMoved = true;
 	auto vel = Velocity();
@@ -56,7 +55,7 @@ void Mouse::MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffs
 	JoinScrollThread();
 	currentScrollX = xOffset;
 	currentScrollY = yOffset;
-	SendScrollEvents();
+	//SendScrollEvents();
 
 	mouseScrolled = true;
 }
@@ -66,7 +65,7 @@ void Mouse::MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 	JoinButtonThread();
 	currentButton = button;
 	currentAction = action;
-	SendButtonEvents();
+	//SendButtonEvents();
 }
 
 void Mouse::MouseEnteredCallback(GLFWwindow* window, int entered)
@@ -81,7 +80,7 @@ void Mouse::MouseEnteredCallback(GLFWwindow* window, int entered)
 void Mouse::SendMoveEvents()
 {
 	for (auto func : registered_Move_Functions) {
-		func(Position());
+		func._Myfirst._Val(Position());
 	}
 }
 
@@ -89,21 +88,15 @@ void Mouse::SendMoveEvents()
 void Mouse::SendScrollEvents()
 {
 	for (auto func : registered_Scroll_Functions) {
-		func(Vector2(currentScrollX, currentScrollY));
+		func._Myfirst._Val(Vector2(currentScrollX, currentScrollY));
 	}
 }
 
 
 void Mouse::SendButtonEvents()
 {
-	for (auto func : registered_SCF_Functions) {
-		if ((int)func._Myfirst._Val == currentButton) {
-			func._Get_rest()._Myfirst._Val(currentAction);
-		}
-	}
-
 	for (auto func : registered_CNF_Functions) {
-		func((ButtonCode)currentButton, currentAction);
+		func._Myfirst._Val((ButtonCode)currentButton, currentAction);
 	}
 }
 
@@ -114,11 +107,19 @@ void Mouse::JoinMoveThread()
 		moveThread.join();
 	}
 
-	//for (auto func : toUnregister_Move_Functions) {
-	//	registered_Move_Functions.remove(func);
-	//}
-	//
-	//toUnregister_Move_Functions.clear();
+	auto funcIt = std::begin(registered_Move_Functions);
+	while (funcIt != registered_Move_Functions.begin()) {
+		for (auto delFunc : toUnregister_Move_Functions) {
+			if (funcIt->_Get_rest()._Myfirst._Val == delFunc) {
+				funcIt = registered_Move_Functions.erase(funcIt);
+			}
+			else {
+				++funcIt;
+			}
+		}
+	}
+
+	toUnregister_Move_Functions.clear();
 }
 
 
@@ -128,11 +129,19 @@ void Mouse::JoinScrollThread()
 		scrollThread.join();
 	}
 
-	//for (auto func : toUnregister_Scroll_Functions) {
-	//	registered_Scroll_Functions.remove(func);
-	//}
-	//
-	//toUnregister_Scroll_Functions.clear();
+	auto funcIt = std::begin(registered_Scroll_Functions);
+	while (funcIt != registered_Scroll_Functions.begin()) {
+		for (auto delFunc : toUnregister_Scroll_Functions) {
+			if (funcIt->_Get_rest()._Myfirst._Val == delFunc) {
+				funcIt = registered_Scroll_Functions.erase(funcIt);
+			}
+			else {
+				++funcIt;
+			}
+		}
+	}
+
+	toUnregister_Scroll_Functions.clear();
 }
 
 
@@ -142,21 +151,20 @@ void Mouse::JoinButtonThread()
 		buttonThread.join();
 	}
 
-	//for (auto func : toUnregister_CNF_Functions) {
-	//	registered_CNF_Functions.remove(func);
-	//}
-	//
-	//toUnregister_CNF_Functions.clear();
-	//
-	//
-	//for (auto func : toUnregister_SCF_Functions) {
-	//	registered_SCF_Functions.remove(func);
-	//}
-	//
-	//toUnregister_SCF_Functions.clear();
+	auto funcIt = std::begin(registered_CNF_Functions);
+	while (funcIt != registered_CNF_Functions.begin()) {
+		for (auto delFunc : toUnregister_CNF_Functions) {
+			if (funcIt->_Get_rest()._Myfirst._Val == delFunc) {
+				funcIt = registered_CNF_Functions.erase(funcIt);
+			}
+			else {
+				++funcIt;
+			}
+		}
+	}
+
+	toUnregister_CNF_Functions.clear();
 }
-
-
 
 
 void Mouse::SetupMouse()
@@ -167,6 +175,7 @@ void Mouse::SetupMouse()
 	glfwSetCursorEnterCallback(Window::GetInstance()->GLFW_GetWindow(), MouseEnteredCallback);
 	glfwSetInputMode(Window::GetInstance()->GLFW_GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
+
 
 void Mouse::FinishMouse()
 {
@@ -186,55 +195,45 @@ Vector2 Mouse::Velocity()
 }
 
 
-void Mouse::RegisterOnMove(const TwoAxisFunc func)
+int Mouse::RegisterOnMove(const TwoAxisFunc func)
 {
 	JoinMoveThread();
-	registered_Move_Functions.push_back(func);
+	registered_Move_Functions.push_back(std::tuple<TwoAxisFunc, int>(func, ++latestMoveHandle));
+	return latestMoveHandle;
 }
 
 
-void Mouse::UnregisterOneMove(const TwoAxisFunc func)
+void Mouse::UnregisterOneMove(int handle)
 {
-	toUnregister_Move_Functions.push_back(func);
+	toUnregister_Move_Functions.push_back(handle);
 }
 
 
-void Mouse::RegisterOnScroll(const TwoAxisFunc func)
+int Mouse::RegisterOnScroll(const TwoAxisFunc func)
 {
 	JoinScrollThread();
-	registered_Scroll_Functions.push_back(func);
+	registered_Scroll_Functions.push_back(std::tuple<TwoAxisFunc, int>(func, ++latestScrollHandle));
+	return latestScrollHandle;
 }
 
 
-void Mouse::UnregisterOnSCroll(const TwoAxisFunc func)
+void Mouse::UnregisterOnSCroll(int handle)
 {
-	toUnregister_Scroll_Functions.push_back(func);
+	toUnregister_Scroll_Functions.push_back(handle);
 }
 
 
-void Mouse::RegisterOnSpecificButtonPress(const SpecificClickFunc func, ButtonCode code)
-{
-	JoinButtonThread();
-	registered_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
-}
-
-
-void Mouse::UnregisterOnSpecificButtonPress(const SpecificClickFunc func, ButtonCode code)
-{
-	toUnregister_SCF_Functions.push_back(std::tuple<ButtonCode, SpecificClickFunc>(code, func));
-}
-
-
-void Mouse::RegisterOnButtonPress(const ClickNotifyFunc func)
+int Mouse::RegisterOnButtonPress(const ClickNotifyFunc func)
 {
 	JoinButtonThread();
-	registered_CNF_Functions.push_back(func);
+	registered_CNF_Functions.push_back(std::tuple<ClickNotifyFunc, int>(func, ++latestButtonHandle));
+	return latestButtonHandle;
 }
 
 
-void Mouse::UnregisterOnButtonPress(const ClickNotifyFunc func)
+void Mouse::UnregisterOnButtonPress(int handle)
 {
-	toUnregister_CNF_Functions.push_back(func);
+	toUnregister_CNF_Functions.push_back(handle);
 }
 
 

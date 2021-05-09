@@ -7,8 +7,6 @@ std::list<std::shared_ptr<Shader>> ShaderLibrary::registeredShaders;
 
 bool ShaderLibrary::RegisterShader(Shader* _shader)
 {
-	std::cout << "Attempting to register Shader: " << _shader->name << std::endl;
-
 	for (auto shader : registeredShaders) {
 		if (shader->name == _shader->name) {
 			return false;

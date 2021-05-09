@@ -59,50 +59,92 @@ Mesh* Mesh::ImportMesh(const std::string& filePath)
 		bitangents[indices[i + 2]] = bitangent;
 	}
 
+	dataIncludeMask = 0x3F;
 	return this;
 }
 
 std::shared_ptr<SerializedMesh> Mesh::SerializeMeshData()
 {
 	SerializedMesh serialzedData;
-	serialzedData.serializedIndices = indices;
-	for (int i = 0; i < positions.size(); i++) {
-		serialzedData.serializedVertexData.push_back(positions[i].x);
-		serialzedData.serializedVertexData.push_back(positions[i].y);
-		serialzedData.serializedVertexData.push_back(positions[i].z);
-								 
-		serialzedData.serializedVertexData.push_back(normals[i].x);
-		serialzedData.serializedVertexData.push_back(normals[i].y);
-		serialzedData.serializedVertexData.push_back(normals[i].z);
-								 
-		serialzedData.serializedVertexData.push_back(uvs[i].x);
-		serialzedData.serializedVertexData.push_back(uvs[i].y);
-		
-		serialzedData.serializedVertexData.push_back(tangents[i].x);
-		serialzedData.serializedVertexData.push_back(tangents[i].y);
-		serialzedData.serializedVertexData.push_back(tangents[i].z);
-		
-		serialzedData.serializedVertexData.push_back(bitangents[i].x);
-		serialzedData.serializedVertexData.push_back(bitangents[i].y);
-		serialzedData.serializedVertexData.push_back(bitangents[i].z);
+
+
+	if (dataIncludeMask & (char)MeshData::Indices) {
+		serialzedData.serializedIndices = indices;
 	}
 
-	serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
-	serialzedData.vertexAttribPointerDataSize.push_back(3);
+	for (int i = 0; i < positions.size(); i++) {
+		if (dataIncludeMask & (char)MeshData::Positions) {
+			serialzedData.serializedVertexData.push_back(positions[i].x);
+			serialzedData.serializedVertexData.push_back(positions[i].y);
+			serialzedData.serializedVertexData.push_back(positions[i].z);
+		}
 
-	serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
-	serialzedData.vertexAttribPointerDataSize.push_back(3);
-	
-	serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
-	serialzedData.vertexAttribPointerDataSize.push_back(2);
+		if (dataIncludeMask & (char)MeshData::Normals) {
+			serialzedData.serializedVertexData.push_back(normals[i].x);
+			serialzedData.serializedVertexData.push_back(normals[i].y);
+			serialzedData.serializedVertexData.push_back(normals[i].z);
+		}
 
-	serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
-	serialzedData.vertexAttribPointerDataSize.push_back(3);
+		if (dataIncludeMask & (char)MeshData::UVs) {
+			serialzedData.serializedVertexData.push_back(uvs[i].x);
+			serialzedData.serializedVertexData.push_back(uvs[i].y);
+		}
 
-	serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
-	serialzedData.vertexAttribPointerDataSize.push_back(3);
+		if (dataIncludeMask & (char)MeshData::Tangents) {
+			serialzedData.serializedVertexData.push_back(tangents[i].x);
+			serialzedData.serializedVertexData.push_back(tangents[i].y);
+			serialzedData.serializedVertexData.push_back(tangents[i].z);
+		}
 
-	serialzedData.vertexAttribPointerCount = 5;
+		if (dataIncludeMask & (char)MeshData::BiTangengs) {
+			serialzedData.serializedVertexData.push_back(bitangents[i].x);
+			serialzedData.serializedVertexData.push_back(bitangents[i].y);
+			serialzedData.serializedVertexData.push_back(bitangents[i].z);
+		}
+	}
+
+	int includedData = 0;
+	if (dataIncludeMask & (char)MeshData::Positions) {
+		serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
+		serialzedData.vertexAttribPointerDataSize.push_back(3);
+		includedData++;
+	}
+
+	if (dataIncludeMask & (char)MeshData::Normals) {
+		serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
+		serialzedData.vertexAttribPointerDataSize.push_back(3);
+		includedData++;
+	}
+
+	if (dataIncludeMask & (char)MeshData::UVs) {
+		serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
+		serialzedData.vertexAttribPointerDataSize.push_back(2);
+		includedData++;
+	}
+
+	if (dataIncludeMask & (char)MeshData::Tangents) {
+		serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
+		serialzedData.vertexAttribPointerDataSize.push_back(3);
+		includedData++;
+	}
+
+	if (dataIncludeMask & (char)MeshData::BiTangengs) {
+		serialzedData.vertexAttribPointerDataType.push_back(GL_FLOAT);
+		serialzedData.vertexAttribPointerDataSize.push_back(3);
+		includedData++;
+	}
+
+		serialzedData.vertexAttribPointerCount = includedData;
 
 	return std::make_shared<SerializedMesh>(serialzedData);
+}
+
+void Mesh::ExcludeMeshData(MeshData excludedData)
+{
+	dataIncludeMask = dataIncludeMask ^ (char)excludedData;
+}
+
+void Mesh::IncludeMeshData(MeshData includedData)
+{
+	dataIncludeMask = dataIncludeMask | (char)includedData;
 }

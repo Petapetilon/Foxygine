@@ -8,11 +8,6 @@
 class Shader;
 
 class Texture {
-protected:
-	unsigned char* texData;
-	unsigned int GL_TextureID;
-	unsigned int GL_UniformLocation;
-
 public:
 	enum class Wrapping {
 		Repeat,
@@ -26,7 +21,14 @@ public:
 		Linear
 	};
 
+protected:
+	unsigned char* texData;
+	unsigned int GL_TextureID;
+	unsigned int GL_UniformLocation;
+	Wrapping setWrapping;
+	Filtering setFiltering;
 
+public:
 	std::string name;
 
 	virtual void SetWrapping(Wrapping) {}

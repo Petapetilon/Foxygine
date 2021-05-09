@@ -18,7 +18,6 @@ Material::Material(std::string materialName, std::string _shaderName)
 		shader = std::shared_ptr<Shader>(Shader::CreateBasicLitShader(shaderName));
 	}
 
-	std::cout << shader->name << std::endl;
 	mainColor.a = 1;
 	mainColor.r = 1;
 	mainColor.g = 1;

@@ -3,7 +3,7 @@
 #include "MeshRenderer.h"
 
 
-class SkyBoxRenderer : public MeshRenderer
+class SkyboxRenderer : public MeshRenderer
 {
 public:
 	void SetSkybox(std::vector<std::string> filePaths);

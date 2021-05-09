@@ -5,6 +5,7 @@
 #include <atomic>
 #include <thread>
 #include <mutex>
+#include <algorithm>
 
 
 
@@ -117,14 +118,7 @@ enum class KeyState {
 };
 
 
-//typedef void(*GetKeyGetStateFunc)(KeyCode, KeyState);
-//typedef void(*KeyStateFunc)(KeyState);
-//typedef void(*KeyNotifyFunc)();
-//typedef void(*TextInputCharFunc)(unsigned char);
-
 typedef std::function<void(KeyCode, KeyState)> GetKeyGetStateFunc;
-typedef std::function<void(KeyState)> KeyStateFunc;
-typedef std::function<void()> KeyNotifyFunc;
 typedef std::function<void(unsigned char)> TextInputCharFunc;
 
 
@@ -137,26 +131,20 @@ private:
 	static int receivedAction;
 	static unsigned int receivedTextInput;
 	static KeyCode* keyCodeMapping;
+	static int* scanCodeMapping;
+	static int* glfwKeyMapping;
+	static bool* currentKeyState;
 	static std::thread keyInputThread;
 	static std::thread textInputThread;
+	static int latestKeyHandle;
+	static int latestTextHandle;
 
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> registered_KNF_D_Functions;
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> toUnregister_KNF_D_Functions;
-				 
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> registered_KNF_H_Functions;
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> toUnregister_KNF_H_Functions;
-				 
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> registered_KNF_U_Functions;
-	static std::list<std::tuple<KeyCode, KeyNotifyFunc>> toUnregister_KNF_U_Functions;
 
-	static std::list<std::tuple<KeyCode, KeyStateFunc>> registered_KSF_Functions;
-	static std::list<std::tuple<KeyCode, KeyStateFunc>> toUnregister_KSF_Functions;
+	static std::vector<std::tuple<GetKeyGetStateFunc, int>> registered_GKGSF_Functions;
+	static std::vector<int> toUnregister_GKGSF_Functions;
 
-	static std::list<GetKeyGetStateFunc> registered_GKGSF_Functions;
-	static std::list<GetKeyGetStateFunc> toUnregister_GKGSF_Functions;
-
-	static std::list<TextInputCharFunc> registered_TICF_Functions;
-	static std::list<TextInputCharFunc> toUnregister_TICF_Functions;
+	static std::vector<std::tuple<TextInputCharFunc, int>> registered_TICF_Functions;
+	static std::vector<int> toUnregister_TICF_Functions;
 
 	static void KeyPressCallcack(GLFWwindow* widnow, int key, int scanCode, int action , int mods);
 	static void TextInputCallback(GLFWwindow* window, unsigned int codePoint);
@@ -168,23 +156,13 @@ private:
 public:
 	static void SetupKeyboard();
 
-	static void RegisterOnKeyDownStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
-	static void UnregisterOnKeyDownStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
+	static int RegisterOnAnyKeyCallback(GetKeyGetStateFunc callback);
+	static void UnregisterOnAnyKeyCallback(int handle);
 
-	static void RegisterOnKeyHeldStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
-	static void UnregisterOnKeyHeldStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
+	static int RegisterOnTextInputCallback(TextInputCharFunc callback);
+	static void UnregisterOnTextInputCallback(int handle);
 
-	static void RegisterOnKeyUpStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
-	static void UnregisterOnKeyUpStateCallback(KeyNotifyFunc callback, KeyCode keyCode);
-				
-	static void RegisterOnKeyAnyStateCallback(KeyStateFunc callback, KeyCode keyCode);
-	static void UnregisterOnKeyAnyStateCallback(KeyStateFunc callback, KeyCode keyCode);
-
-	static void RegisterOnAnyKeyCallback(GetKeyGetStateFunc callback);
-	static void UnregisterOnAnyKeyCallback(GetKeyGetStateFunc callback);
-
-	static void RegisterOnTextInputCallback(TextInputCharFunc callback);
-	static void UnregisterOnTextInputCallback(TextInputCharFunc callback);
+	static bool GetKey(KeyCode keyCode);
 
 	static void JoinInputThreads();
 };

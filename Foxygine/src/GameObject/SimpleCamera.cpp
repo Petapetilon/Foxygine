@@ -7,8 +7,7 @@
 
 void SimpleCamera::Start()
 {
-	//Mouse::RegisterOnMove(std::bind(&SimpleCamera::OnMouseMove, this, std::placeholders::_1));
-	//Keyboard::RegisterOnAnyKeyCallback(std::bind(&SimpleCamera::OnKeyPress, this, std::placeholders::_2));
+
 }
 
 void SimpleCamera::Update(float _deltaTime)
@@ -24,27 +23,27 @@ void SimpleCamera::Update(float _deltaTime)
 	transform->RotateAround(Vector3(0,0,0), Vector3(0, 1, 0), xRot);
 
 
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_W)) {
+	if (Keyboard::GetKey(KeyCode::W)) {
 		transform->Translate(transform->Forward() * deltaTime * 10);
 	}	
 	
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_S)) {
+	if (Keyboard::GetKey(KeyCode::S)) {
 		transform->Translate(transform->Forward() * -deltaTime * 10);
 	}
 	
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_D)) {
+	if (Keyboard::GetKey(KeyCode::D)) {
 		transform->Translate(transform->Right() * deltaTime * 10);
 	}
 
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_A)) {
+	if (Keyboard::GetKey(KeyCode::A)) {
 		transform->Translate(transform->Right() * -deltaTime * 10);
 	}	
 
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_SPACE)) {
+	if (Keyboard::GetKey(KeyCode::Space)) {
 		transform->Translate(transform->Up() * deltaTime * 10);
 	}	
 	
-	if (glfwGetKey(Window::GetInstance()->GLFW_GetWindow(), GLFW_KEY_LEFT_SHIFT)) {
+	if (Keyboard::GetKey(KeyCode::L_Shift)) {
 		transform->Translate(transform->Up() * -deltaTime * 10);
 	}
 }

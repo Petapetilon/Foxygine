@@ -22,5 +22,6 @@ public:
 	static void UnregeisterMeshRenderer(MeshRenderer*);
 	static void SetSkybox(std::vector<std::string> filePaths);
 	static void OnWindowResize(int width, int height);
+	static void SetLightingData();
 };
 

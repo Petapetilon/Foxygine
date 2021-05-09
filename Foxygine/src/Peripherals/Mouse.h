@@ -5,6 +5,7 @@
 #include <functional>
 #include <thread>
 #include <list>
+#include <algorithm>
 
 
 enum class ButtonCode {
@@ -26,16 +27,8 @@ enum class ButtonCode {
 	Custom_13 = 15,
 };
 
-
-//typedef void(*TwoAxisFunc)(Vector2);
-//typedef void(*SpecificClickFunc)(bool);
-//typedef void(*ClickNotifyFunc)(ButtonCode, bool);
-
 typedef std::function<void(Vector2)> TwoAxisFunc;
-typedef std::function<void(bool)> SpecificClickFunc;
 typedef std::function<void(ButtonCode, bool)> ClickNotifyFunc;
-
-//delegate void TwoAxisNotifyDelegate(Vector2);
 
 
 class Mouse
@@ -55,22 +48,21 @@ private:
 	static int currentAction;
 	static bool mouseMoved;
 	static bool mouseScrolled;
-
 	static std::thread moveThread;
 	static std::thread scrollThread;
 	static std::thread buttonThread;
+	static int latestMoveHandle;
+	static int latestScrollHandle;
+	static int latestButtonHandle;
 	 
-	static std::list<std::tuple<ButtonCode, SpecificClickFunc>> registered_SCF_Functions;
-	static std::list<std::tuple<ButtonCode, SpecificClickFunc>> toUnregister_SCF_Functions;
+	static std::vector<std::tuple<TwoAxisFunc, int>> registered_Move_Functions;
+	static std::vector<int> toUnregister_Move_Functions;
 	 
-	static std::list<TwoAxisFunc> registered_Move_Functions;
-	static std::list<TwoAxisFunc> toUnregister_Move_Functions;
+	static std::vector<std::tuple<TwoAxisFunc, int>> registered_Scroll_Functions;
+	static std::vector<int> toUnregister_Scroll_Functions;
 	 
-	static std::list<TwoAxisFunc> registered_Scroll_Functions;
-	static std::list<TwoAxisFunc> toUnregister_Scroll_Functions;
-	 
-	static std::list<ClickNotifyFunc> registered_CNF_Functions;
-	static std::list<ClickNotifyFunc> toUnregister_CNF_Functions;
+	static std::vector<std::tuple<ClickNotifyFunc, int>> registered_CNF_Functions;
+	static std::vector<int> toUnregister_CNF_Functions;
 
 	static void MouseMoveCallback(GLFWwindow* window, double xPos, double yPos);
 	static void MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
@@ -89,17 +81,14 @@ public:
 	static Vector2 Position();
 	static Vector2 Velocity();
 
-	static void RegisterOnMove(const TwoAxisFunc);
-	static void UnregisterOneMove(const TwoAxisFunc);
+	static int RegisterOnMove(const TwoAxisFunc);
+	static void UnregisterOneMove(int);
 
-	static void RegisterOnScroll(const TwoAxisFunc);
-	static void UnregisterOnSCroll(const TwoAxisFunc);
+	static int RegisterOnScroll(const TwoAxisFunc);
+	static void UnregisterOnSCroll(int);
 
-	static void RegisterOnSpecificButtonPress(const SpecificClickFunc, ButtonCode);
-	static void UnregisterOnSpecificButtonPress(const SpecificClickFunc, ButtonCode);
-
-	static void RegisterOnButtonPress(const ClickNotifyFunc);
-	static void UnregisterOnButtonPress(const ClickNotifyFunc);
+	static int RegisterOnButtonPress(const ClickNotifyFunc);
+	static void UnregisterOnButtonPress(int);
 
 	static void JoinInputThreads();
 	static void Tick(float timeDelta);

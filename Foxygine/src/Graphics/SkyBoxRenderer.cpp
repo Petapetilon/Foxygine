@@ -1,11 +1,16 @@
-#include "SkyBoxRenderer.h"
+#include "SkyboxRenderer.h"
 #include "../Graphics/Textures/CubeMap.h"
 #include "../Math/Color.h"
 
 
-void SkyBoxRenderer::SetSkybox(std::vector<std::string> filePaths)
+void SkyboxRenderer::SetSkybox(std::vector<std::string> filePaths)
 {
-	SetMesh(std::shared_ptr<Mesh>(new Mesh("res\\meshes\\Skybox.obj")));
+
+	auto _mesh = new Mesh("res\\meshes\\Skybox.obj");
+	_mesh->ExcludeMeshData(Mesh::MeshData::Everything);
+	_mesh->IncludeMeshData(Mesh::MeshData::RawMeshPoint);
+	SetMesh(std::shared_ptr<Mesh>(_mesh));
+
 	auto shader = ShaderLibrary::GetShader("skyboxShader");
 	if (shader == nullptr) {
 		Shader::CreateSkyboxShader("skyboxShader");
@@ -13,13 +18,13 @@ void SkyBoxRenderer::SetSkybox(std::vector<std::string> filePaths)
 
 	SetMaterial(std::shared_ptr<Material>(new Material("skyboxMat", "skyboxShader")));
 	auto cubeMap = new CubeMap();
-	cubeMap->LoadCubeMap(filePaths, "skyboxCubeMap", Texture::Wrapping::ClampEdge, Texture::Filtering::Linear);
-	material->CreateTextureProperty("color", std::shared_ptr<Texture>(cubeMap), Material::TextureSlot::BaseColor);
-	material->SetMainColor(Color(1.f, 1, 1, 1));
+	cubeMap->LoadCubeMapOptimized(filePaths, "skyboxCubeMap", Texture::Wrapping::ClampEdge, Texture::Filtering::Linear);
+	material->CreateTextureProperty("Skybox", std::shared_ptr<Texture>(cubeMap), Material::TextureSlot::Skybox);
+	material->SetMainColor(Color(0.f, 1, 1, 1));
 }
 
 
-void SkyBoxRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
+void SkyboxRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	if (!isActive || !gameObject) return;
 	//if (!shader) shader = std::shared_ptr<Shader>(new BasicShader());
 

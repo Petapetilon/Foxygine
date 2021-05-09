@@ -10,7 +10,7 @@ class Material;
 
 class MeshRenderer : public Component, public Renderer
 {
-private:
+protected:
 	std::shared_ptr<Mesh> mesh;
 
 public:
