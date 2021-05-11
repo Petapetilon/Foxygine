@@ -150,6 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp" />
+    <ClCompile Include="src\Graphics\Lights\PointLight.cpp" />
+    <ClCompile Include="src\Graphics\Lights\DirectionalLight.cpp" />
     <ClCompile Include="src\Graphics\Textures\CubeMap.cpp" />
     <ClCompile Include="src\Graphics\SkyBoxRenderer.cpp" />
     <ClCompile Include="src\GameObject\SimpleCamera.cpp" />
@@ -187,6 +190,10 @@
     <None Include="res\VertexShader\SkyBoxVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\Lights\AmbientLight.h" />
+    <ClInclude Include="src\Graphics\Lights\PointLight.h" />
+    <ClInclude Include="src\Graphics\Lights\DirectionalLight.h" />
+    <ClInclude Include="src\Graphics\Lights\Light.h" />
     <ClInclude Include="src\Graphics\Textures\CubeMap.h" />
     <ClInclude Include="src\Graphics\SkyBoxRenderer.h" />
     <ClInclude Include="src\GameObject\SimpleCamera.h" />

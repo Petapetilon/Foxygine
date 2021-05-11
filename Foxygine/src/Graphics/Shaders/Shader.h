@@ -12,8 +12,10 @@ class ShaderPass;
 
 class Shader {
 protected:
+	bool GL_IsLitShader;
 	unsigned int GL_ShaderProgram;
 	std::list<ShaderPass*> shaderPasses;
+
 	void AddShaderPass(ShaderPass* newPass);
 	ShaderPass* GetShaderPass(std::string uniformName);
 	Shader(std::string);
@@ -31,8 +33,8 @@ public:
 	unsigned int GL_GetShaderProgram();
 	void GL_BindProgram();
 	void SetShaderPass(ShaderPass* pass);
-	void LoadShaderResource(std::string shaderFilePath, ShaderType shaderType);
-
+	void LoadShaderResource(std::string shaderSourceFilePath, ShaderType shaderType);
+	bool GetShaderLitType();
 
 	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicUnlitShader(std::string _name);

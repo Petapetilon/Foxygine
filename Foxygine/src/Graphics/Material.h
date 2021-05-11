@@ -91,6 +91,7 @@ public:
 	void SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture);
 	void DeleteTextureProperty(std::string propertyName);
 
+	void FinishLoadingResources();
 	void GL_SetProperties();
 };
 

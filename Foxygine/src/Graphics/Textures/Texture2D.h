@@ -15,16 +15,17 @@ protected :
 	int colorChannels;
 	std::string filePath;
 	std::thread loadingThread;
+	bool loadingFinished;
 
 	void LoadImage();
 	void GL_RegisterImage();
-	//unsigned char* LoadImage();
 
 public:
 	Texture2D();
 	~Texture2D();
-	void LoadTexture2DInline(std::string filePath, std::string _name, Wrapping, Filtering);
-	void LoadTexture2DOptimized(std::string filePath, std::string _name, Wrapping, Filtering);
+	bool LoadTexture2DInline(std::string filePath, std::string _name, Wrapping, Filtering);
+	void LoadTexture2D(std::string filePath, std::string _name, Wrapping, Filtering);
+	bool FinishLoading() override;
 	void SetWrapping(Wrapping) override;
 	void SetFiltering(Filtering) override;
 	void FreeImageData() override;

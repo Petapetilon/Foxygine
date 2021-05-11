@@ -6,31 +6,38 @@
 #include "stb_image.h"
 
 
-void CubeMap::FinishLoading()
+bool CubeMap::FinishLoading()
 {
+	if (loadingFinished) return false;
+
 	glBindTexture(GL_TEXTURE_CUBE_MAP, GL_TextureID);
 
+	bool succeded = false;
 	for (int i = 0; i < 6; i++) {
-		textures[i].FinishLoading(i);
+		succeded = textures[i].FinishLoading(i);
 	}
 
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	loadingFinished = true;
+	if (succeded){
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		loadingFinished = true;
+	}
+
+	return succeded;
 }
 
 
 /// <summary>
 /// right, left, top, bottom, front, back
 /// </summary>
-void CubeMap::LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+bool CubeMap::LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
 	if (filePaths.size() != 6) {
-		std::cout << "Failed to load CubeMap: Wrong number of File Paths, there need to be 6!" << std::endl;
-		return;
+		std::cout << "Failed to load CubeMap: There need to be 6 Textures! - " << 6 - filePaths.size() << " are missing." << std::endl;
+		return false;
 	}
 
 	loadingFinished = false;
@@ -44,29 +51,34 @@ void CubeMap::LoadCubeMapInline(std::vector<std::string> filePaths, std::string 
 	textures = new CubeMapTexture[6];
 	int texWidth = 0, texHeight = 0;
 
+	bool succeded = false;
 	for (int i = 0; i < 6; i++) {
 		std::cout << "Loading Texture Resource: " << filePaths[i] << std::endl;
 		textures[i].LoadThreaded(filePaths[i]);
-		textures[i].FinishLoading(i);
+		succeded = textures[i].FinishLoading(i);
 	}
 
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	loadingFinished = true;
+	if (succeded) {
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		loadingFinished = true;
+	}
+
+	return succeded;
 }
 
 
 /// <summary>
 /// right, left, top, bottom, front, back
 /// </summary>
-void CubeMap::LoadCubeMapOptimized(std::vector<std::string> filePaths, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+bool CubeMap::LoadCubeMap(std::vector<std::string> filePaths, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
 	if (filePaths.size() != 6) {
-		std::cout << "Failed to load CubeMap: Wrong number of File Paths, there need to be 6!" << std::endl;
-		return;
+		std::cout << "Failed to load CubeMap: There need to be 6 Textures! - " << 6 - filePaths.size() << " are missing." << std::endl;
+		return false;
 	}
 
 	loadingFinished = false;
@@ -79,9 +91,11 @@ void CubeMap::LoadCubeMapOptimized(std::vector<std::string> filePaths, std::stri
 	int texWidth = 0, texHeight = 0;
 
 	for (int i = 0; i < 6; i++) {
-		std::cout << "Loading Texture Resource: " << filePaths[i] << std::endl;
+		std::cout << "Loading Texture Resource in background: " << filePaths[i] << std::endl;
 		textures[i].LoadThreaded(filePaths[i]);
 	}
+
+	return true;
 }
 
 
@@ -167,9 +181,7 @@ void CubeMap::GL_GetUniform(std::shared_ptr<Shader> shader, std::string uniformN
 
 void CubeMap::GL_BindTexture(unsigned int GL_TextureIndex)
 {
-	if (!loadingFinished) {
-		FinishLoading();
-	}
+	FinishLoading();
 
 	if (GL_TextureIndex <= 31) {
 		glUniform1i(GL_UniformLocation, GL_TextureIndex);
@@ -195,12 +207,17 @@ void CubeMap::CubeMapTexture::LoadThreaded(std::string file)
 }
 
 
-void CubeMap::CubeMapTexture::FinishLoading(int index)
+bool CubeMap::CubeMapTexture::FinishLoading(int index)
 {
-	std::cout << "Waiting for Texture Resource to finish loading: " << filePath << std::endl;
+	std::cout << "Waiting for Texture Resource to finish loading: " << filePath;
 
 	if (loadingThread.joinable()) {
 		loadingThread.join();
+		std::cout << " - success!" << std::endl;
+	}
+	else {
+		std::cout << " - failed!" << std::endl;
+		return false;
 	}
 
 	if (texData) {
@@ -214,6 +231,10 @@ void CubeMap::CubeMapTexture::FinishLoading(int index)
 		stbi_image_free(texData);
 	}
 	else {
+		std::cout << " - failed!" << std::endl;
 		std::cout << "Texture could not be Loaded from: " << filePath << std::endl;
+		return false;
 	}
+
+	return true;
 }

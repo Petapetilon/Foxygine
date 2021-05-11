@@ -9,8 +9,6 @@
 
 MeshRenderer::MeshRenderer(const std::string& objFile)
 {
-	std::cout << "creating MeshRenderer" << std::endl;
-
 	//GL VAO
 	glGenVertexArrays(1, &GL_VertexArrayObject);
 	//GL VBO
@@ -20,7 +18,7 @@ MeshRenderer::MeshRenderer(const std::string& objFile)
 
 
 	SetMesh(std::shared_ptr<Mesh>(new Mesh(objFile)));
-	Graphics::RegisterMeshRenderer(this);
+	//Graphics::RegisterMeshRenderer(this);
 	isActive = true;
 }
 
@@ -28,8 +26,6 @@ MeshRenderer::MeshRenderer(const std::string& objFile)
 
 MeshRenderer::MeshRenderer()
 {
-	std::cout << "creating MeshRenderer" << std::endl;
-
 	//GL VAO
 	glGenVertexArrays(1, &GL_VertexArrayObject);
 	//GL VBO
@@ -37,7 +33,7 @@ MeshRenderer::MeshRenderer()
 	//GL Indices
 	glGenBuffers(1, &GL_IndexBufferObject);
 
-	Graphics::RegisterMeshRenderer(this);
+	//Graphics::RegisterMeshRenderer(this);
 	isActive = true;
 }
 
@@ -131,5 +127,17 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+}
+
+
+void MeshRenderer::OnAttach()
+{
+	Graphics::RegisterMeshRenderer(this);
+}
+
+
+void MeshRenderer::OnDetach()
+{
+	Graphics::UnregeisterMeshRenderer(this);
 }
 

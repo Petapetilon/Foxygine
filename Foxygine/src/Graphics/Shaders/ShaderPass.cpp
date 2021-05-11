@@ -332,3 +332,81 @@ void ShaderPassBool::CopyShaderPassValue(ShaderPass* source)
 		val = ((ShaderPassBool*)source)->val;
 	}
 }
+
+
+
+
+//ShaderPassVec1Array::ShaderPassVec1Array(float* _val, std::string _GL_UniformName, int index)
+//{
+//	val = std::make_shared<float>(*_val);
+//	GL_UniformName = _GL_UniformName;
+//}
+//
+//void ShaderPassVec1Array::SetShaderPass()
+//{
+//	glUniform1f(GL_UniformLocation, *val);
+//}
+//
+//void ShaderPassVec1Array::CreateShaderPass(Shader* shader)
+//{
+//	GL_UniformLocation = glGetUniformLocation(shader->GL_GetShaderProgram(), GL_UniformName.c_str());
+//}
+//
+//void ShaderPassVec1Array::CopyShaderPassValue(ShaderPass* source)
+//{
+//	if (source->GetShaderPassType() == this->GetShaderPassType()) {
+//		val = ((ShaderPassVec1Array*)source)->val;
+//	}
+//}
+//
+//
+//
+//
+//ShaderPassColor::ShaderPassColor(Color* _val, std::string _GL_UniformName)
+//{
+//	val = std::make_shared<Color>(*_val);
+//	GL_UniformName = _GL_UniformName;
+//}
+//
+//void ShaderPassColor::SetShaderPass()
+//{
+//	glUniform4f(GL_UniformLocation, val->r, val->g, val->b, val->a);
+//}
+//
+//void ShaderPassColor::CreateShaderPass(Shader* shader)
+//{
+//	GL_UniformLocation = glGetUniformLocation(shader->GL_GetShaderProgram(), GL_UniformName.c_str());
+//}
+//
+//void ShaderPassColor::CopyShaderPassValue(ShaderPass* source)
+//{
+//	if (source->GetShaderPassType() == this->GetShaderPassType()) {
+//		val = ((ShaderPassColor*)source)->val;
+//	}
+//}
+//
+//
+//
+//
+//ShaderPassBool::ShaderPassBool(bool* _val, std::string _GL_UniformName)
+//{
+//	val = std::make_shared<bool>(*_val);
+//	GL_UniformName = _GL_UniformName;
+//}
+//
+//void ShaderPassBool::SetShaderPass()
+//{
+//	glUniform1i(GL_UniformLocation, *val);
+//}
+//
+//void ShaderPassBool::CreateShaderPass(Shader* shader)
+//{
+//	GL_UniformLocation = glGetUniformLocation(shader->GL_GetShaderProgram(), GL_UniformName.c_str());
+//}
+//
+//void ShaderPassBool::CopyShaderPassValue(ShaderPass* source)
+//{
+//	if (source->GetShaderPassType() == this->GetShaderPassType()) {
+//		val = ((ShaderPassBool*)source)->val;
+//	}
+//}

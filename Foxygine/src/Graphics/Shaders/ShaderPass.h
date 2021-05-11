@@ -29,7 +29,10 @@ protected:
 		Mat3,
 		Mat4,
 		Color,
-		Bool
+		Bool,
+		//ColorArray,
+		//Vec1Array,
+		//Vec4Array,
 	};
 
 	std::string GL_UniformName;
@@ -251,3 +254,55 @@ public:
 	ShaderPassType GetShaderPassType() override { return ShaderPassType::Bool; }
 	std::shared_ptr<bool> GetValueRef() { return val; }
 };
+
+
+
+//class ShaderPassColorArray : public ShaderPass {
+//private:
+//	std::shared_ptr<Color> val;
+//
+//public:
+//	ShaderPassColorArray(Color* _val, std::string _uniformName, int index);
+//	~ShaderPassColorArray() { val.reset(); }
+//
+//	void SetShaderPass() override;
+//	void CreateShaderPass(Shader* shader) override;
+//	void CopyShaderPassValue(ShaderPass* source) override;
+//	ShaderPassType GetShaderPassType() override { return ShaderPassType::ColorArray; }
+//	std::shared_ptr<Color> GetValueRef() { return val; }
+//};
+//
+//
+//
+//class ShaderPassVec4Array : public ShaderPass {
+//private:
+//	std::shared_ptr <Vector4> val;
+//	int index
+//
+//public:
+//	ShaderPassVec4Array(Vector4* _val, std::string _uniformName, int index);
+//	~ShaderPassVec4Array() { val.reset(); }
+//
+//	void SetShaderPass() override;
+//	void CreateShaderPass(Shader* shader) override;
+//	void CopyShaderPassValue(ShaderPass* source) override;
+//	ShaderPassType GetShaderPassType() override { return ShaderPassType::Vec4Array; }
+//	std::shared_ptr<Vector4> GetValueRef() { return val; }
+//};
+//
+//
+//
+//class ShaderPassVec1Array : public ShaderPass {
+//private:
+//	std::shared_ptr<float> val;
+//
+//public:
+//	ShaderPassVec1Array(float* _val, std::string _uniformName, int index);
+//	~ShaderPassVec1Array() { val.reset(); }
+//
+//	void SetShaderPass() override;
+//	void CreateShaderPass(Shader* shader) override;
+//	void CopyShaderPassValue(ShaderPass* source) override;
+//	ShaderPassType GetShaderPassType() override { return ShaderPassType::Vec1Array; }
+//	std::shared_ptr<float> GetValueRef() { return val; }
+//};

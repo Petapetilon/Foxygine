@@ -11,8 +11,8 @@ void Camera::OnPreRender()
 	combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
 
 	mat4 inverted = glm::inverse(*transform->GetGlobalMatrix());
-	direction = Vector4(normalize(glm::vec3(inverted[2])), 1);
-	position = Vector4(transform->Position(), 1);
+	direction = Vector4(transform->Forward() * -1, 0);
+	position = Vector4(transform->Position() * -1, 1);
 }
 
 

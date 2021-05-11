@@ -19,7 +19,8 @@ public:
 	~MeshRenderer();
 
 	void SetMesh(std::shared_ptr<Mesh> _mesh);
-
 	void Draw(std::shared_ptr<Camera> _drawingCamera) override;
+	void OnAttach() override;
+	void OnDetach() override;
 };
 

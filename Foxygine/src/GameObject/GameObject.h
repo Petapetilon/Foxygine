@@ -54,7 +54,6 @@ public:
 			}
 		}
 		
-		std::cout << "Added " << typeid(Comp).name() << " Component" << std::endl;
 		components.push_back(std::make_shared<ComponentNode>(ComponentNode(component, typeid(Comp*).name())));
 		((Component*)component)->gameObject = this;
 		((Component*)component)->transform = transform;

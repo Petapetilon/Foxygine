@@ -19,7 +19,7 @@ class CubeMap : public Texture
 
 	public:
 		void LoadThreaded(std::string);
-		void FinishLoading(int index);
+		bool FinishLoading(int index);
 	};
 
 protected:
@@ -27,11 +27,10 @@ protected:
 	CubeMapTexture* textures;
 	bool loadingFinished;
 
-	void FinishLoading();
-
 public:
-	void LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
-	void LoadCubeMapOptimized(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
+	bool LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
+	bool LoadCubeMap(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
+	bool FinishLoading() override;
 	void SetWrapping(Wrapping) override;
 	void SetFiltering(Filtering) override;
 	void FreeImageData() override;

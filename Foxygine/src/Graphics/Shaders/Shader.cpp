@@ -45,10 +45,9 @@ unsigned int Shader::GL_GetShaderProgram() {
 
 
 void Shader::GL_BindProgram() { 
-	if (Graphics::GL_CurrentlyBoundShaderProgram != GL_ShaderProgram) {
+	if (Graphics::GL_GetCurrentlyBoundShader() == nullptr || Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram() != GL_ShaderProgram) {
 		glUseProgram(GL_ShaderProgram); 
-		Graphics::GL_CurrentlyBoundShaderProgram = GL_ShaderProgram;
-		Graphics::SetLightingData();
+		Graphics::GL_SetCurrentlyBoundShader(this);
 	}
 }
 
@@ -110,8 +109,23 @@ void Shader::LoadShaderResource(std::string shaderFilePath, ShaderType shaderTyp
 		break;
 	}
 
-	std::cout << "Loading shader Resource: " << shaderFilePath << " with GLID: " << shaderID << " for " << name << std::endl;
+	std::cout << "Loading shader Resource: " << shaderFilePath << " for " << name << std::endl;
 	ShaderHandeling::BindShaderToProgram(GL_ShaderProgram, shaderID);
+
+	//Testing for lit shader Property
+	GL_BindProgram();
+	if (glGetUniformLocation(GL_ShaderProgram, "u_DirLightDirection[0]") > -1) {
+		GL_IsLitShader = true;
+	}
+	else {
+		GL_IsLitShader = false;
+	}
+}
+
+
+bool Shader::GetShaderLitType()
+{
+	return GL_IsLitShader;
 }
 
 

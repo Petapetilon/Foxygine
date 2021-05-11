@@ -34,7 +34,6 @@ int main(void)
 {
     std::chrono::steady_clock::time_point engineBegin = std::chrono::steady_clock::now();
 
-    Graphics::GL_CurrentlyBoundShaderProgram = -2;
     Window::GetInstance()->SetupWindow(Vector2I(WWIDTH, WHEIGHT), "Foxygine");
     Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
     Keyboard::SetupKeyboard();
@@ -51,6 +50,7 @@ int main(void)
     glCullFace(GL_BACK);
 
 
+    Graphics::Init();
     foxygine.StartFoxygine();
     GameObjectHandler::InitHandler();
 
@@ -58,6 +58,7 @@ int main(void)
     pauseFuncHandle = Keyboard::RegisterOnAnyKeyCallback(Pause);
 #endif // FOXYGINE_DEBUG
 
+    Graphics::FinishLoadingResources();
     std::chrono::steady_clock::time_point engineEnd = std::chrono::steady_clock::now();
     std::cout << "Time for Engine Start = " << std::chrono::duration_cast<std::chrono::milliseconds>(engineEnd - engineBegin).count() << "[ms]" << std::endl;
 

@@ -5,7 +5,6 @@
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
-//#define STBI_NO_THREAD_LOCALS
 #include "stb_image.h"
 #endif // !STB_IMAGE_IMPLEMENTATION
 
@@ -35,6 +34,7 @@ void Texture2D::GL_RegisterImage()
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else {
+		std::cout << " - failed!" << std::endl;
 		std::cout << "Texture could not be Loaded from: " << filePath << std::endl;
 	}
 }
@@ -57,9 +57,9 @@ Texture2D::~Texture2D()
 }
 
 
-void Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+bool Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
-	std::cout << "Loading Texture Resource: " << filePath << std::endl;
+	std::cout << "Loading Texture Resource: " << _filePath << std::endl;
 	stbi_set_flip_vertically_on_load(true);
 	name = _name;
 	setWrapping = textureWrapping;
@@ -68,21 +68,49 @@ void Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wr
 	glGenTextures(1, &GL_TextureID);
 
 	filePath = _filePath;
-	texData = stbi_load(filePath.c_str(), &texWidth, &texHeight, &colorChannels, 0);
-
-	GL_RegisterImage();
+	loadingThread = std::thread(&Texture2D::LoadImage, this);
+	loadingFinished = false;
+	return FinishLoading();
 }
 
-void Texture2D::LoadTexture2DOptimized(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+
+void Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
-	std::cout << "Loading Texture Resource: " << _filePath << std::endl;
+	filePath = _filePath;
+	if (loadingThread.joinable()) {
+		std::cout << "Wait for Texture Resource to finish loading: " << _filePath << " - aborted" << std::endl;
+		loadingThread.join();
+	}
+
+	std::cout << "Loading Texture Resource in background: " << _filePath << std::endl;
 	stbi_set_flip_vertically_on_load(true);
 	name = _name;
 
 	glGenTextures(1, &GL_TextureID);
-
-	filePath = _filePath;
 	loadingThread = std::thread(&Texture2D::LoadImage, this);
+}
+
+
+bool Texture2D::FinishLoading()
+{
+	if (loadingFinished) return true;
+
+	std::cout << "Waiting for Texture Resource to finish loading: " << filePath;
+	if (loadingThread.joinable()) {
+		loadingThread.join();
+		std::cout << " - success!" << std::endl;
+		GL_RegisterImage();
+	}
+	else {
+		std::cout << " - failed!" << std::endl;
+		return false;
+	}
+
+	if (texData) {
+		stbi_image_free(texData);
+	}
+	loadingFinished = true;
+	return true;
 }
 
 
@@ -166,15 +194,7 @@ void Texture2D::GL_GetUniform(std::shared_ptr<Shader> shader, std::string unifor
 
 void Texture2D::GL_BindTexture(unsigned int GL_TextureIndex)
 {
-	if (loadingThread.joinable()) {
-		std::cout << "Waiting for Texture Resource to finish loading: " << filePath << std::endl;
-		loadingThread.join();
-
-		glBindTexture(GL_TEXTURE_2D, GL_TextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		GL_RegisterImage();
-	}
+	if(!FinishLoading()) return;
 
 	if (GL_TextureIndex <= 31) {
 		glUniform1i(GL_UniformLocation, GL_TextureIndex);

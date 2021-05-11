@@ -31,6 +31,7 @@ protected:
 public:
 	std::string name;
 
+	virtual bool FinishLoading() { return true; }
 	virtual void SetWrapping(Wrapping) {}
 	virtual void SetFiltering(Filtering) {}
 	virtual void FreeImageData() {}

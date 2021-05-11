@@ -58,6 +58,7 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 void GameObjectHandler::InitHandler()
 {
 	currentSystemTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	
 	for (auto go : gameObjects) {
 		go->Start();
 	}

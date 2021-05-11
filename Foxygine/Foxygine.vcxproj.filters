@@ -93,6 +93,15 @@
     <ClCompile Include="src\Graphics\Textures\CubeMap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Lights\DirectionalLight.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Lights\PointLight.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -222,6 +231,18 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Textures\Texture.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\Light.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\DirectionalLight.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\PointLight.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\AmbientLight.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

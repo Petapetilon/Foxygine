@@ -18,6 +18,7 @@
 #include "Graphics/Shaders/ShaderPass.h"
 #include "Graphics/Shaders/ShaderLibrary.h"
 #include "Graphics/Textures/Texture2D.h"
+#include "Graphics/Lights/DirectionalLight.h"
 
 #include "Math/Constants.h"
 #include "Math/Quaternion.h"

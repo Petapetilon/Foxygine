@@ -37,6 +37,9 @@ void main() {
 
 
 	vertexNormal = (u_ObjectOrientation * vec4(l_Normal, 1)).xyz;
+	//vertexNormal = mat3(transpose(inverse(u_ObjectTransform))) * l_Normal;
+	//vertexNormal = l_Normal;
+
 	if(u_NormTexEnabled > 0){
 	vec3 T = normalize(vec3(u_ObjectOrientation * vec4(l_Tangent, 0.0)));
 	vec3 B = normalize(vec3(u_ObjectOrientation * vec4(l_Bitangent, 0.0)));

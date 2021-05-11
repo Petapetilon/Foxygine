@@ -23,6 +23,8 @@ Mesh* Mesh::ImportMesh(const std::string& filePath)
 		positions.push_back(Vector3(verts[i].Position.X, verts[i].Position.Y, verts[i].Position.Z));
 		normals.push_back(Vector3(verts[i].Normal.X, verts[i].Normal.Y, verts[i].Normal.Z));
 		uvs.push_back(Vector2(verts[i].TextureCoordinate.X, verts[i].TextureCoordinate.Y));
+		//std::cout << positions[i].x << ", " << positions[i].y << ", " << positions[i].z << std::endl;
+		//std::cout << normals[i].x << ", " << normals[i].y << ", " << normals[i].z << std::endl;
 	}
 
 	indices = loader.LoadedIndices;

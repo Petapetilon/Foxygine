@@ -127,6 +127,13 @@ void Material::DeleteTextureProperty(std::string propertyName)
 }
 
 
+void Material::FinishLoadingResources()
+{
+	for (auto texProp : textureProps) {
+		texProp->texture->FinishLoading();
+	}
+}
+
 void Material::GL_SetProperties()
 {
 	shader->SetShaderPass(new ShaderPassColor(&mainColor, "u_MaterialProps.color"));

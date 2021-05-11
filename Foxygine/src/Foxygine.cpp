@@ -23,6 +23,8 @@ void Foxygine::StartFoxygine()
     skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_back.png");
     Graphics::SetSkybox(skyboxTextures);
 
+    Shader::CreateBasicLitShader("basicShader");
+
     //Camera
     auto cameraGo = GameObject::CreateGameObject("cameraGO");
     cameraGo->AddComponent<Camera>(new Camera());
@@ -32,39 +34,40 @@ void Foxygine::StartFoxygine()
     auto cam = cameraGo->GetComponent<Camera>();
     cam->SetupCamera(glm::radians(60.f), (float)resolution.x / (float)resolution.y, .001f, 1000.f);
     cameraGo->AddComponent<SimpleCamera>(new SimpleCamera());
+    cameraGo->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, 1, 1, 1.f)));
 
     
         
     
+    //auto standardShader = ShaderLibrary::GetShader("basicShader");
+    //Vector4 direction(1, -2, .5f, 1);
+    //standardShader->SetShaderPass(new ShaderPassVec4(&direction, "u_DirLightDirection[0]"));
+    //Color color(1, .95f, .8f, 1);
+    //standardShader->SetShaderPass(new ShaderPassColor(&color, "u_DirLightColor[0]"));
+    //int numberDirLights = 1;
+    //standardShader->SetShaderPass(new ShaderPassVec1I(&numberDirLights, "u_numberDirLights"));
 
-    Shader::CreateBasicLitShader("shader");
-    auto standardShader = ShaderLibrary::GetShader("shader");
-    Vector4 direction(1, -2, .5f, 1);
-    standardShader->SetShaderPass(new ShaderPassVec4(&direction, "u_DirLightDirection"));
-    Color color(1, .95f, .8f, 1);
-    standardShader->SetShaderPass(new ShaderPassColor(&color, "u_DirLightColor"));
-
-    auto basicMaterial2 = new Material("basicMaterial2", "shader");
+    auto basicMaterial2 = new Material("basicMaterial2", "basicShader");
     basicMaterial2->CreateMaterialProperty("Glossiness", "glossiness", .75);
     basicMaterial2->CreateMaterialProperty("Metallic", "metallic", .75f);
 
-    auto basicMaterial3 = new Material("basicMaterial3", "shader");
+    auto basicMaterial3 = new Material("basicMaterial3", "basicShader");
     basicMaterial3->SetMainColor(Color(1.f, 1.f, 1.f, 1.f));
     basicMaterial3->CreateMaterialProperty("Glossiness", "glossiness", .5f);
     basicMaterial3->CreateMaterialProperty("Metallic", "metallic", 0);
 
 
     auto colorTex = std::shared_ptr<Texture2D>(new Texture2D());
-    colorTex->LoadTexture2DOptimized("res\\textures\\Bricks01_col.jpg", "brickCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    colorTex->LoadTexture2D("res\\textures\\Bricks01_col.jpg", "brickCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
     basicMaterial3->CreateTextureProperty("color", std::shared_ptr<Texture>(colorTex), Material::TextureSlot::BaseColor);
 
     auto colorNrm = std::shared_ptr<Texture2D>(new Texture2D());
-    colorNrm->LoadTexture2DOptimized("res\\textures\\Bricks01_nrm.jpg", "brickNrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    colorNrm->LoadTexture2D("res\\textures\\Bricks01_nrm.jpg", "brickNrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
     basicMaterial3->CreateTextureProperty("normal", std::shared_ptr<Texture>(colorNrm), Material::TextureSlot::NormalMap);
 
-    auto colorSpec = std::shared_ptr<Texture2D>(new Texture2D());
-    colorSpec->LoadTexture2DOptimized("res\\textures\\Bricks01_rgh.jpg", "brickSpec", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    basicMaterial3->CreateTextureProperty("specular", std::shared_ptr<Texture>(colorSpec), Material::TextureSlot::Specular);
+    //auto colorSpec = std::shared_ptr<Texture2D>(new Texture2D());
+    //colorSpec->LoadTexture2D("res\\textures\\Bricks01_rgh.jpg", "brickSpec", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    //basicMaterial3->CreateTextureProperty("specular", std::shared_ptr<Texture>(colorSpec), Material::TextureSlot::Specular);
 
 
 
@@ -73,6 +76,10 @@ void Foxygine::StartFoxygine()
     smoothSphere2->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj"));
     smoothSphere2->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial2));
     smoothSphere2->transform->SetPosition(Vector3(-5, 0, 0));
+
+    auto light = GameObject::CreateGameObject("light");
+    light->transform->Rotate(Vector3(0, 1, 0), 90);
+    light->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, 0, 1, 1.f)));
     
     auto cube = GameObject::CreateGameObject("cube");
     cube->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\cube.obj"));
@@ -109,7 +116,7 @@ void Foxygine::UpdateFoxygine(float deltaTime)
 
     
     GameObjectHandler::FindGameObject("smoothSphere")->GetComponent<MeshRenderer>()->GetMaterial()->SetMainColor(Color(r, g, b, 1));
-    GameObjectHandler::FindGameObject("smoothSphere")->transform->Rotate(Vector3(0, 1, 0), glm::degrees(deltaTime));
+    GameObjectHandler::FindGameObject("light")->transform->Rotate(Vector3(0, 1, 0), glm::degrees(deltaTime));
     GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
 }
 
