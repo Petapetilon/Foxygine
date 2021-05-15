@@ -46,7 +46,7 @@ unsigned int Shader::GL_GetShaderProgram() {
 
 void Shader::GL_BindProgram() { 
 	if (Graphics::GL_GetCurrentlyBoundShader() == nullptr || Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram() != GL_ShaderProgram) {
-		glUseProgram(GL_ShaderProgram); 
+		GL_Call(glUseProgram(GL_ShaderProgram)); 
 		Graphics::GL_SetCurrentlyBoundShader(this);
 	}
 }
@@ -109,17 +109,18 @@ void Shader::LoadShaderResource(std::string shaderFilePath, ShaderType shaderTyp
 		break;
 	}
 
-	std::cout << "Loading shader Resource: " << shaderFilePath << " for " << name << std::endl;
+	std::cout << "Loading Shader Resource: " << shaderFilePath << " for " << name << std::endl;
 	ShaderHandeling::BindShaderToProgram(GL_ShaderProgram, shaderID);
 
 	//Testing for lit shader Property
-	GL_BindProgram();
-	if (glGetUniformLocation(GL_ShaderProgram, "u_DirLightDirection[0]") > -1) {
-		GL_IsLitShader = true;
-	}
-	else {
-		GL_IsLitShader = false;
-	}
+	//GL_BindProgram();
+	//if (glGetUniformLocation(GL_ShaderProgram, "u_LightColor[0]") > -1) {
+	//	GL_IsLitShader = true;
+	//}
+	//else {
+	//	GL_IsLitShader = false;
+	//}
+
 }
 
 
@@ -129,12 +130,23 @@ bool Shader::GetShaderLitType()
 }
 
 
+std::shared_ptr<Shader> Shader::CreateEmptyShader(std::string _name)
+{
+	ShaderLibrary::RegisterShader(new Shader(_name));
+	auto shader = ShaderLibrary::GetShader(_name);
+	shader->GL_IsLitShader = false;
+	return std::shared_ptr<Shader>(shader);
+}
+
 std::shared_ptr<Shader> Shader::CreateBasicLitShader(std::string _name)
 {
 	ShaderLibrary::RegisterShader(new Shader(_name));
 	auto shader = ShaderLibrary::GetShader(_name);
 	shader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", ShaderType::VertexShader);
+	//shader->LoadShaderResource("res\\VertexShader\\ShadowDepthMapVert.vert", ShaderType::VertexShader);
 	shader->LoadShaderResource("res\\FragmentShader\\BasicFrag.frag", ShaderType::FragmentShader);
+	//shader->LoadShaderResource("res\\FragmentShader\\ShadowDepthMapFrag.frag", ShaderType::FragmentShader);
+	shader->GL_IsLitShader = true;
 	return std::shared_ptr<Shader>(shader);
 }
 
@@ -166,13 +178,14 @@ std::shared_ptr<Shader> Shader::CreateSkyboxShader(std::string _name)
 	auto shader = ShaderLibrary::GetShader(_name);
 	shader->LoadShaderResource("res\\VertexShader\\SkyBoxVert.vert", ShaderType::VertexShader);
 	shader->LoadShaderResource("res\\FragmentShader\\SkyBoxFrag.frag", ShaderType::FragmentShader);
+	shader->GL_IsLitShader = false;
 	return std::shared_ptr<Shader>(shader);
 }
 
 
 void Shader::GL_UnbindPrograms()
 {
-	glUseProgram(-1);
+	GL_Call(glUseProgram(0));
 }
 
 

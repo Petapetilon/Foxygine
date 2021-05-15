@@ -8,11 +8,14 @@
 //Gathers Data of current frame state from the transform
 void Camera::OnPreRender()
 {
+	//glm::mat4 lightProj = glm::ortho(-10.f, 10.f, -10.f, 10.f, 1.f, 20.f);
+	//combinedMatrix = lightProj * *transform->GetGlobalMatrix();
 	combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
 
-	mat4 inverted = glm::inverse(*transform->GetGlobalMatrix());
-	direction = Vector4(transform->Forward() * -1, 0);
+	direction = Vector4(transform->Forward() * 1, 0);
 	position = Vector4(transform->Position() * -1, 1);
+
+	//std::cout << direction.x << ", " << direction.y << ", " << direction.z << ", " << std::endl;
 }
 
 
@@ -33,7 +36,7 @@ void Camera::ResetCamera(float _screenRatio)
 
 void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 {
-	combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
+	//combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
 	shader->SetShaderPass(new ShaderPassMat4(&combinedMatrix, "u_CameraWorldToScreen"));
 	shader->SetShaderPass(new ShaderPassVec4(&position, "u_CameraPosition"));
 	shader->SetShaderPass(new ShaderPassVec4(&direction, "u_CameraDirection"));

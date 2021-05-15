@@ -18,7 +18,7 @@ ShaderPassVec1::ShaderPassVec1(float* _val, std::string _GL_UniformName)
 
 void ShaderPassVec1::SetShaderPass()
 {
-	glUniform1f(GL_UniformLocation, *val);
+	GL_Call(glUniform1f(GL_UniformLocation, *val));
 }
 
 void ShaderPassVec1::CreateShaderPass(Shader* shader) 
@@ -45,7 +45,7 @@ ShaderPassMat4::ShaderPassMat4(glm::mat4* _val, std::string _GL_UniformName)
 
 void ShaderPassMat4::SetShaderPass()
 {
-	glUniformMatrix4fv(GL_UniformLocation, 1, GL_FALSE, &((*val)[0][0]));
+	GL_Call(glUniformMatrix4fv(GL_UniformLocation, 1, GL_FALSE, &((*val)[0][0])));
 	//std::cout << "Setting Matrix: \n" << (*val)[0][0] << "	" << (*val)[1][0] << "	" << (*val)[2][0] << "	" << (*val)[3][0] << std::endl
 	//	<< (*val)[0][1] << "	" << (*val)[1][1] << "	" << (*val)[2][1] << "	" <<(*val)[3][1] << std::endl
 	//	<< (*val)[0][2] << "	" << (*val)[1][2] << "	" << (*val)[2][2] << "	" <<(*val)[3][2] << std::endl
@@ -77,7 +77,7 @@ ShaderPassMat3::ShaderPassMat3(glm::mat3* _val, std::string _GL_UniformName)
 
 void ShaderPassMat3::SetShaderPass()
 {
-	glUniformMatrix3fv(GL_UniformLocation, 1, GL_FALSE, &((*val)[0][0]));
+	GL_Call(glUniformMatrix3fv(GL_UniformLocation, 1, GL_FALSE, &((*val)[0][0])));
 	//std::cout << "Setting Matrix: \n" << (*val)[0][0] << "	" << (*val)[1][0] << "	" << (*val)[2][0] << "	" << (*val)[3][0] << std::endl
 	//	<< (*val)[0][1] << "	" << (*val)[1][1] << "	" << (*val)[2][1] << "	" <<(*val)[3][1] << std::endl
 	//	<< (*val)[0][2] << "	" << (*val)[1][2] << "	" << (*val)[2][2] << "	" <<(*val)[3][2] << std::endl
@@ -109,7 +109,7 @@ ShaderPassVec4I::ShaderPassVec4I(Vector4I* _val, std::string _GL_UniformName)
 
 void ShaderPassVec4I::SetShaderPass()
 {
-	glUniform4i(GL_UniformLocation, val->x, val->y, val->z, val->w);
+	GL_Call(glUniform4i(GL_UniformLocation, val->x, val->y, val->z, val->w));
 }
 
 void ShaderPassVec4I::CreateShaderPass(Shader* shader)
@@ -135,7 +135,7 @@ ShaderPassVec3I::ShaderPassVec3I(Vector3I* _val, std::string _GL_UniformName)
 
 void ShaderPassVec3I::SetShaderPass()
 {
-	glUniform3i(GL_UniformLocation, val->x, val->y, val->z);
+	GL_Call(glUniform3i(GL_UniformLocation, val->x, val->y, val->z));
 }
 
 void ShaderPassVec3I::CreateShaderPass(Shader* shader)
@@ -161,7 +161,7 @@ ShaderPassVec2I::ShaderPassVec2I(Vector2I* _val, std::string _GL_UniformName)
 
 void ShaderPassVec2I::SetShaderPass()
 {
-	glUniform2i(GL_UniformLocation, val->x, val->y);
+	GL_Call(glUniform2i(GL_UniformLocation, val->x, val->y));
 
 }
 
@@ -188,7 +188,7 @@ ShaderPassVec1I::ShaderPassVec1I(int* _val, std::string _GL_UniformName)
 
 void ShaderPassVec1I::SetShaderPass()
 {
-	glUniform1i(GL_UniformLocation, *val);
+	GL_Call(glUniform1i(GL_UniformLocation, *val));
 }
 
 void ShaderPassVec1I::CreateShaderPass(Shader* shader)
@@ -214,7 +214,7 @@ ShaderPassVec4::ShaderPassVec4(Vector4* _val, std::string _GL_UniformName)
 
 void ShaderPassVec4::SetShaderPass()
 {
-	glUniform4f(GL_UniformLocation, val->x, val->y, val->z, val->w);
+	GL_Call(glUniform4f(GL_UniformLocation, val->x, val->y, val->z, val->w));
 }
 
 void ShaderPassVec4::CreateShaderPass(Shader* shader)
@@ -240,7 +240,7 @@ ShaderPassVec3::ShaderPassVec3(Vector3* _val, std::string _GL_UniformName)
 
 void ShaderPassVec3::SetShaderPass()
 {
-	glUniform3f(GL_UniformLocation, val->x, val->y, val->z);
+	GL_Call(glUniform3f(GL_UniformLocation, val->x, val->y, val->z));
 }
 
 void ShaderPassVec3::CreateShaderPass(Shader* shader)
@@ -266,7 +266,7 @@ ShaderPassVec2::ShaderPassVec2(Vector2* _val, std::string _GL_UniformName)
 
 void ShaderPassVec2::SetShaderPass()
 {
-	glUniform2f(GL_UniformLocation, val->x, val->y);
+	GL_Call(glUniform2f(GL_UniformLocation, val->x, val->y));
 }
 
 void ShaderPassVec2::CreateShaderPass(Shader* shader)
@@ -292,7 +292,7 @@ ShaderPassColor::ShaderPassColor(Color* _val, std::string _GL_UniformName)
 
 void ShaderPassColor::SetShaderPass()
 {
-	glUniform4f(GL_UniformLocation, val->r, val->g, val->b, val->a);
+	GL_Call(glUniform4f(GL_UniformLocation, val->r, val->g, val->b, val->a));
 }
 
 void ShaderPassColor::CreateShaderPass(Shader* shader)
@@ -318,7 +318,7 @@ ShaderPassBool::ShaderPassBool(bool* _val, std::string _GL_UniformName)
 
 void ShaderPassBool::SetShaderPass()
 {
-	glUniform1i(GL_UniformLocation, *val);
+	GL_Call(glUniform1i(GL_UniformLocation, *val));
 }
 
 void ShaderPassBool::CreateShaderPass(Shader* shader)
@@ -344,7 +344,7 @@ void ShaderPassBool::CopyShaderPassValue(ShaderPass* source)
 //
 //void ShaderPassVec1Array::SetShaderPass()
 //{
-//	glUniform1f(GL_UniformLocation, *val);
+//	GL_Call(glUniform1f(GL_UniformLocation, *val);
 //}
 //
 //void ShaderPassVec1Array::CreateShaderPass(Shader* shader)
@@ -370,7 +370,7 @@ void ShaderPassBool::CopyShaderPassValue(ShaderPass* source)
 //
 //void ShaderPassColor::SetShaderPass()
 //{
-//	glUniform4f(GL_UniformLocation, val->r, val->g, val->b, val->a);
+//	GL_Call(glUniform4f(GL_UniformLocation, val->r, val->g, val->b, val->a);
 //}
 //
 //void ShaderPassColor::CreateShaderPass(Shader* shader)
@@ -396,7 +396,7 @@ void ShaderPassBool::CopyShaderPassValue(ShaderPass* source)
 //
 //void ShaderPassBool::SetShaderPass()
 //{
-//	glUniform1i(GL_UniformLocation, *val);
+//	GL_Call(glUniform1i(GL_UniformLocation, *val);
 //}
 //
 //void ShaderPassBool::CreateShaderPass(Shader* shader)

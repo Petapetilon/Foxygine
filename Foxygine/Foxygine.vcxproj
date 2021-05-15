@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\Lights\ShadowMap.cpp" />
     <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp" />
     <ClCompile Include="src\Graphics\Lights\PointLight.cpp" />
     <ClCompile Include="src\Graphics\Lights\DirectionalLight.cpp" />
@@ -184,12 +185,16 @@
     <None Include="res\BasicFragment.shader" />
     <None Include="res\BasicVertex.shader" />
     <None Include="res\FragmentShader\BasicFrag.frag" />
+    <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
+    <None Include="res\FragmentShader\ShadowTest.frag" />
     <None Include="res\FragmentShader\SkyBoxFrag.frag" />
     <None Include="res\GeoShader\BasicGeometry.geom" />
     <None Include="res\VertexShader\BasicVert.vert" />
+    <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
     <None Include="res\VertexShader\SkyBoxVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\Lights\ShadowMap.h" />
     <ClInclude Include="src\Graphics\Lights\AmbientLight.h" />
     <ClInclude Include="src\Graphics\Lights\PointLight.h" />
     <ClInclude Include="src\Graphics\Lights\DirectionalLight.h" />

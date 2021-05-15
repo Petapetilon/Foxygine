@@ -31,6 +31,7 @@ private:
 	std::list<std::shared_ptr<TextureProperty>> textureProps;
 	std::shared_ptr<Shader> shader;
 	Color mainColor;
+	float normalMappingStrength;
 
 	std::string textureSlotUniforms[17] = {
 		"u_ColorTexture",
@@ -49,7 +50,7 @@ private:
 		"Custom_9",
 		"Custom_10",
 		"Custom_11",
-		"u_Skybox"
+		"u_Skybox",
 	};
 
 public:
@@ -81,6 +82,7 @@ public:
 
 	void SetShaderPass(ShaderPass*);
 	void SetMainColor(Color);
+	void SetNormalMappingStrength(float);
 
 	void CreateMaterialProperty(std::string propertyName, std::string shaderPassName, float propertyValue);
 	void SetMaterialProperty(std::string propertyName, float value);

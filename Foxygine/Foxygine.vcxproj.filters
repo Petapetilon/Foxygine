@@ -102,6 +102,9 @@
     <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Lights\ShadowMap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -111,6 +114,9 @@
     <None Include="res\VertexShader\BasicVert.vert" />
     <None Include="res\FragmentShader\SkyBoxFrag.frag" />
     <None Include="res\VertexShader\SkyBoxVert.vert" />
+    <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
+    <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
+    <None Include="res\FragmentShader\ShadowTest.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">
@@ -243,6 +249,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Lights\AmbientLight.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\ShadowMap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

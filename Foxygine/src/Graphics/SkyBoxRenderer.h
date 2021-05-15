@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "MeshRenderer.h"
+#include <vector>
 
 
 class SkyboxRenderer : public MeshRenderer

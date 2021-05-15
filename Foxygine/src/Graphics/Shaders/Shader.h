@@ -36,6 +36,7 @@ public:
 	void LoadShaderResource(std::string shaderSourceFilePath, ShaderType shaderType);
 	bool GetShaderLitType();
 
+	static std::shared_ptr<Shader> CreateEmptyShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicUnlitShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitUIShader(std::string _name);

@@ -5,13 +5,18 @@
 class Light {
 protected:
 	Color color;
+	float intensity;
 
 public:
 	enum class LightType {
-		None,
-		Directional,
-		Point
+		Directional = 0,
+		Point = 1,
+		Ambient_Local = 2,
+		Ambient_Global = 3,
+		Ambient_Directional = 4
 	};
 
-	virtual LightType GL_SetLightingPasses(int index) { return LightType::None; }
+	virtual void GL_SetLightingPasses(int index) {}
+	virtual void GL_SetShadowPasses() {}
+	virtual bool GetShadowCapabilities() { return false; }
 };

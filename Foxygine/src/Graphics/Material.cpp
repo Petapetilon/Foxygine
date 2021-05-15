@@ -22,6 +22,7 @@ Material::Material(std::string materialName, std::string _shaderName)
 	mainColor.r = 1;
 	mainColor.g = 1;
 	mainColor.b = 1;
+	normalMappingStrength = 1;
 }
 
 
@@ -37,6 +38,11 @@ void Material::SetMainColor(Color color)
 	mainColor.r = color.r;
 	mainColor.g = color.g;
 	mainColor.b = color.b;
+}
+
+void Material::SetNormalMappingStrength(float strength)
+{
+	normalMappingStrength = strength;
 }
 
 
@@ -142,11 +148,11 @@ void Material::GL_SetProperties()
 		shader->SetShaderPass(new ShaderPassVec1(&prop->propertyValue, "u_MaterialProps." + prop->shaderPassName));
 	}
 
-	int ColEnable = false;
-	int NormEnable = false;
-	int DispEnable = false;
-	int SpecEnable = false;
-	int MetEnable = false;
+	int ColEnable = 0;
+	float NormEnable = 0;
+	int DispEnable = 0;
+	int SpecEnable = 0;
+	int MetEnable = 0;
 
 
 	for (auto prop : textureProps) {
@@ -154,23 +160,23 @@ void Material::GL_SetProperties()
 		switch (prop->textureSlot)
 		{
 		case TextureSlot::BaseColor:
-			ColEnable = true;
+			ColEnable = 1;
 			break;
 			
 		case TextureSlot::NormalMap:
-			NormEnable = true;
+			NormEnable = normalMappingStrength;
 			break;
 			
 		case TextureSlot::DisplacementMap:
-			DispEnable = true;
+			DispEnable = 1;
 			break;
 			
 		case TextureSlot::Specular:
-			SpecEnable = true;
+			SpecEnable = 1;
 			break;
 			
 		case TextureSlot::Metallic:
-			MetEnable = true;
+			MetEnable = 1;
 			break;
 
 		default:
@@ -179,7 +185,7 @@ void Material::GL_SetProperties()
 	}
 
 	shader->SetShaderPass(new ShaderPassVec1I(&ColEnable, "u_ColTexEnabled"));
-	shader->SetShaderPass(new ShaderPassVec1I(&NormEnable, "u_NormTexEnabled"));
+	shader->SetShaderPass(new ShaderPassVec1(&NormEnable, "u_NormTexEnabled"));
 	shader->SetShaderPass(new ShaderPassVec1I(&DispEnable, "u_DispTexEnabled"));
 	shader->SetShaderPass(new ShaderPassVec1I(&SpecEnable, "u_SpecTexEnabled"));
 	shader->SetShaderPass(new ShaderPassVec1I(&MetEnable, "u_MetTexEnabled"));

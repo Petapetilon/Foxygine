@@ -104,6 +104,12 @@ void Transform::Translate(float _x, float _y, float _z)
 	position = position + trans;
 }
 
+void Transform::Scale(Vector3 _scale)
+{
+	scale = _scale;
+	globalTransformation = glm::scale(globalTransformation, (vec3)scale);
+}
+
 
 glm::mat4 Transform::GetOrientationMatrix()
 {

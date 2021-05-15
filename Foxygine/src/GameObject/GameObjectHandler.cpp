@@ -36,8 +36,7 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 
 	//Frame Update
 	InvokeOnPreRender();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Graphics::DrawRenderer();
+	Graphics::RenderFrame();
 	InvokeOnPostRender();
 	Keyboard::JoinInputThreads();
 	Mouse::JoinInputThreads();

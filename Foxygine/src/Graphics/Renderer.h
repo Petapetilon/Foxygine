@@ -1,9 +1,12 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "Camera.h"
-#include "SerializedMesh.h"
-#include "Material.h"
+
+
+struct SerializedMesh;
+class Material;
+class Shader;
+class Camera;
 
 
 class Renderer

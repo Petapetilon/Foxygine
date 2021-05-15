@@ -34,6 +34,7 @@ public:
 	void SetPosition(float, float, float);
 	void Translate(Vector3);
 	void Translate(float, float, float);
+	void Scale(Vector3);
 
 	Vector3 Forward();
 	Vector3 Right();

@@ -1,6 +1,7 @@
 #include "Texture2D.h"
 #include "../Shaders/Shader.h"
 #include <iostream>
+#include "../Lights/ShadowMap.h"
 
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -31,7 +32,7 @@ void Texture2D::GL_RegisterImage()
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
 		}
 	
-		glGenerateMipmap(GL_TEXTURE_2D);
+		GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
 	}
 	else {
 		std::cout << " - failed!" << std::endl;
@@ -98,17 +99,24 @@ bool Texture2D::FinishLoading()
 	std::cout << "Waiting for Texture Resource to finish loading: " << filePath;
 	if (loadingThread.joinable()) {
 		loadingThread.join();
-		std::cout << " - success!" << std::endl;
-		GL_RegisterImage();
 	}
 	else {
 		std::cout << " - failed!" << std::endl;
+		loadingFinished = true;
 		return false;
 	}
 
 	if (texData) {
+		GL_RegisterImage();
+		std::cout << " - success!" << std::endl;
 		stbi_image_free(texData);
 	}
+	else {
+		std::cout << " - failed!" << std::endl;
+		loadingFinished = true;
+		return false;
+	}
+
 	loadingFinished = true;
 	return true;
 }
@@ -197,9 +205,10 @@ void Texture2D::GL_BindTexture(unsigned int GL_TextureIndex)
 	if(!FinishLoading()) return;
 
 	if (GL_TextureIndex <= 31) {
-		glUniform1i(GL_UniformLocation, GL_TextureIndex);
-		glActiveTexture(GL_TEXTURE0 + GL_TextureIndex);
+		//glUniform1i(GL_UniformLocation, GL_TextureIndex);
+		GL_Call(glActiveTexture(GL_TEXTURE0 + GL_TextureIndex));
 		glBindTexture(GL_TEXTURE_2D, GL_TextureID);
+		//glBindTexture(GL_TEXTURE_2D, ShadowMap::GL_ShadowDepthMap);
 	}
 	else {
 		std::cout << "OpenGL Texture Index out of Bounds:" << GL_TextureIndex << std::endl;

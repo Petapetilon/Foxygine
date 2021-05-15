@@ -4,6 +4,8 @@
 #include <memory>
 #include <list>
 #include <iostream>
+#include <thread>
+//#include "SkyBoxRenderer.h"
 
 
 class MeshRenderer;
@@ -22,15 +24,23 @@ private:
 	static std::list<MeshRenderer*> meshRenderers;
 	static std::list<Light*> lights;
 
-	static int numberOfDirLights;
-	static int numberOfPointLights;
+
+	static void RenderShadowPrePassForwarded();
+	static void RenderUnlitPassForwarded();
+	static void RenderUIPassForwarded();
+
+	//static void RenderShadowPrePassDeffered();
+	//static void RenderUnlitPassDeffered();
+	//static void RenderLitPassDeffered();
+	//static void RenderUIPassDeffered();
 
 public:
+	static void RenderLitPassForwarded();
 	static std::shared_ptr<Camera> camera;
 	static long renderedFrames;
 
 	static void Init();
-	static void DrawRenderer();
+	static void RenderFrame();
 	static void RegisterMeshRenderer(MeshRenderer*);
 	static void UnregeisterMeshRenderer(MeshRenderer*);
 	static void RegisterLight(Light*);
@@ -40,5 +50,6 @@ public:
 	static void FinishLoadingResources();
 	static Shader* GL_GetCurrentlyBoundShader();
 	static void GL_SetCurrentlyBoundShader(Shader* shader);
+	static void RenderShadowPass(Light* light);
 };
 

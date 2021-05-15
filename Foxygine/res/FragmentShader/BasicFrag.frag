@@ -7,13 +7,13 @@ struct MaterialProps {
 	float metallic;
 };
 
-
 out vec4 FragColor;
 
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 vertexUV;
+in vec4 lightSpaceFragPos;
 in mat3 TBN;
 
 
@@ -31,54 +31,93 @@ layout(binding = 1) uniform sampler2D u_NormalMap;
 layout(binding = 2) uniform sampler2D u_DisplacementMap;
 layout(binding = 3) uniform sampler2D u_SpecularMap;
 layout(binding = 4) uniform sampler2D u_MetallicMap;
+layout(binding = 8) uniform sampler2D u_ShadowDepthMap;
 uniform int u_ColTexEnabled;
-uniform int u_NormTexEnabled;
+uniform float u_NormTexEnabled;
 uniform int u_DispTexEnabled;
 uniform int u_SpecTexEnabled;
 uniform int u_MetTexEnabled;
 
 uniform MaterialProps u_MaterialProps;
 
-const int MAX_DIR_LIGHTS = 128;
-uniform int u_NumberDirLights;
-uniform vec3 u_DirLightDirection[MAX_DIR_LIGHTS];
-uniform vec4 u_DirLightColor[MAX_DIR_LIGHTS];
+//const int MAX_DIR_LIGHTS = 128;
+//uniform int u_NumberDirLights;
+//uniform vec3 u_LightDirection[MAX_DIR_LIGHTS];
+//uniform vec4 u_LightColor[MAX_DIR_LIGHTS];
 
-const int MAX_POINT_LIGHTS = 2048;
+const int MAX_POINT_LIGHTS = 128;
 uniform int u_NumberPointLights;
 uniform vec3 u_PointLightPosition[MAX_POINT_LIGHTS];
 uniform vec4 u_PointLightColor[MAX_POINT_LIGHTS];
 uniform float u_PointLightIntensity[MAX_POINT_LIGHTS];
 uniform int u_PointLightFalloffType[MAX_POINT_LIGHTS];
 
+const int MAX_LIGHTS = 128;
+uniform int u_NumberLights;
+//uniform int u_LightType[MAX_LIGHTS];
+//uniform vec3 u_LightPosition[MAX_LIGHTS];
+uniform vec3 u_LightDirection[MAX_LIGHTS];
+uniform vec4 u_LightColor[MAX_LIGHTS];
+//uniform float u_LightIntensity[MAX_LIGHTS];
+
+
 uniform vec4 u_AmbientLight;
 
 
 
+float ShadowCalculation(){
+    // perform perspective divide
+    vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(u_ShadowDepthMap, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+	//if(closestDepth == .0)
+		//return 1;
 
+	//float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+	float bias = .01;
+    //return currentDepth - bias < closestDepth  ? 1.0 : 0.1;
+	float shadow;
+	
+	vec2 texelSize = 1.0 / textureSize(u_ShadowDepthMap, 0);
+	for(int x = -1; x <= 1; ++x)
+	{
+		for(int y = -1; y <= 1; ++y)
+		{
+		    float pcfDepth = texture(u_ShadowDepthMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+		    shadow += currentDepth - bias < pcfDepth ? 1.0 : 0.1;        
+		}    
+	}
+	
+	return shadow /= 9.0;
+} 
 
 
 vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragmentColor, float specularMod){
-	vec3 lightDir = normalize(-u_DirLightDirection[index].xyz);
+	vec3 lightDir = normalize(u_LightDirection[index].xyz);
     // diffuse shading
     float diffuseFalloff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
     float specularFalloff = pow(max(dot(-viewDir, reflectDir), 0.0), u_MaterialProps.glossiness * 50);
     // combine results
-    vec3 diffuseColor  = u_DirLightColor[index].xyz * diffuseFalloff * fragmentColor;
-    vec3 specularColor = u_DirLightColor[index].xyz * specularFalloff * diffuseFalloff * specularMod;
+    vec3 diffuseColor  = u_LightColor[index].xyz * diffuseFalloff * fragmentColor;
+    vec3 specularColor = u_LightColor[index].xyz * specularFalloff * diffuseFalloff * specularMod;
     return (diffuseColor + specularColor);
 }
 
 
 vec3 CalculatePointColor(int index, vec3 normal, vec3 viewDir, vec3 fragmentColor, float specularMod){
-	vec3 lightDir = normalize(-u_DirLightDirection[index].xyz);
+	vec3 lightDir = normalize(vertexPosition - u_LightDirection[index].xyz);
     // diffuse shading
     float diffuseFalloff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float specularFalloff = pow(max(dot(-viewDir, reflectDir), 0.0), u_MaterialProps.glossiness * 50);
+    float specularFalloff = pow(max(dot(viewDir, reflectDir), 0.0), u_MaterialProps.glossiness * 50);
 
 
 	//quadratic
@@ -109,59 +148,26 @@ vec3 CalculatePointColor(int index, vec3 normal, vec3 viewDir, vec3 fragmentColo
 
 
 void main() {
-//Normal Map with fallback
-	vec3 mappedVertexNormal;
-	if(u_NormTexEnabled > 0){
-		vec3 normalMapPoint = texture2D(u_NormalMap, vertexUV).rgb;
-		mappedVertexNormal = normalize(TBN * normalize(normalMapPoint * 2.0 - 1.0)); 
-	}
-	else
-		mappedVertexNormal = normalize(vertexNormal);
+	//Normal Map
+	vec3 mappedVertexNormal = (TBN * normalize(texture2D(u_NormalMap, vertexUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
+	mappedVertexNormal += vertexNormal * (1 - u_NormTexEnabled);
+	mappedVertexNormal = normalize(mappedVertexNormal);
+
 
 	//Color Map wih fallback
-	vec3 color = u_MaterialProps.color.xyz;
-	if(u_ColTexEnabled > 0){
-		color = color * texture2D(u_ColorTexture, vertexUV).xyz;
-	}
+	vec3 color = texture2D(u_ColorTexture, vertexUV).xyz * float(u_ColTexEnabled) + u_MaterialProps.color.xyz * float(1 - u_ColTexEnabled);
 
-	//Specular Map with fallback
 	float specular = 1;
-	if(u_SpecTexEnabled > 0){
-		specular = texture2D(u_SpecularMap, vertexUV).x;
-	}
+
 
 	vec3 fragToCam = vertexPosition.xyz - u_CameraPosition.xyz;	
 	vec3 viewDir = normalize(fragToCam);
 
 	vec3 composedColor = color * u_AmbientLight.xyz;
-	for(int i = 0; i < u_NumberDirLights; i++){
-		composedColor += CalculateDirectionalColor(i, mappedVertexNormal, viewDir, color, specular);
+	for(int i = 0; i < u_NumberLights; i++){
+		composedColor += CalculateDirectionalColor(i, mappedVertexNormal, viewDir, color, specular) * ShadowCalculation();
 	}
 
-	//for(int i = 0; i < u_numberPointLights; i++){
-	//	composedColor += CalculatePointColor(i, mappedVertexNormal, viewDir, color, specular);
-	//}
 
 	FragColor = vec4(composedColor, 1);
-	//
-	//
-	////Diffuse part
-	//float diffuseIntensity =  clamp(0, max(0, dot(mappedVertexNormal, -lightDirection)), 1);
-	//
-	////Highlight cheecky pbr cheat
-	//vec3 viewReflect = reflect(viewDir, mappedVertexNormal);
-	//float specularFalloff = clamp(0, pow(dot(viewReflect, -lightDirection), u_MaterialProps.glossiness * 50), 1);
-	//
-	//float metallicFalloff = (clamp(-1, pow(dot(viewReflect, -viewDir), u_MaterialProps.metallic * 50), 1) + 1) * .5;
-	//
-	//
-	//
-	//
-	////Composite
-	//vec3  light = ambientLight
-	//+ directionalLight.xyz * diffuseIntensity * (1 - u_MaterialProps.glossiness * u_MaterialProps.glossiness)//Phong pbr cheat; darker for high gloss and metallic
-	//+ vec3(1, 1, 1) * specularFalloff * u_MaterialProps.glossiness;										//Specular pbr cheat; highlight scales with glossiness 
-	//- vec3(1, 1, 1) * metallicFalloff * u_MaterialProps.metallic;										//Metallic pbr cheat; edges get darker 
-
-	//FragColor = vec4(light * color, 1); 
 }
