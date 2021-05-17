@@ -1,6 +1,5 @@
 #include "Material.h"
 #include "Shaders/ShaderLibrary.h"
-#include "Shaders/ShaderPass.h"
 #include "Camera.h"
 #include "Shaders/Shader.h"
 #include "Textures/Texture2D.h"
@@ -23,12 +22,6 @@ Material::Material(std::string materialName, std::string _shaderName)
 	mainColor.g = 1;
 	mainColor.b = 1;
 	normalMappingStrength = 1;
-}
-
-
-void Material::SetShaderPass(ShaderPass* shaderPass)
-{
-	shader->SetShaderPass(shaderPass);
 }
 
 
@@ -142,10 +135,12 @@ void Material::FinishLoadingResources()
 
 void Material::GL_SetProperties()
 {
-	shader->SetShaderPass(new ShaderPassColor(&mainColor, "u_MaterialProps.color"));
+	//shader->SetShaderPass(new ShaderPassColor(&mainColor, "u_MaterialProps.color"));
+	GL_Call(glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MaterialProps.color"), mainColor.r, mainColor.g, mainColor.b, mainColor.a));
 
 	for (auto prop : materialProps) {
-		shader->SetShaderPass(new ShaderPassVec1(&prop->propertyValue, "u_MaterialProps." + prop->shaderPassName));
+		//shader->SetShaderPass(new ShaderPassVec1(&prop->propertyValue, "u_MaterialProps." + prop->shaderPassName));
+		GL_Call(glUniform1f(glGetUniformLocation(shader->GL_GetShaderProgram(), ("u_MaterialProps." + prop->shaderPassName).c_str()), prop->propertyValue));
 	}
 
 	int ColEnable = 0;
@@ -184,9 +179,25 @@ void Material::GL_SetProperties()
 		}
 	}
 
-	shader->SetShaderPass(new ShaderPassVec1I(&ColEnable, "u_ColTexEnabled"));
-	shader->SetShaderPass(new ShaderPassVec1(&NormEnable, "u_NormTexEnabled"));
-	shader->SetShaderPass(new ShaderPassVec1I(&DispEnable, "u_DispTexEnabled"));
-	shader->SetShaderPass(new ShaderPassVec1I(&SpecEnable, "u_SpecTexEnabled"));
-	shader->SetShaderPass(new ShaderPassVec1I(&MetEnable, "u_MetTexEnabled"));
+	//shader->SetShaderPass(new ShaderPassVec1I(&ColEnable, "u_ColTexEnabled"));
+	//shader->SetShaderPass(new ShaderPassVec1(&NormEnable, "u_NormTexEnabled"));
+	//shader->SetShaderPass(new ShaderPassVec1I(&DispEnable, "u_DispTexEnabled"));
+	//shader->SetShaderPass(new ShaderPassVec1I(&SpecEnable, "u_SpecTexEnabled"));
+	//shader->SetShaderPass(new ShaderPassVec1I(&MetEnable, "u_MetTexEnabled"));
+	//shader->SetValueVec1I("u_ColTexEnabled", ColEnable);
+	//shader->SetValueVec1("u_NormTexEnabled", NormEnable);
+	//shader->SetValueVec1I("u_DispTexEnabled", DispEnable);
+	//shader->SetValueVec1I("u_SpecTexEnabled", SpecEnable);
+	//shader->SetValueVec1I("u_MetTexEnabled", MetEnable);
+	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_ColTexEnabled"), ColEnable));
+	GL_Call(glUniform1f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_NormTexEnabled"), NormEnable));
+	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_DispTexEnabled"), DispEnable));
+	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_SpecTexEnabled"), SpecEnable));
+	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MetTexEnabled"), MetEnable));
+
+}
+
+std::shared_ptr<Shader> Material::GetShader()
+{
+	return std::shared_ptr<Shader>(shader);
 }

@@ -3,7 +3,16 @@
 #include <list>
 #include <memory>
 #include "../GL.h"
+#include <map>
+#include "../../Math/Vector2.h"
+#include "../../Math/Vector3.h"
+#include "../../Math/Vector4.h"
+#include "../../Math/Vector2I.h"
+#include "../../Math/Vector3I.h"
+#include "../../Math/Vector4I.h"
+#include "../../Math/Color.h"
 
+//#define USE_CACHE
 
 class Camera;
 class Transform;
@@ -15,9 +24,9 @@ protected:
 	bool GL_IsLitShader;
 	unsigned int GL_ShaderProgram;
 	std::list<ShaderPass*> shaderPasses;
+	std::map<std::string, GLint> shaderUniformLocations;
 
-	void AddShaderPass(ShaderPass* newPass);
-	ShaderPass* GetShaderPass(std::string uniformName);
+	GLint GL_GetUniformLocation(const std::string& name);
 	Shader(std::string);
 	Shader();
 
@@ -32,9 +41,20 @@ public:
 
 	unsigned int GL_GetShaderProgram();
 	void GL_BindProgram();
-	void SetShaderPass(ShaderPass* pass);
 	void LoadShaderResource(std::string shaderSourceFilePath, ShaderType shaderType);
 	bool GetShaderLitType();
+
+	void SetValueVec1(std::string uniformName, float value);
+	void SetValueVec2(std::string uniformName, Vector2 value);
+	void SetValueVec3(std::string uniformName, Vector3 value);
+	void SetValueVec4(std::string uniformName, Vector4 value);
+	void SetValueVec1I(std::string uniformName, int value);
+	void SetValueVec2I(std::string uniformName, Vector2I value);
+	void SetValueVec3I(std::string uniformName, Vector3I value);
+	void SetValueVec4I(std::string uniformName, Vector4I value);
+	void SetValueColor(std::string uniformName, Color value);
+	void SetValueMat3(std::string uniformName, glm::mat3 value);
+	void SetValueMat4(std::string uniformName, glm::mat4 value);
 
 	static std::shared_ptr<Shader> CreateEmptyShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);
@@ -45,7 +65,6 @@ public:
 	static void GL_UnbindPrograms();
 
 
-	virtual void GL_SetUniforms();
 	virtual ~Shader() { glDeleteProgram(GL_ShaderProgram); }
 
 	bool operator ==(const Shader& right) const { return GL_ShaderProgram == right.GL_ShaderProgram; }

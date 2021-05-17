@@ -2,10 +2,10 @@
 #include "MeshRenderer.h"
 #include "SkyBoxRenderer.h"
 #include "Lights/Light.h"
-#include "Shaders/ShaderPass.h"
 #include "Lights/ShadowMap.h"
 #include "Camera.h"
 #include "Material.h"
+#include "../Peripherals/Window.h"
 
 
 
@@ -64,6 +64,7 @@ void Graphics::Init()
 	renderedFrames = 0;
 
 	ShadowMap::InitShadowMap();
+	Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
 }
 
 
@@ -152,7 +153,8 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 		}
 
 		//std::cout << "binding fucking texture again for this fucking shader: " << shader->name << std::endl;
-		currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));
+		//currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));
+		currentlyBoundShader->SetValueVec1I("u_NumberLights", lightCount);
 		ShadowMap::GL_BindShadowMap();
 	}
 

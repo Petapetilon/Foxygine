@@ -24,6 +24,7 @@ private:
 	
 	Window();
 	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
+	static void WindowMaximizeCallback(GLFWwindow* window, int state);
 
 public:
 	static Window* GetInstance();

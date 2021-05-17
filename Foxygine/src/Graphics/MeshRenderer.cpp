@@ -1,7 +1,6 @@
 #include "MeshRenderer.h"
 #include "Graphics.h"
 #include "Shaders/Shader.h"
-#include "Shaders/ShaderPass.h"
 #include "Material.h"
 #include "Lights/ShadowMap.h"
 #include "Lights/Light.h"
@@ -124,27 +123,17 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 
 	//Graphics Uniforms
 	int renderedFrames = Graphics::renderedFrames;
-	shader->SetShaderPass(new ShaderPassVec1I(&renderedFrames, "u_RenderedFrames"));
+	shader->SetValueVec1I("u_RenderedFrames", renderedFrames);
 	
 	//Material Uniforms
 	material->GL_SetProperties();
 
-	
 	//Object Uniforms
-	glm::mat4 orientation = transform->GetOrientationMatrix();
-	shader->SetShaderPass(new ShaderPassMat4(&orientation, "u_ObjectOrientation"));
-	shader->SetShaderPass(new ShaderPassMat4(transform->GetGlobalMatrix(), "u_ObjectTransform"));
-	
-	//Applying Uniform Data
-	shader->GL_SetUniforms();
-
-	//ShadowMap::GL_BindShadowMap();
-
+	shader->SetValueMat4("u_ObjectOrientation", transform->GetOrientationMatrix());
+	shader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
-	//GL_Call(glBindVertexArray(0));
-	//GL_Call(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 
@@ -159,11 +148,7 @@ void MeshRenderer::DrawShadowMap(Light* light)
 	auto shadowShader = ShadowMap::GetShadowMapShader();
 
 	//Object Uniforms
-	shadowShader->SetShaderPass(new ShaderPassMat4(transform->GetGlobalMatrix(), "u_ObjectTransform"));
-	//light->GL_SetShadowPasses();
-
-	//Applying Uniform Data
-	shadowShader->GL_SetUniforms();
+	shadowShader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);

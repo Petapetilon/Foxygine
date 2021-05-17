@@ -51,9 +51,6 @@
     <ClCompile Include="src\Graphics\Shaders\Shader.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Shaders\ShaderPass.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameObject\GameObjectHandler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -168,9 +165,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Shaders\ShaderLibrary.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Graphics\Shaders\ShaderPass.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Vector2.h">

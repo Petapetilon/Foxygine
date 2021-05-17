@@ -3,7 +3,6 @@
 #include "../../GameObject/Transform.h"
 #include "../Camera.h"
 #include "glm.hpp"
-#include "ShaderPass.h"
 #include "ShaderLibrary.h"
 
 

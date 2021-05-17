@@ -165,7 +165,6 @@
     <ClCompile Include="src\Foxygine.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\GameObject\GameObjectHandler.cpp" />
-    <ClCompile Include="src\Graphics\Shaders\ShaderPass.cpp" />
     <ClCompile Include="src\Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="src\Graphics\Shaders\ShaderLibrary.cpp" />
     <ClCompile Include="src\Graphics\Material.cpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Foxygine.h" />
     <ClInclude Include="src\GameObject\GameObjectHandler.h" />
-    <ClInclude Include="src\Graphics\Shaders\ShaderPass.h" />
     <ClInclude Include="src\Graphics\Shaders\ShaderLibrary.h" />
     <ClInclude Include="src\Graphics\Material.h" />
     <ClInclude Include="src\Graphics\Shaders\BasicShader.h" />

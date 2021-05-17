@@ -1,7 +1,6 @@
 #include "DirectionalLight.h"
 #include "../Graphics.h"
 #include "../Shaders/Shader.h"
-#include "../Shaders/ShaderPass.h"
 #include "../../GameObject/Transform.h"
 #include "ShadowMap.h"
 
@@ -51,23 +50,21 @@ void DirectionalLight::GL_SetLightingPasses(int _index)
     ComposeLightSpaceMatrix();
     auto index = std::to_string(_index);
     auto shader = Graphics::GL_GetCurrentlyBoundShader();
-    shader->SetShaderPass(new ShaderPassVec1I(&type, "u_LightType[" + index + "]"));
-    shader->SetShaderPass(new ShaderPassColor(&color, "u_LightColor[" + index + "]"));
-    shader->SetShaderPass(new ShaderPassVec1(&intensity, "u_LightIntensity[" + index + "]"));
+
+    shader->SetValueVec1I("u_LightType[" + index + "]", type);
+    shader->SetValueColor("u_LightColor[" + index + "]", color);
+    shader->SetValueVec1("u_LightIntensity[" + index + "]", intensity);
 
     auto forward = gameObject->transform->Forward();
-    shader->SetShaderPass(new ShaderPassVec3(&forward, "u_LightDirection[" + index + "]"));
-    shader->SetShaderPass(new ShaderPassMat4(&lightSpaceMatrix, "u_LightSpaceMatrix"));
+    shader->SetValueVec3("u_LightDirection[" + index + "]", forward);
+    shader->SetValueMat4("u_LightSpaceMatrix", lightSpaceMatrix);
 }
 
 
 void DirectionalLight::GL_SetShadowPasses()
 {
     ComposeLightSpaceMatrix();
-    ShadowMap::GetShadowMapShader()->SetShaderPass(new ShaderPassMat4(&lightSpaceMatrix, "u_LightSpaceMatrix"));
-    //std::cout << "Setting Light shadow uniform" << std::endl;
-    //std::cout << transform->Position().x << ", " << transform->Position().y << ", " << transform->Position().z << std::endl;
-    //ShadowMap::GetShadowMapShader()->GL_SetUniforms();
+    ShadowMap::GetShadowMapShader()->SetValueMat4("u_LightSpaceMatrix", lightSpaceMatrix);
 }
 
 

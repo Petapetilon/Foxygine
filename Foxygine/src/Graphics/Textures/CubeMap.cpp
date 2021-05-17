@@ -1,6 +1,5 @@
 #include "CubeMap.h"
 #include <iostream>
-#include "../Shaders/ShaderPass.h"
 #include "../Shaders/Shader.h"
 #include <thread>
 #include "stb_image.h"

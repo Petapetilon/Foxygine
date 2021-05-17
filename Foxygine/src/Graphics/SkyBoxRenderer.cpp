@@ -52,7 +52,7 @@ void SkyboxRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 
 
 	//Applying Uniform Data
-	shader->GL_SetUniforms();
+	//shader->GL_SetUniforms();
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);

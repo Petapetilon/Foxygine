@@ -57,7 +57,7 @@ void ShadowMap::SetShadowMapResolution(unsigned int resolution)
 	GLenum status2 = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status2 != GL_FRAMEBUFFER_COMPLETE)
 	{
-		std::cout << "incomplete framebuffer object " << status2 << std::endl;
+		std::cout << "Incomplete framebuffer object " << status2 << std::endl;
 	}
 
 	GL_Call(glBindFramebuffer(GL_FRAMEBUFFER, 0));
@@ -87,7 +87,6 @@ void ShadowMap::RenderShadowMap(Light* light)
 		__debugbreak();
 
 
-	//GL_Call(glUseProgram(shadowMapShader->GL_GetShaderProgram()));
 	shadowMapShader->GL_BindProgram();
 	light->GL_SetShadowPasses();
 	Graphics::RenderShadowPass(light);
@@ -103,16 +102,16 @@ void ShadowMap::RenderShadowMap(Light* light)
 	alreadyRenderedShadowMaps++;
 }
 
+
 std::shared_ptr<Shader> ShadowMap::GetShadowMapShader()
 {
 	return std::shared_ptr<Shader>(shadowMapShader);
 }
 
+
 void ShadowMap::GL_BindShadowMap()
 {
 	sm.alreadyRenderedShadowMaps;
-	//std::cout << "binding shadow map" << std::endl;
 	GL_Call(glActiveTexture(GL_TEXTURE8));
 	glBindTexture(GL_TEXTURE_2D, sm.GL_ShadowDepthMap);
-	//glUniform1i(glGetUniformLocation(Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram(), "u_ShadowDepthMap"), 8);
 }

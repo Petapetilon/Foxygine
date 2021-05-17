@@ -39,9 +39,9 @@ void Foxygine::StartFoxygine()
 
 
     auto lightGo = GameObject::CreateGameObject("lightGo");
-    lightGo->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, 1, 1, 1.f), 1));
+    lightGo->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, .9f, .7f, 1.f), 1));
     //lightGo->transform->SetPosition(Vector3(-8, 5, 5));
-    lightGo->transform->SetRotation(0, 100, 45, true);
+    lightGo->transform->SetRotation(0, 100, 20, true);
     lightGo->transform->Translate(lightGo->transform->Forward() * -10);
     //lightGo->transform->SetPosition(0, 10, 0);
     //lightGo->transform->SetRotation(0, 0, 45, false);

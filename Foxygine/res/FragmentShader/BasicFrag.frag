@@ -99,6 +99,7 @@ float ShadowCalculation(){
 
 vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragmentColor, float specularMod){
 	vec3 lightDir = normalize(u_LightDirection[index].xyz);
+	//lightDir = normalize(vec3(1, 2, .5));
     // diffuse shading
     float diffuseFalloff = max(dot(normal, lightDir), 0.0);
     // specular shading
@@ -106,7 +107,7 @@ vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragme
     float specularFalloff = pow(max(dot(-viewDir, reflectDir), 0.0), u_MaterialProps.glossiness * 50);
     // combine results
     vec3 diffuseColor  = u_LightColor[index].xyz * diffuseFalloff * fragmentColor;
-    vec3 specularColor = u_LightColor[index].xyz * specularFalloff * diffuseFalloff * specularMod;
+    vec3 specularColor = u_LightColor[index].xyz * specularFalloff * diffuseFalloff * specularMod;;
     return (diffuseColor + specularColor);
 }
 
@@ -156,6 +157,7 @@ void main() {
 
 	//Color Map wih fallback
 	vec3 color = texture2D(u_ColorTexture, vertexUV).xyz * float(u_ColTexEnabled) + u_MaterialProps.color.xyz * float(1 - u_ColTexEnabled);
+	color = texture2D(u_ColorTexture, vertexUV).xyz;
 
 	float specular = 1;
 
@@ -167,7 +169,6 @@ void main() {
 	for(int i = 0; i < u_NumberLights; i++){
 		composedColor += CalculateDirectionalColor(i, mappedVertexNormal, viewDir, color, specular) * ShadowCalculation();
 	}
-
 
 	FragColor = vec4(composedColor, 1);
 }

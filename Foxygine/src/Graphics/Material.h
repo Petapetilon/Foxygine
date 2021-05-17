@@ -80,7 +80,6 @@ public:
 
 	Material(std::string materialName, std::string shaderName);
 
-	void SetShaderPass(ShaderPass*);
 	void SetMainColor(Color);
 	void SetNormalMappingStrength(float);
 
@@ -95,5 +94,6 @@ public:
 
 	void FinishLoadingResources();
 	void GL_SetProperties();
+	std::shared_ptr<Shader> GetShader();
 };
 

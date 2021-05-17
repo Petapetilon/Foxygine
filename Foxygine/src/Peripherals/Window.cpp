@@ -18,6 +18,7 @@ Window::Window()
     std::cout << "creating Window" << std::endl;
 }
 
+
 void Window::WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
     //Graphics::camera->ResetCamera();
@@ -26,6 +27,12 @@ void Window::WindowResizeCallback(GLFWwindow* window, int width, int height)
     Window::GetInstance()->resizeCallee(width, height);
     glfwSwapBuffers(Window::GetInstance()->GLFW_GetWindow());
     std::cout << "resize callback";
+}
+
+void Window::WindowMaximizeCallback(GLFWwindow* window, int state)
+{
+    glfwGetWindowSize(window, &Window::GetInstance()->windowWidth, &Window::GetInstance()->windowHeight);
+    WindowResizeCallback(window, Window::GetInstance()->windowWidth, Window::GetInstance()->windowHeight);
 }
 
 
@@ -78,6 +85,7 @@ Vector2I Window::GetWindowResolution()
 {
     return Vector2I(windowWidth, windowHeight);
 }
+
 
 void Window::SetWindowResizeCallback(ResizeFunc callback)
 {

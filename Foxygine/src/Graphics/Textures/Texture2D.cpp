@@ -205,10 +205,8 @@ void Texture2D::GL_BindTexture(unsigned int GL_TextureIndex)
 	if(!FinishLoading()) return;
 
 	if (GL_TextureIndex <= 31) {
-		//glUniform1i(GL_UniformLocation, GL_TextureIndex);
 		GL_Call(glActiveTexture(GL_TEXTURE0 + GL_TextureIndex));
 		glBindTexture(GL_TEXTURE_2D, GL_TextureID);
-		//glBindTexture(GL_TEXTURE_2D, ShadowMap::GL_ShadowDepthMap);
 	}
 	else {
 		std::cout << "OpenGL Texture Index out of Bounds:" << GL_TextureIndex << std::endl;

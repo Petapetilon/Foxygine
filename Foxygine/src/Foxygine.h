@@ -16,7 +16,6 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Graphics/Shaders/BasicShader.h"
-#include "Graphics/Shaders/ShaderPass.h"
 #include "Graphics/Shaders/ShaderLibrary.h"
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Lights/DirectionalLight.h"

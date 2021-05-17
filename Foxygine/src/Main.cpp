@@ -35,7 +35,6 @@ int main(void)
     std::chrono::steady_clock::time_point engineBegin = std::chrono::steady_clock::now();
 
     Window::GetInstance()->SetupWindow(Vector2I(WWIDTH, WHEIGHT), "Foxygine");
-    Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
     Keyboard::SetupKeyboard();
     Mouse::SetupMouse();
     Foxygine foxygine;
