@@ -81,14 +81,15 @@ void ShadowMap::RenderShadowMap(Light* light)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glDepthFunc(GL_LESS);
 	glCullFace(GL_FRONT);
-
+	
 	
 	if ((glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE))
 		__debugbreak();
 
 
 	shadowMapShader->GL_BindProgram();
-	light->GL_SetShadowPasses();
+	light->GL_RenderShadowMap();
+	//light->GL_SetLightingPasses(0);
 	Graphics::RenderShadowPass(light);
 	
 	

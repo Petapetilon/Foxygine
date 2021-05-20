@@ -52,6 +52,7 @@ void Shader::GL_BindProgram() {
 }
 
 
+#ifdef USE_CACHE
 GLint Shader::GL_GetUniformLocation(const std::string& name)
 {
 	if (shaderUniformLocations.find(name) != shaderUniformLocations.end())
@@ -61,6 +62,7 @@ GLint Shader::GL_GetUniformLocation(const std::string& name)
 	shaderUniformLocations[name] = uniformLoc;
 	return uniformLoc;
 }
+#endif
 
 
 void Shader::LoadShaderResource(std::string shaderFilePath, ShaderType shaderType)

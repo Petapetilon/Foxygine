@@ -33,6 +33,7 @@ private:
 public:
 	Transform* transform;
 	std::string name;
+	long uniqueID;
 	
 	
 	static std::shared_ptr<GameObject> CreateGameObject(std::string _name);
@@ -104,6 +105,7 @@ public:
 
 
 	void SetActive(bool);
+	bool GetActiveSelf();
 
 	void OnEnable();
 	void OnDisable();

@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <map>
 #include <memory>
 #include <chrono>
 #include <thread>
@@ -8,13 +9,19 @@
 
 class Foxygine;
 
+
 class GameObjectHandler
 {
 private:
-	static std::list<std::shared_ptr<GameObject>> gameObjects;
+	static std::map<long, long> gameObjectIDLookup;
+	static std::map<long, std::shared_ptr<GameObject>> gameObjects;
+	static std::map<long, std::shared_ptr<GameObject>> activeGameObjects;
 	static unsigned long currentSystemTime;
 	static unsigned long lastUpdateSystemTime;
 	static unsigned long lastFixedUpdateSystemTime;
+	static long latestUniqueGameObjectID;
+
+	static long HashString(std::string);
 
 public:
 	static double lastUpdateDeltaTime;
@@ -22,6 +29,7 @@ public:
 
 	static std::shared_ptr<GameObject> RegisterGameObject(std::shared_ptr<GameObject>);
 	static void UnregisterGameObject(std::shared_ptr<GameObject>);
+	static void SetGameObjectActiveStatus(GameObject&, bool);
 	static void TickHandler(Foxygine&);
 	static void InitHandler();
 	static void InvokeOnPreRender();

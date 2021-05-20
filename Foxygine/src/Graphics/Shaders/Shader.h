@@ -12,7 +12,6 @@
 #include "../../Math/Vector4I.h"
 #include "../../Math/Color.h"
 
-//#define USE_CACHE
 
 class Camera;
 class Transform;
@@ -24,9 +23,11 @@ protected:
 	bool GL_IsLitShader;
 	unsigned int GL_ShaderProgram;
 	std::list<ShaderPass*> shaderPasses;
-	std::map<std::string, GLint> shaderUniformLocations;
 
+	//Cache
+	std::map<std::string, GLint> shaderUniformLocations;
 	GLint GL_GetUniformLocation(const std::string& name);
+
 	Shader(std::string);
 	Shader();
 

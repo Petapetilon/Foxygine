@@ -13,6 +13,9 @@ SkyboxRenderer* Graphics::skyBoxRenderer;
 Shader* Graphics::currentlyBoundShader;
 std::shared_ptr<Camera> Graphics::camera;
 long Graphics::renderedFrames;
+int Graphics::CSM_ShadowResolution;
+int Graphics::PointLight_ShadowResolution;
+int Graphics::SpotLight_ShadowResolution;
 
 std::list<MeshRenderer*> Graphics::meshRenderers;
 std::list<Light*> Graphics::lights;
@@ -62,6 +65,9 @@ void Graphics::Init()
 	skyBoxRenderer = nullptr;
 	camera = nullptr;
 	renderedFrames = 0;
+	CSM_ShadowResolution = 2048;
+	PointLight_ShadowResolution = 2048;
+	SpotLight_ShadowResolution = 2048;
 
 	ShadowMap::InitShadowMap();
 	Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);

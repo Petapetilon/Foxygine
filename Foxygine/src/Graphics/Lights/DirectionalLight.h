@@ -2,15 +2,35 @@
 #include "Light.h"
 #include "../../GameObject/Component.h"
 #include "glm.hpp"
+#include "../GL.h"
 
+class Shader;
+class Color;
 
 
 class DirectionalLight : public Light, public Component
 {
 private:
-    glm::mat4 lightSpaceMatrix;
+    struct SplitFurstumInfo {
+    public:
+        float right;
+        float left;
+        float bottom;
+        float top;
+        float far;
+        float near;
+    };
 
-    void ComposeLightSpaceMatrix();
+    glm::mat4 lightSpaceMatrix;
+    glm::mat4* lightSpaceMatrices;
+    GLuint GL_FrambufferObject;
+    GLuint* GL_ShadowMapObject;
+    SplitFurstumInfo* frustumInfos;
+    unsigned int GL_ShadowMapResolution;
+    unsigned int CSMSplits;
+    std::shared_ptr<Shader> shadowMapShader;
+
+    void ComposeLightSpaceMatrices();
 
 public:
     int type = (int)LightType::Directional;
@@ -18,8 +38,11 @@ public:
     DirectionalLight(Color _color, float _intensity);
     DirectionalLight(Color _color);
     DirectionalLight();
+    void SetShadowMapResolution(unsigned int resolution) override;
+
+
     void GL_SetLightingPasses(int index) override;
-    void GL_SetShadowPasses() override;
+    void GL_RenderShadowMap() override;
     bool GetShadowCapabilities() override;
     void OnAttach() override;
     void OnDetach() override;

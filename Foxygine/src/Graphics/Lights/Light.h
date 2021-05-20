@@ -17,6 +17,7 @@ public:
 	};
 
 	virtual void GL_SetLightingPasses(int index) {}
-	virtual void GL_SetShadowPasses() {}
+	virtual void GL_RenderShadowMap() {}
+	virtual void SetShadowMapResolution(unsigned int resolution) {}
 	virtual bool GetShadowCapabilities() { return false; }
 };

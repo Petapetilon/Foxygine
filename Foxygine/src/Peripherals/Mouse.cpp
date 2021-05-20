@@ -254,4 +254,9 @@ void Mouse::Tick(float timeDelta)
 			mouseMoved = false;
 		}
 	}
+
+	lastVelocityX = 0;
+	lastVelocityY = 0;
+	velocityX = 0;
+	velocityY = 0;
 }

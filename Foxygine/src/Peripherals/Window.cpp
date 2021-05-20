@@ -69,6 +69,7 @@ bool Window::SetupWindow(Vector2I windowSize, std::string _windowName)
     glfwMakeContextCurrent(GLFW_Window);
     glfwSwapInterval(0);
     glfwSetWindowSizeCallback(GLFW_Window, WindowResizeCallback);
+    glfwSetWindowMaximizeCallback(GLFW_Window, WindowMaximizeCallback);
 
     std::setprecision(5);
     return true;

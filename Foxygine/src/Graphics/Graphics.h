@@ -38,6 +38,9 @@ public:
 	static void RenderLitPassForwarded();
 	static std::shared_ptr<Camera> camera;
 	static long renderedFrames;
+	static int CSM_ShadowResolution;
+	static int PointLight_ShadowResolution;
+	static int SpotLight_ShadowResolution;
 
 	static void Init();
 	static void RenderFrame();

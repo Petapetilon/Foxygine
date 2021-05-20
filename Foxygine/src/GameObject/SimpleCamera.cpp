@@ -13,8 +13,8 @@ void SimpleCamera::Start()
 void SimpleCamera::Update(float _deltaTime)
 {
 	deltaTime = _deltaTime;
-	xRot += Mouse::Velocity().x * .02f;
-	yRot += Mouse::Velocity().y * .02f;
+	xRot += Mouse::Velocity().x * 10.f * _deltaTime;
+	yRot += Mouse::Velocity().y * 10.f * _deltaTime;
 	if (yRot > 89) yRot = 89;
 	if (yRot < -89) yRot = -89;
 

@@ -8,22 +8,27 @@ GameObject::GameObject(std::string _name)
 {
 	name = _name;
 	transform = new Transform();
+	isActive = true;
 }
+
 
 std::shared_ptr<GameObject> GameObject::CreateGameObject(std::string _name)
 {
 	return std::shared_ptr<GameObject>(GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(new GameObject(_name))));
 }
 
+
 std::shared_ptr<GameObject> GameObject::CreateGameObject()
 {
 	return std::shared_ptr<GameObject>(GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(new GameObject("unnamed"))));
 }
 
+
 std::shared_ptr<GameObject> GameObject::FindGameObject(std::string _name)
 {
 	return std::shared_ptr<GameObject>(GameObjectHandler::FindGameObject(_name));
 }
+
 
 bool GameObject::FindAllGameObjects(std::string _name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results)
 {
@@ -41,8 +46,15 @@ void GameObject::SetActive(bool active)
 }
 
 
+bool GameObject::GetActiveSelf()
+{
+	return isActive;
+}
+
+
 void GameObject::OnEnable()
 {
+	GameObjectHandler::SetGameObjectActiveStatus(*this, true);
 	for (auto compPtr : components) {
 		compPtr->comp->OnEnable();
 	}
@@ -51,6 +63,7 @@ void GameObject::OnEnable()
 
 void GameObject::OnDisable()
 {
+	GameObjectHandler::SetGameObjectActiveStatus(*this, false);
 	for (auto compPtr : components) {
 		compPtr->comp->OnDisable();
 	}
@@ -59,6 +72,8 @@ void GameObject::OnDisable()
 
 void GameObject::Start()
 {
+	GameObjectHandler::SetGameObjectActiveStatus(*this, isActive);
+
 	for (auto compPtr : components) {
 		if(compPtr->comp->isActive)
 			compPtr->comp->Start();

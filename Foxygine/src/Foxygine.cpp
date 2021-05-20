@@ -143,7 +143,7 @@ void Foxygine::UpdateFoxygine(float deltaTime)
     }
 
     
-    GameObjectHandler::FindGameObject("smoothSphere")->GetComponent<MeshRenderer>()->GetMaterial()->SetMainColor(Color(r, g, b, 1));
+    //GameObjectHandler::FindGameObject("smoothSphere")->GetComponent<MeshRenderer>()->GetMaterial()->SetMainColor(Color(r, g, b, 1));
     //GameObjectHandler::FindGameObject("light")->transform->Rotate(Vector3(0, 1, 0), glm::degrees(deltaTime));
     GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
 }
