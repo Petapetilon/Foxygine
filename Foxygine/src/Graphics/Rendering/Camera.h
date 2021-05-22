@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
-#include "../GameObject/Transform.h"
-#include "../GameObject/Component.h"
-#include "GL.h"
-#include "../Math/Vector4.h"
+#include "../../GameObject/Transform.h"
+#include "../../GameObject/Component.h"
+#include "../GL.h"
+#include "../../Math/Vector4.h"
 
 
 class Shader;

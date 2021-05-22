@@ -150,63 +150,67 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Graphics\Lights\ShadowMap.cpp" />
+    <ClCompile Include="src\Graphics\UI\ScreenSpaceCanvas.cpp" />
+    <ClCompile Include="src\Graphics\UI\Canvas.cpp" />
     <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp" />
     <ClCompile Include="src\Graphics\Lights\PointLight.cpp" />
     <ClCompile Include="src\Graphics\Lights\DirectionalLight.cpp" />
     <ClCompile Include="src\Graphics\Textures\CubeMap.cpp" />
-    <ClCompile Include="src\Graphics\SkyBoxRenderer.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\SkyBoxRenderer.cpp" />
     <ClCompile Include="src\GameObject\SimpleCamera.cpp" />
     <ClCompile Include="src\Peripherals\GamePad.cpp" />
     <ClCompile Include="src\Peripherals\Mouse.cpp" />
     <ClCompile Include="src\Peripherals\Keyboard.cpp" />
-    <ClCompile Include="src\Graphics\Renderer.cpp" />
+    <ClCompile Include="src\Graphics\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Scene\SceneHandler.cpp" />
     <ClCompile Include="src\Foxygine.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\GameObject\GameObjectHandler.cpp" />
     <ClCompile Include="src\Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="src\Graphics\Shaders\ShaderLibrary.cpp" />
-    <ClCompile Include="src\Graphics\Material.cpp" />
-    <ClCompile Include="src\Graphics\Shaders\BasicShader.cpp" />
-    <ClCompile Include="src\Graphics\Camera.cpp" />
-    <ClCompile Include="src\Graphics\Mesh.cpp" />
+    <ClCompile Include="src\Graphics\Rendering\Material.cpp" />
+    <ClCompile Include="src\Graphics\Rendering\Camera.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
-    <ClCompile Include="src\Graphics\MeshRenderer.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="src\Graphics\Shaders\ShaderHandeling.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\GameObject\Transform.cpp" />
     <ClCompile Include="src\Peripherals\Window.cpp" />
     <ClCompile Include="src\Graphics\Textures\Texture2D.cpp" />
+    <ClCompile Include="src\Graphics\UI\UIElement.cpp" />
+    <ClCompile Include="src\Graphics\UI\UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicFragment.shader" />
     <None Include="res\BasicVertex.shader" />
     <None Include="res\FragmentShader\BasicFrag.frag" />
     <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
-    <None Include="res\FragmentShader\ShadowTest.frag" />
     <None Include="res\FragmentShader\SkyBoxFrag.frag" />
+    <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />
     <None Include="res\GeoShader\BasicGeometry.geom" />
     <None Include="res\VertexShader\BasicVert.vert" />
     <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
     <None Include="res\VertexShader\SkyBoxVert.vert" />
+    <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Graphics\Lights\ShadowMap.h" />
+    <ClInclude Include="src\Graphics\UI\ScreenSpaceCanvas.h" />
+    <ClInclude Include="src\Graphics\UI\Canvas.h" />
     <ClInclude Include="src\Graphics\Lights\AmbientLight.h" />
     <ClInclude Include="src\Graphics\Lights\PointLight.h" />
     <ClInclude Include="src\Graphics\Lights\DirectionalLight.h" />
     <ClInclude Include="src\Graphics\Lights\Light.h" />
     <ClInclude Include="src\Graphics\Textures\CubeMap.h" />
-    <ClInclude Include="src\Graphics\SkyBoxRenderer.h" />
+    <ClInclude Include="src\Graphics\Mesh\SkyBoxRenderer.h" />
     <ClInclude Include="src\GameObject\SimpleCamera.h" />
     <ClInclude Include="src\Graphics\Textures\Texture.h" />
     <ClInclude Include="src\Peripherals\GamePad.h" />
     <ClInclude Include="src\Peripherals\Mouse.h" />
     <ClInclude Include="src\Peripherals\Keyboard.h" />
-    <ClInclude Include="src\Graphics\Renderer.h" />
-    <ClInclude Include="src\Graphics\SerializedMesh.h" />
+    <ClInclude Include="src\Graphics\Rendering\Renderer.h" />
+    <ClInclude Include="src\Graphics\Mesh\SerializedMesh.h" />
     <ClInclude Include="src\Graphics\Textures\stb_image.h" />
     <ClInclude Include="src\Math\Color.h" />
     <ClInclude Include="src\Scene\SceneHandler.h" />
@@ -214,19 +218,18 @@
     <ClInclude Include="src\Foxygine.h" />
     <ClInclude Include="src\GameObject\GameObjectHandler.h" />
     <ClInclude Include="src\Graphics\Shaders\ShaderLibrary.h" />
-    <ClInclude Include="src\Graphics\Material.h" />
-    <ClInclude Include="src\Graphics\Shaders\BasicShader.h" />
-    <ClInclude Include="src\Graphics\Camera.h" />
+    <ClInclude Include="src\Graphics\Rendering\Material.h" />
+    <ClInclude Include="src\Graphics\Rendering\Camera.h" />
     <ClInclude Include="src\GameObject\Component.h" />
     <ClInclude Include="src\Graphics\Shaders\Shader.h" />
     <ClInclude Include="src\Math\Constants.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
     <ClInclude Include="src\Graphics\GL.h" />
-    <ClInclude Include="src\Graphics\Mesh.h" />
+    <ClInclude Include="src\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\Graphics\Graphics.h" />
-    <ClInclude Include="src\Graphics\MeshRenderer.h" />
-    <ClInclude Include="src\Graphics\OBJLoader.h" />
+    <ClInclude Include="src\Graphics\Mesh\MeshRenderer.h" />
+    <ClInclude Include="src\Graphics\Mesh\OBJLoader.h" />
     <ClInclude Include="src\Graphics\Shaders\ShaderHandeling.h" />
     <ClInclude Include="src\GameObject\Transform.h" />
     <ClInclude Include="src\Math\Vector2.h" />
@@ -237,6 +240,8 @@
     <ClInclude Include="src\Math\Vector4I.h" />
     <ClInclude Include="src\Peripherals\Window.h" />
     <ClInclude Include="src\Graphics\Textures\Texture2D.h" />
+    <ClInclude Include="src\Graphics\UI\UIElement.h" />
+    <ClInclude Include="src\Graphics\UI\UIText.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

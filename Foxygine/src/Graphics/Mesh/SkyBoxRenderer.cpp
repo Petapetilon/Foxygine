@@ -1,11 +1,11 @@
 #include "SkyboxRenderer.h"
-#include "../Graphics/Textures/CubeMap.h"
-#include "../Math/Color.h"
+#include "../../Graphics/Textures/CubeMap.h"
+#include "../../Math/Color.h"
 #include "Mesh.h"
-#include "Shaders/Shader.h"
-#include "Shaders/ShaderLibrary.h"
-#include "Material.h"
-#include "Camera.h"
+#include "../Shaders/Shader.h"
+#include "../Shaders/ShaderLibrary.h"
+#include "../Rendering/Material.h"
+#include "../Rendering/Camera.h"
 
 
 void SkyboxRenderer::SetSkybox(std::vector<std::string> filePaths)

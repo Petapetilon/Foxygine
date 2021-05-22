@@ -1,7 +1,5 @@
 #include "Renderer.h"
-#include "Shaders/ShaderLibrary.h"
-#include "Camera.h"
-#include "SerializedMesh.h"
+#include "../Shaders/ShaderLibrary.h"
 #include "Material.h"
 
 

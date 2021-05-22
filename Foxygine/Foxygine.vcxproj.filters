@@ -21,7 +21,7 @@
     <ClCompile Include="src\Graphics\Graphics.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MeshRenderer.cpp">
+    <ClCompile Include="src\Graphics\Mesh\MeshRenderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Shaders\ShaderHandeling.cpp">
@@ -33,16 +33,13 @@
     <ClCompile Include="src\GameObject\Transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh.cpp">
+    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Camera.cpp">
+    <ClCompile Include="src\Graphics\Rendering\Camera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Shaders\BasicShader.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics\Material.cpp">
+    <ClCompile Include="src\Graphics\Rendering\Material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Shaders\ShaderLibrary.cpp">
@@ -66,7 +63,7 @@
     <ClCompile Include="src\Peripherals\Window.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Renderer.cpp">
+    <ClCompile Include="src\Graphics\Rendering\Renderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Textures\Texture2D.cpp">
@@ -84,7 +81,7 @@
     <ClCompile Include="src\GameObject\SimpleCamera.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\SkyBoxRenderer.cpp">
+    <ClCompile Include="src\Graphics\Mesh\SkyBoxRenderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Textures\CubeMap.cpp">
@@ -99,7 +96,16 @@
     <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Lights\ShadowMap.cpp">
+    <ClCompile Include="src\Graphics\UI\Canvas.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\UI\ScreenSpaceCanvas.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\UI\UIElement.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\UI\UIText.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,13 +119,14 @@
     <None Include="res\VertexShader\SkyBoxVert.vert" />
     <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
     <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
-    <None Include="res\FragmentShader\ShadowTest.frag" />
+    <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
+    <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\MeshRenderer.h">
+    <ClInclude Include="src\Graphics\Mesh\MeshRenderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Shaders\ShaderHandeling.h">
@@ -131,10 +138,10 @@
     <ClInclude Include="src\GameObject\Transform.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Mesh.h">
+    <ClInclude Include="src\Graphics\Mesh\Mesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\OBJLoader.h">
+    <ClInclude Include="src\Graphics\Mesh\OBJLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\GL.h">
@@ -152,16 +159,13 @@
     <ClInclude Include="src\GameObject\Component.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Camera.h">
+    <ClInclude Include="src\Graphics\Rendering\Camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Shaders\Shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Shaders\BasicShader.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Graphics\Material.h">
+    <ClInclude Include="src\Graphics\Rendering\Material.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Shaders\ShaderLibrary.h">
@@ -197,10 +201,10 @@
     <ClInclude Include="src\Peripherals\Window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Renderer.h">
+    <ClInclude Include="src\Graphics\Rendering\Renderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\SerializedMesh.h">
+    <ClInclude Include="src\Graphics\Mesh\SerializedMesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Color.h">
@@ -224,7 +228,7 @@
     <ClInclude Include="src\GameObject\SimpleCamera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\SkyBoxRenderer.h">
+    <ClInclude Include="src\Graphics\Mesh\SkyBoxRenderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Textures\CubeMap.h">
@@ -245,7 +249,16 @@
     <ClInclude Include="src\Graphics\Lights\AmbientLight.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Lights\ShadowMap.h">
+    <ClInclude Include="src\Graphics\UI\Canvas.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\UI\ScreenSpaceCanvas.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\UI\UIElement.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\UI\UIText.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,8 +1,8 @@
 #include "Material.h"
-#include "Shaders/ShaderLibrary.h"
+#include "../Shaders/ShaderLibrary.h"
 #include "Camera.h"
-#include "Shaders/Shader.h"
-#include "Textures/Texture2D.h"
+#include "../Shaders/Shader.h"
+#include "../Textures/Texture2D.h"
 
 
 Material::Material(std::string materialName, std::string _shaderName)

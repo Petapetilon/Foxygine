@@ -13,7 +13,6 @@ out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec2 vertexUV;
 out vec4 lightSpaceFragPos;
-out vec4 LSFP[4];
 out mat3 TBN;
 
 
@@ -30,14 +29,14 @@ uniform mat4 u_CameraWorldToScreen;
 uniform vec4 u_CameraPosition;
 uniform vec4 u_CameraDirection;
 
-uniform mat4 u_LSM[4];
+uniform mat4 u_LSM[5];
 
 
 
 void main() {
 	vertexPosition = (u_ObjectTransform * vec4(l_Position, 1)).xyz;// + vec3(0,1,0) * sin(float(u_RenderedFrames) / 100.0) + vec3(5, 0, 0) * cos(float(u_RenderedFrames) / 100.0);
 	gl_Position = u_CameraWorldToScreen * vec4(vertexPosition, 1);
-
+	//gl_Position = u_LightSpaceMatrix * vec4(vertexPosition, 1);
 
 	//vertexNormal = (u_ObjectOrientation * vec4(l_Normal, 1)).xyz;
 	vertexNormal = mat3(transpose(inverse(u_ObjectTransform))) * l_Normal;
@@ -51,11 +50,6 @@ void main() {
 	vertexUV = l_UV;
 
 	lightSpaceFragPos = u_LightSpaceMatrix * vec4(vertexPosition, 1);
-
-	LSFP[0] = u_LSM[0] * vec4(vertexPosition, 1);
-	LSFP[1] = u_LSM[1] * vec4(vertexPosition, 1);
-	LSFP[2] = u_LSM[2] * vec4(vertexPosition, 1);
-	LSFP[3] = u_LSM[3] * vec4(vertexPosition, 1);
 
 	//gl_Position = u_LSM[0] * vec4(vertexPosition, 1);
 }

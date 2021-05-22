@@ -12,14 +12,19 @@
 #include "GameObject/Component.h"
 #include "GameObject/Transform.h"
 
-#include "Graphics/MeshRenderer.h"
-#include "Graphics/Material.h"
-#include "Graphics/Camera.h"
+
+#include "Graphics/Mesh/MeshRenderer.h"
+
+#include "Graphics/Rendering/Material.h"
+#include "Graphics/Rendering/Camera.h"
+
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/Shaders/BasicShader.h"
 #include "Graphics/Shaders/ShaderLibrary.h"
+
 #include "Graphics/Textures/Texture2D.h"
+
 #include "Graphics/Lights/DirectionalLight.h"
+
 
 #include "Math/Constants.h"
 #include "Math/Quaternion.h"
@@ -30,7 +35,9 @@
 #include "Math/Vector3I.h"
 #include "Math/Vector4I.h"
 
+
 #include "Scene/Scene.h"
+
 
 #include "Peripherals/Window.h"
 #include "Peripherals/Keyboard.h"

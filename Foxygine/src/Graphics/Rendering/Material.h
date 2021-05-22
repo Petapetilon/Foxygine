@@ -2,9 +2,9 @@
 #include <list>
 #include <string>
 #include <memory>
-#include "Shaders/Shader.h"
-#include "Shaders/ShaderLibrary.h"
-#include "../Math/Color.h"
+#include "../Shaders/Shader.h"
+#include "../Shaders/ShaderLibrary.h"
+#include "../../Math/Color.h"
 
 
 class Texture;

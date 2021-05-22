@@ -1,10 +1,9 @@
 #include "Graphics.h"
-#include "MeshRenderer.h"
-#include "SkyBoxRenderer.h"
+#include "Mesh/MeshRenderer.h"
+#include "Mesh/SkyBoxRenderer.h"
 #include "Lights/Light.h"
-#include "Lights/ShadowMap.h"
-#include "Camera.h"
-#include "Material.h"
+#include "Rendering/Camera.h"
+#include "Rendering/Material.h"
 #include "../Peripherals/Window.h"
 
 
@@ -27,7 +26,7 @@ void Graphics::RenderShadowPrePassForwarded()
 {
 	for (auto light : lights) {
 		//std::cout << "render this crap for this light" << std::endl;
-		ShadowMap::RenderShadowMap(light);
+		light->GL_RenderShadowMap();
 	}
 }
 
@@ -69,7 +68,6 @@ void Graphics::Init()
 	PointLight_ShadowResolution = 2048;
 	SpotLight_ShadowResolution = 2048;
 
-	ShadowMap::InitShadowMap();
 	Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
 }
 
@@ -83,8 +81,8 @@ void Graphics::RenderFrame() {
 
 	//RenderUIPassForwarded();
 
-	//if(skyBoxRenderer != nullptr)
-		//skyBoxRenderer->Draw(camera);
+	if(skyBoxRenderer != nullptr)
+		skyBoxRenderer->Draw(camera);
 
 	renderedFrames++;
 }
@@ -161,7 +159,6 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 		//std::cout << "binding fucking texture again for this fucking shader: " << shader->name << std::endl;
 		//currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));
 		currentlyBoundShader->SetValueVec1I("u_NumberLights", lightCount);
-		ShadowMap::GL_BindShadowMap();
 	}
 
 	//if (renderedFrames != 0) {

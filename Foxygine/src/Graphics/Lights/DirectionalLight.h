@@ -29,6 +29,7 @@ private:
     unsigned int GL_ShadowMapResolution;
     unsigned int CSMSplits;
     std::shared_ptr<Shader> shadowMapShader;
+    bool useCSM;
 
     void ComposeLightSpaceMatrices();
 
@@ -39,6 +40,7 @@ public:
     DirectionalLight(Color _color);
     DirectionalLight();
     void SetShadowMapResolution(unsigned int resolution) override;
+    void SetShadowingTechnique(bool _useCSM);
 
 
     void GL_SetLightingPasses(int index) override;
@@ -46,6 +48,7 @@ public:
     bool GetShadowCapabilities() override;
     void OnAttach() override;
     void OnDetach() override;
+    void OnPreRender() override;
     void OnTransformChanged() override;
 };
 

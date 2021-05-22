@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include "../Camera.h"
+#include "../Rendering/Camera.h"
 #include "../../GameObject/Transform.h"
 #include "ShaderLibrary.h"
 #include "ShaderHandeling.h"

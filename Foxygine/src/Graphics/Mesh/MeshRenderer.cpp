@@ -1,14 +1,13 @@
 #include "MeshRenderer.h"
-#include "Graphics.h"
-#include "Shaders/Shader.h"
-#include "Material.h"
-#include "Lights/ShadowMap.h"
-#include "Lights/Light.h"
-#include "../GameObject/GameObject.h"
-#include "../GameObject/Transform.h"
-#include "Shaders/Shader.h"
 #include "Mesh.h"
-#include "Camera.h"
+#include "../Graphics.h"
+#include "../Shaders/Shader.h"
+#include "../Rendering/Material.h"
+#include "../Lights/Light.h"
+#include "../../GameObject/GameObject.h"
+#include "../../GameObject/Transform.h"
+#include "../Shaders/Shader.h"
+#include "../Rendering/Camera.h"
 
 
 
@@ -29,7 +28,6 @@ MeshRenderer::MeshRenderer(const std::string& objFile, bool _castShadow)
 }
 
 
-
 MeshRenderer::MeshRenderer()
 {
 	//GL VAO
@@ -44,7 +42,6 @@ MeshRenderer::MeshRenderer()
 }
 
 
-
 MeshRenderer::~MeshRenderer()
 {
 	Graphics::UnregeisterMeshRenderer(this);
@@ -55,14 +52,10 @@ MeshRenderer::~MeshRenderer()
 }
 
 
-
 void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 {
 	mesh = std::shared_ptr<Mesh>(_mesh);
 	GL_BufferData = mesh->SerializeMeshData();
-	//mesh->ExcludeMeshData(Mesh::MeshData::Everything);
-	//mesh->IncludeMeshData(Mesh::MeshData::RawMeshPoint);
-	//GL_ShadowBufferData = mesh->SerializeMeshData();
 
 	//Vertex Array Object for saving the Vertex Attrib Pointers for each Buffer
 	GL_Call(glBindVertexArray(GL_VertexArrayObject));
@@ -106,7 +99,6 @@ void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 }
 
 
-
 void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	if (!isActive || !gameObject) return;
 	//if (!shader) shader = std::shared_ptr<Shader>(new BasicShader());
@@ -141,14 +133,11 @@ void MeshRenderer::DrawShadowMap(Light* light)
 {
 	if (!isActive || !gameObject || !castShadow) return;
 
-
 	GL_Call(glBindVertexArray(GL_VertexArrayObject));
 	GL_Call(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_IndexBufferObject));
 
-	auto shadowShader = ShadowMap::GetShadowMapShader();
-
 	//Object Uniforms
-	shadowShader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
+	Graphics::GL_GetCurrentlyBoundShader()->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);

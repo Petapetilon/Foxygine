@@ -1,6 +1,6 @@
 #include "Camera.h"
-#include "Shaders/Shader.h"
-#include "Graphics.h"
+#include "../Shaders/Shader.h"
+#include "../Graphics.h"
 #include "gtx/matrix_decompose.hpp"
 
 

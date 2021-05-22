@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Renderer.h"
-#include "../GameObject/Component.h"
+#include "../Rendering/Renderer.h"
+#include "../../GameObject/Component.h"
 #include <iostream>
 #include <memory>
 
@@ -18,7 +18,6 @@ class MeshRenderer : public Component, public Renderer
 {
 protected:
 	std::shared_ptr<Mesh> mesh;
-	std::shared_ptr<SerializedMesh> GL_ShadowBufferData;
 	bool castShadow;
 	bool receiveShadow;
 

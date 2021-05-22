@@ -5,7 +5,6 @@
 #include <list>
 #include <iostream>
 #include <thread>
-//#include "SkyBoxRenderer.h"
 
 
 class MeshRenderer;
