@@ -33,6 +33,7 @@ void Material::SetMainColor(Color color)
 	mainColor.b = color.b;
 }
 
+
 void Material::SetNormalMappingStrength(float strength)
 {
 	normalMappingStrength = strength;
@@ -109,6 +110,7 @@ void Material::SetTextureProperty(std::string propertyName, std::shared_ptr<Text
 	}
 }
 
+
 void Material::SetCustomTexturePropertyUniformMapping(Material::TextureSlot textureSlot, std::string uniformName)
 {
 	textureSlotUniforms[(int)textureSlot] = uniformName;
@@ -132,6 +134,7 @@ void Material::FinishLoadingResources()
 		texProp->texture->FinishLoading();
 	}
 }
+
 
 void Material::GL_SetProperties()
 {
@@ -179,16 +182,7 @@ void Material::GL_SetProperties()
 		}
 	}
 
-	//shader->SetShaderPass(new ShaderPassVec1I(&ColEnable, "u_ColTexEnabled"));
-	//shader->SetShaderPass(new ShaderPassVec1(&NormEnable, "u_NormTexEnabled"));
-	//shader->SetShaderPass(new ShaderPassVec1I(&DispEnable, "u_DispTexEnabled"));
-	//shader->SetShaderPass(new ShaderPassVec1I(&SpecEnable, "u_SpecTexEnabled"));
-	//shader->SetShaderPass(new ShaderPassVec1I(&MetEnable, "u_MetTexEnabled"));
-	//shader->SetValueVec1I("u_ColTexEnabled", ColEnable);
-	//shader->SetValueVec1("u_NormTexEnabled", NormEnable);
-	//shader->SetValueVec1I("u_DispTexEnabled", DispEnable);
-	//shader->SetValueVec1I("u_SpecTexEnabled", SpecEnable);
-	//shader->SetValueVec1I("u_MetTexEnabled", MetEnable);
+
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_ColTexEnabled"), ColEnable));
 	GL_Call(glUniform1f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_NormTexEnabled"), NormEnable));
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_DispTexEnabled"), DispEnable));
@@ -196,6 +190,7 @@ void Material::GL_SetProperties()
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MetTexEnabled"), MetEnable));
 
 }
+
 
 std::shared_ptr<Shader> Material::GetShader()
 {

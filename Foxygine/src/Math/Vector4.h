@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector3.h"
 
 
 class Vector4 {
@@ -55,4 +56,5 @@ public:
 	}
 
 	operator glm::vec4() const { return glm::vec4(x, y, z, w); }
+	operator Vector3() const { return Vector3(x, y, z); }
 };

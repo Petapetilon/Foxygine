@@ -2,22 +2,16 @@
 #include <vector>
 #include "../../GameObject/Component.h"
 #include "../Rendering/Renderer.h"
+#include "UIElement.h"
 
 
-class UIElement;
 
-class Canvas : public Component, public Renderer
+class Canvas : public Component, public Renderer, public UIElement
 {
-protected:
-	std::vector<UIElement*> uiElements;
-
 public:
-
-	void AddElement(UIElement* element);
-	void RemoveElement(UIElement* element);
-	UIElement* GetElement(std::string name);
-	void SetElementIndex(UIElement* element, int newIndex);
-	void SetElementIndex(std::string, int newIndex);
-	void SetElementIndex(int oldIndex, int newIndex);
+	virtual std::shared_ptr<UIElement> RayCastFromScreen(Vector2I screenPixel) {}
+	virtual std::shared_ptr<UIElement> RayCastFromScreen(Vector2 screenCoordinate) {}
+	virtual std::vector<std::shared_ptr<UIElement>> RayCastFromScreenAll(Vector2I screenPixel) {}
+	virtual std::vector<std::shared_ptr<UIElement>> RayCastFromScreenAll(Vector2 screenCoordinate) {}
 };
 

@@ -119,11 +119,14 @@ void Graphics::SetSkybox(std::vector<std::string> filePaths)
 	skyBoxRenderer->SetSkybox(filePaths);
 }
 
+
 void Graphics::OnWindowResize(int width, int height)
 {
-	camera->ResetCamera(width / height);
-	glViewport(0, 0, width, height);
-	RenderFrame();
+	if (width && height) {
+		camera->ResetCamera(width / height);
+		glViewport(0, 0, width, height);
+		RenderFrame();
+	}
 }
 
 
@@ -160,10 +163,6 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 		//currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));
 		currentlyBoundShader->SetValueVec1I("u_NumberLights", lightCount);
 	}
-
-	//if (renderedFrames != 0) {
-	//	camera->GL_SetCameraUniform(std::shared_ptr<Shader>(currentlyBoundShader));
-	//}
 }
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector2.h"
 
 
 class Vector2I {
@@ -15,4 +16,6 @@ public:
 		x = _x;
 		y = _y;
 	}
+
+	operator Vector2() const { return Vector2(x, y); }
 };

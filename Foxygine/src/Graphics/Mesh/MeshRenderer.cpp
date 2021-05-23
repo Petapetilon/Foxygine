@@ -101,22 +101,20 @@ void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 
 void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	if (!isActive || !gameObject) return;
-	//if (!shader) shader = std::shared_ptr<Shader>(new BasicShader());
 
 	//Binding GL Buffers
 	GL_Call(glBindVertexArray(GL_VertexArrayObject));
 	GL_Call(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_IndexBufferObject));
 
-	//Binding GL ShaderProg
-	shader->GL_BindProgram();
+	if(shader->GL_BindProgram()){
+		//Camera Uniforms
+		drawingCam->GL_SetCameraUniform(std::shared_ptr<Shader>(shader));
 
-	//Camera Uniforms
-	drawingCam->GL_SetCameraUniform(std::shared_ptr<Shader>(shader));
+		//Graphics Uniforms
+		int renderedFrames = Graphics::renderedFrames;
+		shader->SetValueVec1I("u_RenderedFrames", renderedFrames);
+	}
 
-	//Graphics Uniforms
-	int renderedFrames = Graphics::renderedFrames;
-	shader->SetValueVec1I("u_RenderedFrames", renderedFrames);
-	
 	//Material Uniforms
 	material->GL_SetProperties();
 

@@ -108,6 +108,12 @@
     <ClCompile Include="src\Graphics\UI\UIText.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\InstancedMeshRenderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\UI\BoundingRect.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -259,6 +265,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\UI\UIText.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Mesh\InstancedMeshRenderer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\UI\BoundingRect.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

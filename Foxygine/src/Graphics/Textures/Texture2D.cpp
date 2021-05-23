@@ -1,7 +1,6 @@
 #include "Texture2D.h"
 #include "../Shaders/Shader.h"
 #include <iostream>
-#include "../Lights/ShadowMap.h"
 
 
 #ifndef STB_IMAGE_IMPLEMENTATION

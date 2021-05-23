@@ -26,10 +26,10 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	void SetMesh(std::shared_ptr<Mesh> _mesh);
-	void Draw(std::shared_ptr<Camera> _drawingCamera) override;
-	void DrawShadowMap(Light* light);
-	void OnAttach() override;
-	void OnDetach() override;
+	virtual void SetMesh(std::shared_ptr<Mesh> _mesh);
+	virtual void Draw(std::shared_ptr<Camera> _drawingCamera) override;
+	virtual void DrawShadowMap(Light* light);
+	virtual void OnAttach() override;
+	virtual void OnDetach() override;
 };
 

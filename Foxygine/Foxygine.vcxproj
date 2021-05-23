@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\UI\BoundingRect.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\InstancedMeshRenderer.cpp" />
     <ClCompile Include="src\Graphics\UI\ScreenSpaceCanvas.cpp" />
     <ClCompile Include="src\Graphics\UI\Canvas.cpp" />
     <ClCompile Include="src\Graphics\Lights\AmbientLight.cpp" />
@@ -196,6 +198,8 @@
     <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\UI\BoundingRect.h" />
+    <ClInclude Include="src\Graphics\Mesh\InstancedMeshRenderer.h" />
     <ClInclude Include="src\Graphics\UI\ScreenSpaceCanvas.h" />
     <ClInclude Include="src\Graphics\UI\Canvas.h" />
     <ClInclude Include="src\Graphics\Lights\AmbientLight.h" />

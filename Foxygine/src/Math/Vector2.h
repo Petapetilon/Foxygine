@@ -15,6 +15,21 @@ public:
 	}
 
 
+	Vector2 Rotate(float angle) {
+		Vector2 vec;
+		float rad = glm::radians(angle);
+		float s = sin(rad);
+		float c = cos(rad);
+		vec.x = x * c - y * s;
+		vec.y = x * s + y * c;
+		return vec;
+	}
+
+
+	Vector2 Unsign() {
+		return Vector2(abs(x), abs(y));
+	}
+
 	bool operator==(const Vector2& other) const
 	{
 		return (this->x == other.x && this->y == other.y);

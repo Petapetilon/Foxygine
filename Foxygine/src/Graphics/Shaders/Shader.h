@@ -41,7 +41,7 @@ public:
 	std::string name;
 
 	unsigned int GL_GetShaderProgram();
-	void GL_BindProgram();
+	bool GL_BindProgram();
 	void LoadShaderResource(std::string shaderSourceFilePath, ShaderType shaderType);
 	bool GetShaderLitType();
 

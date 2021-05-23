@@ -35,9 +35,6 @@ void Camera::ResetCamera(float _screenRatio)
 
 void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 {
-	//shader->SetShaderPass(new ShaderPassMat4(&combinedMatrix, "u_CameraWorldToScreen"));
-	//shader->SetShaderPass(new ShaderPassVec4(&position, "u_CameraPosition"));
-	//shader->SetShaderPass(new ShaderPassVec4(&direction, "u_CameraDirection"));
 	glUniformMatrix4fv(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_CameraWorldToScreen"), 1, GL_FALSE, &combinedMatrix[0][0]);
 	glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_CameraPosition"), position.x, position.y, position.z, position.w);
 	glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_CameraDirection"), direction.x, direction.y, direction.z, direction.w);
@@ -46,6 +43,5 @@ void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 void Camera::GL_SetCameraUniformForSkybox(std::shared_ptr<Shader> shader)
 {
 	glm::mat4 ccombinedMatrix = projectionMatrix * transform->GetOrientationMatrix();
-	//shader->SetShaderPass(new ShaderPassMat4(&ccombinedMatrix, "u_CameraWorldToScreen"));
 	shader->SetValueMat4("u_CameraWorldToScreen", ccombinedMatrix);
 }

@@ -2,6 +2,7 @@
 #include "GameObject/SimpleCamera.h"
 #include "Graphics/Graphics.h"
 #include <vector>
+#include "Graphics/UI/BoundingRect.h"
 
 
 Foxygine::Foxygine() {
@@ -112,6 +113,30 @@ void Foxygine::StartFoxygine()
     auto cube = GameObject::CreateGameObject("cube");
     cube->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\cube.obj", true));
     cube->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial3));
+
+
+    BoundingRect b;
+    b.SetPosition(25, 125);
+    b.SetDimension(25, 25);
+    b.SetRotation(0);
+    std::cout << b.GetLowerBound() << std::endl;
+    std::cout << b.GetUpperBound() << std::endl;
+
+    std::cout << b.GetRightBound() << std::endl;
+    std::cout << b.GetLeftBound() << std::endl;
+
+    BoundingRect b2;
+    b2.SetPosition(0, 0);
+    b2.SetDimension(25, 25);
+    b2.SetRotation(0);
+    b2.AdjustBoundToFit(b);
+    std::cout << b2.GetLowerBound() << std::endl;
+    std::cout << b2.GetUpperBound() << std::endl;
+
+    std::cout << b2.GetRightBound() << std::endl;
+    std::cout << b2.GetLeftBound() << std::endl;
+
+    std::cout << b2.GetPosition().x << ", " << b2.GetPosition().y << std::endl;
 }
 
 
@@ -143,8 +168,6 @@ void Foxygine::UpdateFoxygine(float deltaTime)
     }
 
     
-    //GameObjectHandler::FindGameObject("smoothSphere")->GetComponent<MeshRenderer>()->GetMaterial()->SetMainColor(Color(r, g, b, 1));
-    //GameObjectHandler::FindGameObject("light")->transform->Rotate(Vector3(0, 1, 0), glm::degrees(deltaTime));
     GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
 }
 

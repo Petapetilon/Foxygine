@@ -44,11 +44,14 @@ unsigned int Shader::GL_GetShaderProgram() {
 }
 
 
-void Shader::GL_BindProgram() { 
+bool Shader::GL_BindProgram() { 
 	if (Graphics::GL_GetCurrentlyBoundShader() == nullptr || Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram() != GL_ShaderProgram) {
 		GL_Call(glUseProgram(GL_ShaderProgram)); 
 		Graphics::GL_SetCurrentlyBoundShader(this);
+		return true;
 	}
+
+	return false;
 }
 
 
