@@ -4,11 +4,12 @@
 #include <string>
 #include <iostream>
 #include "Component.h"
+#include "Object.h"
 
 
 class Transform;
 
-class GameObject
+class GameObject : public Object
 {
 private:
 	class ComponentNode {
@@ -26,13 +27,11 @@ private:
 
 
 	std::list<std::shared_ptr<ComponentNode>> components;
-	bool isActive;
 
 	GameObject(std::string _name);
 
 public:
 	Transform* transform;
-	std::string name;
 	long uniqueID;
 	
 	
@@ -104,11 +103,9 @@ public:
 	}
 
 
-	void SetActive(bool);
-	bool GetActiveSelf();
+	virtual void OnEnable() override;
+	virtual void OnDisable() override;
 
-	void OnEnable();
-	void OnDisable();
 	void Start();
 	void Update(float);
 	void FixedUpdate(float);

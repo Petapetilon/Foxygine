@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "../../Math/Vector2.h"
 #include "../../Math/Vector2I.h"
 #include "../../Math/Vector3.h"
@@ -39,11 +40,15 @@ public:
 	Vector2 GetExtents();
 	float GetRotation();
 
-	bool CheckOverlap(BoundingRect other);
+	bool CheckOverlap(std::shared_ptr<BoundingRect> other);
 	bool CheckPointInisde(Vector2 point);
 	std::vector<Vector2> GetBoundingPoints();
 
-	void AdjustBoundToFit(BoundingRect other);
+	void AdjustBoundToFit(std::shared_ptr<BoundingRect> other);
 	BoundingRect GetNonRotatedBound();
+
+	glm::mat4 GetTransform();
+
+	void Init();
 };
 

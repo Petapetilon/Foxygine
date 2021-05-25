@@ -7,14 +7,10 @@
 //Gathers Data of current frame state from the transform
 void Camera::OnPreRender()
 {
-	//glm::mat4 lightProj = glm::ortho(-10.f, 10.f, -10.f, 10.f, 1.f, 20.f);
-	//combinedMatrix = lightProj * *transform->GetGlobalMatrix();
 	combinedMatrix = projectionMatrix * *transform->GetGlobalMatrix();
 
 	direction = Vector4(transform->Forward() * 1, 0);
 	position = Vector4(transform->Position() * -1, 1);
-
-	//std::cout << direction.x << ", " << direction.y << ", " << direction.z << ", " << std::endl;
 }
 
 
@@ -26,6 +22,7 @@ void Camera::SetupCamera(float _fov, float _screenRatio, float _nearClip, float 
 	projectionMatrix = glm::perspective(_fov, _screenRatio, _nearClip, _farClip);
 	Graphics::camera = std::shared_ptr<Camera>(this);
 }
+
 
 void Camera::ResetCamera(float _screenRatio)
 {
@@ -39,6 +36,7 @@ void Camera::GL_SetCameraUniform(std::shared_ptr<Shader> shader)
 	glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_CameraPosition"), position.x, position.y, position.z, position.w);
 	glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_CameraDirection"), direction.x, direction.y, direction.z, direction.w);
 }
+
 
 void Camera::GL_SetCameraUniformForSkybox(std::shared_ptr<Shader> shader)
 {

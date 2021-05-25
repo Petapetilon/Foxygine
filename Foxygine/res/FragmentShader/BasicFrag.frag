@@ -14,14 +14,12 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 vertexUV;
 in vec4 lightSpaceFragPos;
-in vec4 LSFP[5];
 in mat3 TBN;
 
 
 uniform int u_RenderedFrames;
 
 uniform mat4 u_ObjectTransform;
-uniform mat4 u_ObjectOrientation;
 
 uniform mat4 u_CameraWorldToScreen;
 uniform vec4 u_CameraPosition;
@@ -102,42 +100,6 @@ vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragme
 }
 
 
-//vec3 CalculatePointColor(int index, vec3 normal, vec3 viewDir, vec3 fragmentColor, float specularMod){
-//	vec3 lightDir = normalize(vertexPosition - u_LightDirection[index].xyz);
-//    // diffuse shading
-//    float diffuseFalloff = max(dot(normal, lightDir), 0.0);
-//    // specular shading
-//    vec3 reflectDir = reflect(-lightDir, normal);
-//    float specularFalloff = pow(max(dot(viewDir, reflectDir), 0.0), u_MaterialProps.glossiness * 50);
-//
-//
-//	//quadratic
-//	if(u_PointLightFalloffType[index] == 0){
-//		vec3 squareDistance = vertexPosition - u_PointLightPosition[index].xyz;
-//		float multiplier = u_PointLightIntensity[index] / (squareDistance.x * squareDistance.x + squareDistance.y * squareDistance.y + squareDistance.z * squareDistance.z);
-//		diffuseFalloff *= multiplier;
-//		specularFalloff *= multiplier;
-//	}
-//	//linear
-//	else if(u_PointLightFalloffType[index] == 1){
-//		float multiplier = u_PointLightIntensity[index] / distance(vertexPosition, u_PointLightPosition[index].xyz);
-//		diffuseFalloff *= multiplier;
-//		specularFalloff *= multiplier;
-//	}
-//
-//	max(diffuseFalloff, 1);
-//	max(specularFalloff, 1);
-//
-//    // combine results
-//    vec3 diffuseColor  = u_PointLightColor[index].xyz * diffuseFalloff * fragmentColor;
-//    vec3 specularColor = u_PointLightColor[index].xyz * specularFalloff * diffuseFalloff * specularMod;
-//    return (diffuseColor + specularColor);
-//}
-
-
-
-
-
 void main() {
 	//Normal Map
 	vec3 mappedVertexNormal = (TBN * normalize(texture2D(u_NormalMap, vertexUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
@@ -161,7 +123,4 @@ void main() {
 	}
 
 	FragColor = vec4(composedColor, 1);
-	//FragColor = vec4(texture(u_ShadowDepthMap, vertexUV.xy).xyz, 1);
-	//FragColor = vec4(texture(u_SM1, vertexUV).xyz, 1);
-
 }

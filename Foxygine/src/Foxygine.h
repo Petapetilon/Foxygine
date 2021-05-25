@@ -25,6 +25,10 @@
 
 #include "Graphics/Lights/DirectionalLight.h"
 
+#include "Graphics/UI/ScreenSpaceCanvas.h"
+#include "Graphics/UI/BoundingRect.h"
+#include "Graphics/UI/UIImage.h"
+
 
 #include "Math/Constants.h"
 #include "Math/Quaternion.h"

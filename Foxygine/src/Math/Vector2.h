@@ -61,4 +61,5 @@ public:
 	}
 
 	operator glm::vec2() const { return glm::vec2(x, y); }
+	operator glm::vec3() const { return glm::vec3(x, y, 0); }
 };

@@ -11,7 +11,12 @@ Mesh::Mesh(const std::string& filePath)
 	ImportMesh(filePath);
 }
 
-Mesh::Mesh() {}
+
+Mesh::Mesh() 
+{ 
+	dataIncludeMask = 0; 
+}
+
 
 Mesh* Mesh::ImportMesh(const std::string& filePath)
 {
@@ -28,40 +33,13 @@ Mesh* Mesh::ImportMesh(const std::string& filePath)
 	indices = loader.LoadedIndices;
 
 	//Tangents and Bitangents for normal mapping
-	tangents = std::unique_ptr<Vector3[]>(new Vector3[positions.size()]);
-	bitangents = std::unique_ptr<Vector3[]>(new Vector3[positions.size()]);
+	RecalculateNormals();
+	RecalculateBounds();
 
-	for (int i = 0; i < indices.size() - 2; i += 3) {
-		auto edge1 = positions[indices[i + 1]] - positions[indices[i]];
-		auto edge2 = positions[indices[i + 2]] - positions[indices[i]];
-		auto deltaUV1 = uvs[indices[i + 1]] - uvs[indices[i]];
-		auto deltaUV2 = uvs[indices[i + 2]] - uvs[indices[i]];
-
-		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-
-		Vector3 tangent;
-		Vector3 bitangent;
-
-		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
-
-		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-
-		tangents[indices[i]] = tangent;
-		tangents[indices[i + 1]] = tangent;
-		tangents[indices[i + 2]] = tangent;
-
-		bitangents[indices[i]] = bitangent;
-		bitangents[indices[i + 1]] = bitangent;
-		bitangents[indices[i + 2]] = bitangent;
-	}
-
-	dataIncludeMask = 0x3F;
+	IncludeMeshData(MeshData::Everything);
 	return this;
 }
+
 
 std::shared_ptr<SerializedMesh> Mesh::SerializeMeshData()
 {
@@ -139,12 +117,84 @@ std::shared_ptr<SerializedMesh> Mesh::SerializeMeshData()
 	return std::make_shared<SerializedMesh>(serialzedData);
 }
 
+
 void Mesh::ExcludeMeshData(MeshData excludedData)
 {
-	dataIncludeMask = dataIncludeMask ^ (char)excludedData;
+	dataIncludeMask = dataIncludeMask & !(char)excludedData;
 }
+
 
 void Mesh::IncludeMeshData(MeshData includedData)
 {
 	dataIncludeMask = dataIncludeMask | (char)includedData;
+}
+
+
+void Mesh::SetPositions(const std::vector<Vector3> _positions)
+{
+	positions = _positions;
+	IncludeMeshData(MeshData::Positions);
+}
+
+
+void Mesh::SetNormals(const std::vector<Vector3> _normals)
+{
+	normals = _normals;
+	IncludeMeshData(MeshData::Normals);
+}
+
+
+void Mesh::SetUVs(const std::vector<Vector2> _uvs)
+{
+	uvs = _uvs;
+	IncludeMeshData(MeshData::UVs);
+}
+
+
+void Mesh::SetIndices(const std::vector<unsigned int> _indices)
+{
+	indices = _indices;
+	IncludeMeshData(MeshData::Indices);
+}
+
+
+void Mesh::RecalculateNormals()
+{
+	tangents = std::unique_ptr<Vector3[]>(new Vector3[positions.size()]);
+	bitangents = std::unique_ptr<Vector3[]>(new Vector3[positions.size()]);
+
+	for (int i = 0; i < indices.size() - 2; i += 3) {
+		auto edge1 = positions[indices[i + 1]] - positions[indices[i]];
+		auto edge2 = positions[indices[i + 2]] - positions[indices[i]];
+		auto deltaUV1 = uvs[indices[i + 1]] - uvs[indices[i]];
+		auto deltaUV2 = uvs[indices[i + 2]] - uvs[indices[i]];
+
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		Vector3 tangent;
+		Vector3 bitangent;
+
+		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+		tangents[indices[i]] = tangent;
+		tangents[indices[i + 1]] = tangent;
+		tangents[indices[i + 2]] = tangent;
+
+		bitangents[indices[i]] = bitangent;
+		bitangents[indices[i + 1]] = bitangent;
+		bitangents[indices[i + 2]] = bitangent;
+	}
+
+	IncludeMeshData(MeshData::NormalData);
+}
+
+
+void Mesh::RecalculateBounds()
+{
 }

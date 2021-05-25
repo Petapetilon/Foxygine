@@ -36,22 +36,6 @@ bool GameObject::FindAllGameObjects(std::string _name, std::shared_ptr<std::list
 }
 
 
-void GameObject::SetActive(bool active)
-{
-	isActive = active;
-	if (active)
-		OnEnable();
-	else
-		OnDisable();
-}
-
-
-bool GameObject::GetActiveSelf()
-{
-	return isActive;
-}
-
-
 void GameObject::OnEnable()
 {
 	GameObjectHandler::SetGameObjectActiveStatus(*this, true);

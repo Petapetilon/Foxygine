@@ -1,12 +1,13 @@
 #pragma once
 #include <memory>
 #include <typeinfo>
+#include "Object.h"
 
 
 class GameObject;
 class Transform;
 
-class Component
+class Component : public Object
 {
 public:
 	GameObject* gameObject;
@@ -19,8 +20,6 @@ public:
 
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
-	virtual void OnEnable() {}
-	virtual void OnDisable() {}
 	virtual void OnPreRender() {}
 	virtual void OnPostRender() {}
 	virtual void OnTransformChanged() {}

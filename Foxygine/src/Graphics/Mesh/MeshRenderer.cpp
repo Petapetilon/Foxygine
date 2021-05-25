@@ -39,6 +39,7 @@ MeshRenderer::MeshRenderer()
 
 	//Graphics::RegisterMeshRenderer(this);
 	isActive = true;
+	castShadow = false;
 }
 
 
@@ -119,7 +120,6 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	material->GL_SetProperties();
 
 	//Object Uniforms
-	shader->SetValueMat4("u_ObjectOrientation", transform->GetOrientationMatrix());
 	shader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call

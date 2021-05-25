@@ -41,17 +41,9 @@ void Foxygine::StartFoxygine()
 
     auto lightGo = GameObject::CreateGameObject("lightGo");
     lightGo->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, .9f, .7f, 1.f), 1));
-    //lightGo->transform->SetPosition(Vector3(-8, 5, 5));
     lightGo->transform->SetRotation(0, 100, 20, true);
     lightGo->transform->Translate(lightGo->transform->Forward() * -10);
-    //lightGo->transform->SetPosition(0, 10, 0);
-    //lightGo->transform->SetRotation(0, 0, 45, false);
 
-    
-    //lightGo->AddComponent<Camera>(new Camera());
-    //auto cam = lightGo->GetComponent<Camera>();
-    //cam->SetupCamera(glm::radians(70.f), (float)resolution.x / (float)resolution.y, .001f, 1000.f);
-    //lightGo->AddComponent<SimpleCamera>(new SimpleCamera());
 
 
 
@@ -59,9 +51,6 @@ void Foxygine::StartFoxygine()
     auto basicMaterial2 = new Material("basicMaterial2", "basicShader");
     basicMaterial2->CreateMaterialProperty("Glossiness", "glossiness", .75);
     basicMaterial2->CreateMaterialProperty("Metallic", "metallic", .75f);
-
-    //lightGo->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj", true));
-    //lightGo->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial2));
     
     auto basicMaterial3 = new Material("basicMaterial3", "basicShader");
     basicMaterial3->SetMainColor(Color(1.f, 1.f, 1.f, 1.f));
@@ -100,43 +89,28 @@ void Foxygine::StartFoxygine()
     groundGo->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(groundMaterial));
     groundGo->transform->Scale(Vector3(10, 1, 10));
     groundGo->transform->Translate(Vector3(0, -2.5f, 0));
-
-
-    
+  
     auto smoothSphere2 = GameObject::CreateGameObject("smoothSphere");
     smoothSphere2->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj", true));
     smoothSphere2->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial2));
     smoothSphere2->transform->SetPosition(Vector3(-5, 0, 0));
-
-
-    
+ 
     auto cube = GameObject::CreateGameObject("cube");
     cube->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\cube.obj", true));
     cube->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial3));
 
 
-    BoundingRect b;
-    b.SetPosition(25, 125);
-    b.SetDimension(25, 25);
-    b.SetRotation(0);
-    std::cout << b.GetLowerBound() << std::endl;
-    std::cout << b.GetUpperBound() << std::endl;
 
-    std::cout << b.GetRightBound() << std::endl;
-    std::cout << b.GetLeftBound() << std::endl;
 
-    BoundingRect b2;
-    b2.SetPosition(0, 0);
-    b2.SetDimension(25, 25);
-    b2.SetRotation(0);
-    b2.AdjustBoundToFit(b);
-    std::cout << b2.GetLowerBound() << std::endl;
-    std::cout << b2.GetUpperBound() << std::endl;
+    auto canvasGo = GameObject::CreateGameObject("canvasGo");
+    canvasGo->AddComponent<ScreenSpaceCanvas>(new ScreenSpaceCanvas());
+    auto canvas = canvasGo->GetComponent<ScreenSpaceCanvas>();
+    auto img = new UIImage(canvas, colorTex);
+    canvas->AddElement(img);
+    canvas->SetPosition(Vector2I(0, 0));
 
-    std::cout << b2.GetRightBound() << std::endl;
-    std::cout << b2.GetLeftBound() << std::endl;
-
-    std::cout << b2.GetPosition().x << ", " << b2.GetPosition().y << std::endl;
+    img->SetPosition(Vector2I(100, 100));
+    img->SetSizePixelAbsolute(Vector2I(100, 100));
 }
 
 

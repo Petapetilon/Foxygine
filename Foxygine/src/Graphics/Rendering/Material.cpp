@@ -188,7 +188,6 @@ void Material::GL_SetProperties()
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_DispTexEnabled"), DispEnable));
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_SpecTexEnabled"), SpecEnable));
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MetTexEnabled"), MetEnable));
-
 }
 
 

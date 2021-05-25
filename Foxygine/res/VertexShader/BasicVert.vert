@@ -21,7 +21,6 @@ out mat3 TBN;
 uniform int u_RenderedFrames;
 
 uniform mat4 u_ObjectTransform;
-uniform mat4 u_ObjectOrientation;
 
 uniform mat4 u_LightSpaceMatrix;
 
@@ -29,27 +28,22 @@ uniform mat4 u_CameraWorldToScreen;
 uniform vec4 u_CameraPosition;
 uniform vec4 u_CameraDirection;
 
-uniform mat4 u_LSM[5];
-
 
 
 void main() {
-	vertexPosition = (u_ObjectTransform * vec4(l_Position, 1)).xyz;// + vec3(0,1,0) * sin(float(u_RenderedFrames) / 100.0) + vec3(5, 0, 0) * cos(float(u_RenderedFrames) / 100.0);
+	vertexPosition = (u_ObjectTransform * vec4(l_Position, 1)).xyz;
 	gl_Position = u_CameraWorldToScreen * vec4(vertexPosition, 1);
 	//gl_Position = u_LightSpaceMatrix * vec4(vertexPosition, 1);
 
-	//vertexNormal = (u_ObjectOrientation * vec4(l_Normal, 1)).xyz;
-	vertexNormal = mat3(transpose(inverse(u_ObjectTransform))) * l_Normal;
-	//vertexNormal = l_Normal;
+	mat3 normalMatrix = mat3(transpose(inverse(u_ObjectTransform)));
+	vertexNormal = normalMatrix * l_Normal;
 
-	vec3 T = normalize(vec3(u_ObjectOrientation * vec4(l_Tangent, 0.0)));
-	vec3 B = normalize(vec3(u_ObjectOrientation * vec4(l_Bitangent, 0.0)));
-	vec3 N = normalize(vec3(u_ObjectOrientation * vec4(l_Normal, 0.0)));
+	vec3 T = normalize(normalMatrix * l_Tangent);
+	vec3 B = normalize(normalMatrix * l_Bitangent);
+	vec3 N = normalize(normalMatrix * l_Normal);
 	TBN = mat3(T, B, N);
 
 	vertexUV = l_UV;
 
 	lightSpaceFragPos = u_LightSpaceMatrix * vec4(vertexPosition, 1);
-
-	//gl_Position = u_LSM[0] * vec4(vertexPosition, 1);
 }

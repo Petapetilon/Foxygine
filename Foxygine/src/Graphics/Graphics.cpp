@@ -5,6 +5,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Material.h"
 #include "../Peripherals/Window.h"
+#include "../Graphics/UI/ScreenSpaceCanvas.h"
 
 
 
@@ -69,6 +70,9 @@ void Graphics::Init()
 	SpotLight_ShadowResolution = 2048;
 
 	Window::GetInstance()->SetWindowResizeCallback(Graphics::OnWindowResize);
+
+	Shader::CreateBasicLitShader("Basic Lit");
+	Shader::CreateBasicUnlitUIShader("Basic Unlit UI");
 }
 
 
@@ -83,6 +87,8 @@ void Graphics::RenderFrame() {
 
 	if(skyBoxRenderer != nullptr)
 		skyBoxRenderer->Draw(camera);
+
+	GameObject::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->Draw();
 
 	renderedFrames++;
 }
@@ -123,7 +129,7 @@ void Graphics::SetSkybox(std::vector<std::string> filePaths)
 void Graphics::OnWindowResize(int width, int height)
 {
 	if (width && height) {
-		camera->ResetCamera(width / height);
+		camera->ResetCamera((float)width / (float)height);
 		glViewport(0, 0, width, height);
 		RenderFrame();
 	}

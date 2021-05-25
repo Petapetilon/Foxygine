@@ -7,6 +7,7 @@
 #include "../../Math/Vector2I.h"
 #include "../../Math/Vector3.h"
 #include "../../Math/Vector3I.h"
+#include "../../GameObject/Object.h"
 
 
 class Canvas;
@@ -14,7 +15,7 @@ class BoundingRect;
 enum class AnkorAlignment;
 
 
-class UIElement
+class UIElement : public Object
 {
 public:
 	enum class AnkorAlignment {
@@ -34,16 +35,15 @@ public:
 protected:
 	std::shared_ptr<BoundingRect> transformRect;
 	std::shared_ptr<BoundingRect> boundingRect;
-	std::shared_ptr<Canvas> canvas;
 	AnkorAlignment alignment;
-	Color color;
 	UIElement* parent;
+	Canvas* canvas;
 	std::vector<UIElement*> children;
 	glm::mat4 myTransform;
 
-	virtual glm::mat4 GetCombinedTransform();
-
 public:
+	virtual glm::mat4 GetCombinedTransform();
+	virtual Vector2 GetCombinedOffset();
 	std::string name;
 	
 	virtual void Draw();
@@ -51,12 +51,13 @@ public:
 	void SetAnkor(AnkorAlignment _alignment);
 	void SetSizePixelAbsolute(Vector2I dimensions);
 	void SetSizeParentRelative(Vector2 dimensionInPercentOfParent);
+	void SetPosition(Vector2I pixelPosition);
 	std::shared_ptr<BoundingRect> GetBounds();
 	std::shared_ptr<BoundingRect> GetTransform();
 
 	void BuildChildrenBounds();
 
-	void AddElement(UIElement* element);
+	virtual void AddElement(UIElement* element);
 	void RemoveElement(UIElement* element);
 	UIElement* GetElement(std::string name);
 	void SetElementIndex(UIElement* element, int newIndex);

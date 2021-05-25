@@ -258,7 +258,10 @@ std::shared_ptr<Shader> Shader::CreateBasicLitUIShader(std::string _name)
 
 std::shared_ptr<Shader> Shader::CreateBasicUnlitUIShader(std::string _name)
 {
+	ShaderLibrary::RegisterShader(new Shader(_name));
 	auto shader = ShaderLibrary::GetShader(_name);
+	shader->LoadShaderResource("res\\VertexShader\\UIScreenSpaceVert.vert", ShaderType::VertexShader);
+	shader->LoadShaderResource("res\\FragmentShader\\UIScreenSpaceFrag.frag", ShaderType::FragmentShader);
 	return std::shared_ptr<Shader>(shader);
 }
 

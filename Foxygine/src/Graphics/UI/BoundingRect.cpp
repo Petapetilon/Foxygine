@@ -1,5 +1,5 @@
 #include "BoundingRect.h"
-
+#include <gtx/transform.hpp>
 
 
 
@@ -177,18 +177,18 @@ float BoundingRect::GetRotation()
 }
 
 
-bool BoundingRect::CheckOverlap(BoundingRect other)
+bool BoundingRect::CheckOverlap(std::shared_ptr<BoundingRect> other)
 {
-	auto points = other.GetBoundingPoints();
+	auto points = other->GetBoundingPoints();
 	for (auto it = points.begin(); it != points.end(); it++) {
 		if (CheckPointInisde((*it - position).Rotate(-rotation)))
 			return true;
 	}
 
-	if (CheckPointInisde(other.position - position))
+	if (CheckPointInisde(other->position - position))
 		return true;
 
-	return other.CheckOverlap(*this);
+	return other->CheckOverlap(std::shared_ptr<BoundingRect>(this));
 }
 
 
@@ -215,14 +215,14 @@ std::vector<Vector2> BoundingRect::GetBoundingPoints()
 }
 
 
-void BoundingRect::AdjustBoundToFit(BoundingRect other)
+void BoundingRect::AdjustBoundToFit(std::shared_ptr<BoundingRect> other)
 {
-	Vector2 offset = other.position - position;
+	Vector2 offset = other->position - position;
 	//Right
 	if (offset.x > 0) {
 		//Right Up
 		if (offset.y > 0) {
-			Vector2 RU = offset + other.extents;
+			Vector2 RU = offset + other->extents;
 			Vector2 LD = extents * -1;
 
 			SetPosition((RU + LD) * .5);
@@ -230,7 +230,7 @@ void BoundingRect::AdjustBoundToFit(BoundingRect other)
 		}
 		//Right Down
 		else {
-			Vector2 RD = offset + Vector2(other.extents.x, -other.extents.y);
+			Vector2 RD = offset + Vector2(other->extents.x, -other->extents.y);
 			Vector2 LU = Vector2(-extents.x, extents.y);
 
 			SetPosition((RD + LU) * .5);
@@ -241,7 +241,7 @@ void BoundingRect::AdjustBoundToFit(BoundingRect other)
 	else {
 		//Left Up
 		if (offset.y > 0) {
-			Vector2 LU = offset + Vector2(-other.extents.x, other.extents.y);
+			Vector2 LU = offset + Vector2(-other->extents.x, other->extents.y);
 			Vector2 RD = Vector2(extents.x, -extents.y);
 
 			SetPosition((LU + RD) * .5);
@@ -249,7 +249,7 @@ void BoundingRect::AdjustBoundToFit(BoundingRect other)
 		}
 		//Left Down
 		else {
-			Vector2 LD = offset - other.extents;
+			Vector2 LD = offset - other->extents;
 			Vector2 RU = extents * -1;
 
 			SetPosition((LD + RU) * .5);
@@ -271,4 +271,22 @@ BoundingRect BoundingRect::GetNonRotatedBound()
 	nonRotBound.SetDimension(Vector2(maxX - minX, maxY - minY));
 
 	return nonRotBound;
+}
+
+
+glm::mat4 BoundingRect::GetTransform()
+{
+	glm::mat4 mat(1);
+	mat = glm::rotate(mat, rotation, glm::vec3(0, 0, 1));
+	mat = glm::translate(mat, (glm::vec3)position);
+	mat = glm::scale(mat, (glm::vec3)dimension);
+	return mat;
+}
+
+
+void BoundingRect::Init()
+{
+	SetPosition(0, 0);
+	SetDimension(0, 0);
+	SetRotation(0);
 }

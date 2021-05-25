@@ -45,7 +45,11 @@ public:
 	void ExcludeMeshData(MeshData excludedData);
 	void IncludeMeshData(MeshData includedData);
 
-private:
-	
+	void SetPositions(const std::vector<Vector3> _positions);
+	void SetNormals(const std::vector<Vector3> _normals);
+	void SetUVs(const std::vector<Vector2> _uvs);
+	void SetIndices(const std::vector<unsigned int> indices);
+	void RecalculateNormals();
+	void RecalculateBounds();	
 };
 
