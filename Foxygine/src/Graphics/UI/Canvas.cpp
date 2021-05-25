@@ -1,16 +1,50 @@
 #include "Canvas.h"
+#include "../Graphics.h"
 
 
 
-glm::mat4 Canvas::GetCombinedTransform()
+void Canvas::OnAttach()
 {
-	return projectionMatrix;
+	Graphics::RegisterCanvas(this);
+	canvas = this;
+	UIElement::SetActive(true);
+	latestElementID = -1;
 }
 
 
-void Canvas::Draw()
+void Canvas::OnDetach()
 {
-	for (auto it = children.begin(); it != children.end(); it++)
-		(*it)->Draw();
+	Graphics::UnregisterCanvas(this);
 }
 
+
+UIElement* Canvas::FindElement(std::string _name)
+{
+	auto index = elementNameLookup[_name];
+	if (index >= 0)
+		return elementMap[index];
+}
+
+
+UIElement* Canvas::FindElement(long id)
+{
+	return elementMap[id];
+}
+
+
+void Canvas::RegisterElement(UIElement* element)
+{
+	elementMap[++latestElementID] = element;
+	elementNameLookup[element->name] = latestElementID;
+	element->SetCanvas(this, latestElementID);
+}
+
+
+void Canvas::UnregisterElement(UIElement* element)
+{
+	long id = element->ClearCanvas(this);
+	if (id != -1) {
+		elementMap.erase(id);
+		elementNameLookup.erase(element->name);
+	}
+}

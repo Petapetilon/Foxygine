@@ -53,7 +53,8 @@ std::vector<std::shared_ptr<UIElement>> ScreenSpaceCanvas::RayCastFromMouseAll()
 
 void ScreenSpaceCanvas::OnAttach()
 {
-	canvas = this;
+	__super::OnAttach();
+
 	auto res = Window::GetInstance()->GetWindowResolution();
 	projectionMatrix = glm::ortho(0, res.x, res.y, 0);
 }
@@ -69,4 +70,10 @@ void ScreenSpaceCanvas::Draw()
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+}
+
+
+void ScreenSpaceCanvas::OnWindowResize()
+{
+	UIElement::OnTransformChanged();
 }

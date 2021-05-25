@@ -1,5 +1,6 @@
 #include "BoundingRect.h"
 #include <gtx/transform.hpp>
+#include <iostream>
 
 
 
@@ -104,52 +105,76 @@ void BoundingRect::SetHeight(float height)
 float BoundingRect::GetLeftBound()
 {
 	if (rotation <= 90)
-		return position.x - Vector2(extents.x, -extents.y).Rotate(rotation).x;
+		return position.x - Vector2(extents.x, -extents.y).Rotated(rotation).x;
 	else if (rotation <= 180)
-		return position.x - extents.Rotate(rotation).x;
+		return position.x - extents.Rotated(rotation).x;
 	else if (rotation <= 270)
-		return position.x + Vector2(extents.x, -extents.y).Rotate(rotation).x;
+		return position.x + Vector2(extents.x, -extents.y).Rotated(rotation).x;
 	else
-		return position.x + extents.Rotate(rotation).x;
+		return position.x + extents.Rotated(rotation).x;
 }
 
 
 float BoundingRect::GetRightBound()
 {
 	if (rotation <= 90)
-		return position.x + Vector2(extents.x, -extents.y).Rotate(rotation).x;
+		return position.x + Vector2(extents.x, -extents.y).Rotated(rotation).x;
 	else if (rotation <= 180)
-		return position.x + extents.Rotate(rotation).x;
+		return position.x + extents.Rotated(rotation).x;
 	else if (rotation <= 270)
-		return position.x - Vector2(extents.x, -extents.y).Rotate(rotation).x;
+		return position.x - Vector2(extents.x, -extents.y).Rotated(rotation).x;
 	else
-		return position.x - extents.Rotate(rotation).x;
+		return position.x - extents.Rotated(rotation).x;
 }
 
 
 float BoundingRect::GetUpperBound()
 {
 	if (rotation <= 90)
-		return position.y + extents.Rotate(rotation).y;
+		return position.y + extents.Rotated(rotation).y;
 	else if (rotation <= 180)
-		return position.y + Vector2(extents.x, -extents.y).Rotate(rotation).y;
+		return position.y + Vector2(extents.x, -extents.y).Rotated(rotation).y;
 	else if (rotation <= 270)
-		return position.y - extents.Rotate(rotation).y;
+		return position.y - extents.Rotated(rotation).y;
 	else
-		return position.y - Vector2(extents.x, -extents.y).Rotate(rotation).y;
+		return position.y - Vector2(extents.x, -extents.y).Rotated(rotation).y;
 }
 
 
 float BoundingRect::GetLowerBound()
 {
 	if (rotation <= 90)
-		return position.y - extents.Rotate(rotation).y;
+		return position.y - extents.Rotated(rotation).y;
 	else if (rotation <= 180)
-		return position.y - Vector2(extents.x, -extents.y).Rotate(rotation).y;
+		return position.y - Vector2(extents.x, -extents.y).Rotated(rotation).y;
 	else if (rotation <= 270)
-		return position.y + extents.Rotate(rotation).y;
+		return position.y + extents.Rotated(rotation).y;
 	else
-		return position.y + Vector2(extents.x, -extents.y).Rotate(rotation).y;
+		return position.y + Vector2(extents.x, -extents.y).Rotated(rotation).y;
+}
+
+
+Vector2 BoundingRect::GetUp()
+{
+	return Vector2(0, 1).Rotated(rotation);
+}
+
+
+Vector2 BoundingRect::GetRight()
+{
+	return Vector2(1, 0).Rotated(rotation);
+}
+
+
+Vector2 BoundingRect::GetDown()
+{
+	return Vector2(0, -1).Rotated(rotation);
+}
+
+
+Vector2 BoundingRect::GetLeft()
+{
+	return Vector2(-1, 0).Rotated(rotation);
 }
 
 
@@ -179,9 +204,9 @@ float BoundingRect::GetRotation()
 
 bool BoundingRect::CheckOverlap(std::shared_ptr<BoundingRect> other)
 {
-	auto points = other->GetBoundingPoints();
+	auto points = other->GetBoundingPointsGlobal();
 	for (auto it = points.begin(); it != points.end(); it++) {
-		if (CheckPointInisde((*it - position).Rotate(-rotation)))
+		if (CheckPointInisde((*it - position).Rotated(-rotation)))
 			return true;
 	}
 
@@ -194,7 +219,7 @@ bool BoundingRect::CheckOverlap(std::shared_ptr<BoundingRect> other)
 
 bool BoundingRect::CheckPointInisde(Vector2 point)
 {
-	Vector2 localPoint = (point - position).Rotate(-rotation);
+	Vector2 localPoint = (point - position).Rotated(-rotation);
 	if (localPoint.x < extents.x &&
 		localPoint.x > -extents.x &&
 		localPoint.y < extents.x &&
@@ -204,13 +229,24 @@ bool BoundingRect::CheckPointInisde(Vector2 point)
 }
 
 
-std::vector<Vector2> BoundingRect::GetBoundingPoints()
+std::vector<Vector2> BoundingRect::GetBoundingPointsLocal()
 {
 	std::vector<Vector2> points;
-	points.push_back(position + extents);
-	points.push_back(position + Vector2(extents.x, -extents.y));
 	points.push_back(position - extents);
+	points.push_back(position + Vector2(extents.x, -extents.y));
+	points.push_back(position + extents);
 	points.push_back(position + Vector2(-extents.x, extents.y));
+	return points;
+}
+
+
+std::vector<Vector2> BoundingRect::GetBoundingPointsGlobal()
+{
+	std::vector<Vector2> points;
+	points.push_back(position + Vector2::Rotate(extents * -1.f, rotation));
+	points.push_back(position + Vector2::Rotate(Vector2(extents.x, -extents.y), rotation));
+	points.push_back(position + Vector2::Rotate(extents, rotation));
+	points.push_back(position + Vector2::Rotate(Vector2(-extents.x, extents.y), rotation));
 	return points;
 }
 
@@ -234,7 +270,7 @@ void BoundingRect::AdjustBoundToFit(std::shared_ptr<BoundingRect> other)
 			Vector2 LU = Vector2(-extents.x, extents.y);
 
 			SetPosition((RD + LU) * .5);
-			SetDimension((RD - LU).Unsign());
+			SetDimension((RD - LU).Unsigned());
 		}
 	}
 	//Left
@@ -245,7 +281,7 @@ void BoundingRect::AdjustBoundToFit(std::shared_ptr<BoundingRect> other)
 			Vector2 RD = Vector2(extents.x, -extents.y);
 
 			SetPosition((LU + RD) * .5);
-			SetDimension((LU - RD).Unsign());
+			SetDimension((LU - RD).Unsigned());
 		}
 		//Left Down
 		else {

@@ -105,12 +105,13 @@ void Foxygine::StartFoxygine()
     auto canvasGo = GameObject::CreateGameObject("canvasGo");
     canvasGo->AddComponent<ScreenSpaceCanvas>(new ScreenSpaceCanvas());
     auto canvas = canvasGo->GetComponent<ScreenSpaceCanvas>();
-    auto img = new UIImage(canvas, colorTex);
+    auto img = new UIImage("image", canvas, colorTex);
     canvas->AddElement(img);
     canvas->SetPosition(Vector2I(0, 0));
 
-    img->SetPosition(Vector2I(100, 100));
-    img->SetSizePixelAbsolute(Vector2I(100, 100));
+    img->SetPosition(Vector2I(250, 250));
+    img->SetSizePixelAbsolute(Vector2I(250, 250));
+    img->SetRotation(90);
 }
 
 
@@ -143,6 +144,7 @@ void Foxygine::UpdateFoxygine(float deltaTime)
 
     
     GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
+    GameObjectHandler::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->FindElement("image")->SetRotation((float)Graphics::renderedFrames / (float)10);
 }
 
 

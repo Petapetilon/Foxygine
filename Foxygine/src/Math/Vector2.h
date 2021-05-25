@@ -1,5 +1,6 @@
 #pragma once
 #include "glm.hpp"
+#include <string>
 
 
 class Vector2 {
@@ -15,20 +16,53 @@ public:
 	}
 
 
-	Vector2 Rotate(float angle) {
-		Vector2 vec;
+	static Vector2 Rotate(Vector2 vec, float angle) {
 		float rad = glm::radians(angle);
 		float s = sin(rad);
 		float c = cos(rad);
-		vec.x = x * c - y * s;
-		vec.y = x * s + y * c;
+		float oldX = vec.x;
+		vec.x = vec.x * c - vec.y * s;
+		vec.y = oldX * s + vec.y * c;
 		return vec;
 	}
 
 
-	Vector2 Unsign() {
-		return Vector2(abs(x), abs(y));
+	Vector2 Rotated(float angle) {
+		Vector2 vec;
+		float rad = glm::radians(angle);
+		float s = sin(rad);
+		float c = cos(rad);
+		float oldX = x;
+		vec.x = x * c - y * s;
+		vec.y = oldX * s + y * c;
+		return vec;
 	}
+
+
+	static Vector2 Unsigne(Vector2 vec) { return Vector2(abs(vec.x), abs(vec.y)); }
+	Vector2 Unsigned() { return Vector2(abs(x), abs(y)); }
+
+	static Vector2 Normalize(Vector2 vec) { return vec / sqrtf(vec.x * vec.x + vec.y * vec.y); }
+	Vector2 Normalized() { return Vector2(x, y) / sqrtf(x * x + y * y); }
+
+	static float Magnitude(const Vector2& vec) { return sqrtf(vec.x * vec.x + vec.y * vec.y); }
+	float Magnitude() { return sqrtf(x * x + y * y); }
+
+	static float SqrMagnitude(const Vector2& vec) { return vec.x * vec.x + vec.y * vec.y; }
+	float SqrMagnitude() { return x * x + y * y; }
+
+	static float Distance(const Vector2& a, const Vector2& b) { return (a - b).Magnitude(); }
+	float Distance(const Vector2& other) { return (*this - other).Magnitude(); }
+
+	static float Dot(const Vector2& a, const Vector2& b) { return a.x * b.x + a.y * b.y; }
+	float Dot(const Vector2& other) { return x * other.x + y; }
+
+	Vector2 ComponentMul(Vector2 other) { return Vector2(x * other.x, y * other.y); }
+	Vector2 ComponentDiv(Vector2 other) { return Vector2(x / other.x, y / other.y); }
+
+
+	std::string Debug() { return "x: " + std::to_string(x) + ", y: " + std::to_string(y); }
+
 
 	bool operator==(const Vector2& other) const
 	{

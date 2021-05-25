@@ -33,7 +33,7 @@ void UIImage::GL_SetupData()
 
 	std::vector<Vector2> uvs;
 	uvs.push_back(Vector2(0, 0));
-	uvs.push_back(Vector2(0, 1));
+	uvs.push_back(Vector2(1, 0));
 	uvs.push_back(Vector2(1, 1));
 	uvs.push_back(Vector2(0, 1));
 	mesh->SetUVs(uvs);
@@ -92,6 +92,35 @@ void UIImage::GL_SetupData()
 }
 
 
+void UIImage::OnTransformChanged()
+{
+	Vector2 res = Window::GetInstance()->GetWindowResolution();
+	auto corners = transformRect->GetBoundingPointsGlobal();
+
+	GL_BufferData->serializedVertexData[0] = corners[0].x / res.x;
+	GL_BufferData->serializedVertexData[1] = corners[0].y / res.y;
+	GL_BufferData->serializedVertexData[5] = corners[1].x / res.x;
+	GL_BufferData->serializedVertexData[6] = corners[1].y / res.y;
+	GL_BufferData->serializedVertexData[10] = corners[2].x / res.x;
+	GL_BufferData->serializedVertexData[11] = corners[2].y / res.y;
+	GL_BufferData->serializedVertexData[15] = corners[3].x / res.x;
+	GL_BufferData->serializedVertexData[16] = corners[3].y / res.y;
+
+
+	GL_Call(glBindVertexArray(GL_VertexArrayObject));
+
+	//Bind Vertex Buffer 
+	GL_Call(glBindBuffer(GL_ARRAY_BUFFER, GL_VertexBufferObject));
+	GL_Call(glBufferData(GL_ARRAY_BUFFER,
+		GL_BufferData->serializedVertexData.size() * sizeof(GL_FLOAT),
+		&GL_BufferData->serializedVertexData[0], GL_STATIC_DRAW));
+
+	GL_Call(glBindVertexArray(0));
+
+	__super::OnTransformChanged();
+}
+
+
 UIImage::UIImage()
 {
 	transformRect = std::shared_ptr<BoundingRect>(new BoundingRect());
@@ -101,24 +130,26 @@ UIImage::UIImage()
 }
 
 
-UIImage::UIImage(UIElement* parent)
+UIImage::UIImage(std::string _name, UIElement* parent)
 {
 	transformRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 	boundingRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 
 	GL_SetupData();
 
+	name = _name;
 	parent->AddElement(this);
 }
 
 
-UIImage::UIImage(UIElement* parent, std::string textureFilePath)
+UIImage::UIImage(std::string _name, UIElement* parent, std::string textureFilePath)
 {
 	transformRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 	boundingRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 
 	GL_SetupData();
 
+	name = _name;
 	parent->AddElement(this);
 	SetActive(true);
 	
@@ -128,13 +159,14 @@ UIImage::UIImage(UIElement* parent, std::string textureFilePath)
 }
 
 
-UIImage::UIImage(UIElement* parent, std::shared_ptr<Texture2D> texture)
+UIImage::UIImage(std::string _name, UIElement* parent, std::shared_ptr<Texture2D> texture)
 {
 	transformRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 	boundingRect = std::shared_ptr<BoundingRect>(new BoundingRect());
 
 	GL_SetupData();
 
+	name = _name;
 	parent->AddElement(this);
 	SetActive(true);
 
@@ -154,17 +186,19 @@ void UIImage::Draw()
 		//Graphics Uniforms
 		int renderedFrames = Graphics::renderedFrames;
 		shader->SetValueVec1I("u_RenderedFrames", renderedFrames);
-		shader->SetValueMat4("u_CanvasToScreen", canvas->GetCombinedTransform());
+		//shader->SetValueMat4("u_CanvasToScreen", canvas->GetCombinedTransform());
 	}
 
 	//Material Uniforms
 	material->GL_SetProperties();
 
 	//Object Uniforms
-	shader->SetValueMat4("u_ObjectTransform", transformRect->GetTransform());
-	shader->SetValueVec2("u_PositionOffset", transformRect->GetPosition());
-	shader->SetValueVec2("u_Scale", Vector2(100, 100));
-	shader->SetValueVec2("u_WindowSize", Window::GetInstance()->GetWindowResolution());
+	//shader->SetValueMat4("u_ObjectTransform", transformRect->GetTransform());
+	//
+	//
+	//shader->SetValueVec2("u_PositionOffset", transformRect->GetPosition());
+	//shader->SetValueVec2("u_Scale", Vector2(100, 100));
+	//shader->SetValueVec2("u_WindowSize", Window::GetInstance()->GetWindowResolution());
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);

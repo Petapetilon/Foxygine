@@ -14,9 +14,10 @@ public:
 	std::vector<std::shared_ptr<UIElement>> RayCastFromScreenAll(Vector2 screenCoordinate) override;
 
 	std::shared_ptr<UIElement> RayCastFromMouse() override;
+	std::vector<std::shared_ptr<UIElement>> RayCastFromMouseAll() override;
 
 	void OnAttach() override;
 	void Draw() override;
-
+	void OnWindowResize() override;
 };
 

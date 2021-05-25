@@ -35,6 +35,11 @@ public:
 	float GetUpperBound();
 	float GetLowerBound();
 
+	Vector2 GetUp();
+	Vector2 GetRight();
+	Vector2 GetDown();
+	Vector2 GetLeft();
+
 	Vector2 GetPosition();
 	Vector2 GetDimension();
 	Vector2 GetExtents();
@@ -42,7 +47,8 @@ public:
 
 	bool CheckOverlap(std::shared_ptr<BoundingRect> other);
 	bool CheckPointInisde(Vector2 point);
-	std::vector<Vector2> GetBoundingPoints();
+	std::vector<Vector2> GetBoundingPointsLocal();
+	std::vector<Vector2> GetBoundingPointsGlobal();
 
 	void AdjustBoundToFit(std::shared_ptr<BoundingRect> other);
 	BoundingRect GetNonRotatedBound();

@@ -5,6 +5,16 @@
 
 
 
+void UIElement::OnTransformChanged()
+{
+	boundingRect->Init();
+	boundingRect->AdjustBoundToFit(transformRect);
+
+	for (auto it = children.begin(); it != children.end(); it++) 
+		(*it)->OnTransformChanged();
+}
+
+
 glm::mat4 UIElement::GetCombinedTransform()
 {
 	if (parent != nullptr) {
@@ -15,23 +25,37 @@ glm::mat4 UIElement::GetCombinedTransform()
 	return glm::mat4(1);
 }
 
+
 Vector2 UIElement::GetCombinedOffset()
 {
-	if (canvas == this) {
-		return transformRect->GetPosition();
-	}
-
-	if (parent)
-		return transformRect->GetPosition() + GetCombinedOffset();
-	else
-		return transformRect->GetPosition();
+	return Vector2();
 }
 
 
 void UIElement::Draw()
 {
+	if (!isActive) return;
+
 	for (auto it = children.begin(); it != children.end(); it++)
 		(*it)->Draw();
+}
+
+
+void UIElement::Update(float deltaTime)
+{
+	if (!isActive) return;
+
+	for (auto it = children.begin(); it != children.end(); it++)
+		(*it)->Update(deltaTime);
+}
+
+
+void UIElement::FixedUpdate(float deltaTime)
+{
+	if (!isActive) return;
+
+	for (auto it = children.begin(); it != children.end(); it++)
+		(*it)->FixedUpdate(deltaTime);
 }
 
 
@@ -43,20 +67,58 @@ void UIElement::SetAnkor(AnkorAlignment _alignment)
 
 void UIElement::SetSizePixelAbsolute(Vector2I dimensions)
 {
-	boundingRect->SetDimension(Vector2(dimensions.x, dimensions.y));
+	transformRect->SetDimension(Vector2(dimensions.x, dimensions.y));
+	OnTransformChanged();
 }
 
 
 void UIElement::SetSizeParentRelative(Vector2 dimensionInPercentOfParent)
 {
 	auto pDim = parent->GetBounds()->GetDimension();
-	boundingRect->SetDimension(Vector2(pDim.x * dimensionInPercentOfParent.x, pDim.y * dimensionInPercentOfParent.y) * .01f);
+	transformRect->SetDimension(Vector2(pDim.x * dimensionInPercentOfParent.x, pDim.y * dimensionInPercentOfParent.y) * .01f);
+	OnTransformChanged();
 }
 
 
 void UIElement::SetPosition(Vector2I pixelPosition)
 {
 	transformRect->SetPosition(pixelPosition);
+	OnTransformChanged();
+}
+
+
+void UIElement::SetPositionLocal(Vector2I pixelOffset)
+{
+	if (parent == nullptr) {
+		transformRect->SetPosition(pixelOffset);
+		OnTransformChanged();
+		return;
+	}
+
+	Vector2 position = parent->GetTransform()->GetRight() * (float)pixelOffset.x;
+	position = position + parent->GetTransform()->GetUp() * (float)pixelOffset.y;
+	transformRect->SetPosition(position);
+	OnTransformChanged();
+}
+
+
+void UIElement::SetRotation(float rotation)
+{
+	transformRect->SetRotation(rotation);
+	OnTransformChanged();
+}
+
+
+void UIElement::SetRotationLocal(float rotation)
+{
+	if (parent == nullptr) {
+		transformRect->SetRotation(rotation);
+		OnTransformChanged();
+		return;
+	}
+
+	transformRect->SetRotation(parent->GetTransform()->GetRotation() + rotation);
+	OnTransformChanged();
 }
 
 
@@ -86,16 +148,28 @@ void UIElement::BuildChildrenBounds()
 
 void UIElement::AddElement(UIElement* element)
 {
+	if(element->parent == this)
+		return;
+
+
+	if (element->parent != nullptr) {
+		element->parent->RemoveElement(element);
+	}
+
 	children.push_back(element);
-	element->canvas = canvas;
 	element->parent = this;
+
+	canvas->RegisterElement(element);
 }
 
 
 void UIElement::RemoveElement(UIElement* element)
 {
 	children.erase(std::remove(children.begin(), children.end(), element), children.end());
-	element->canvas = nullptr;
+
+	if(canvas == element->canvas)
+		canvas->UnregisterElement(element);
+
 	element->parent = nullptr;
 }
 
@@ -132,4 +206,23 @@ void UIElement::SetElementIndex(int oldIndex, int newIndex)
 {
 	auto it = children.erase(children.begin() + oldIndex);
 	children.insert(children.begin() + newIndex, *it);
+}
+
+void UIElement::SetCanvas(Canvas* _canvas, long id)
+{
+	if (canvas != nullptr)
+		canvas->UnregisterElement(this);
+
+	canvas = _canvas;
+	uniqueCanvasID = id;
+}
+
+long UIElement::ClearCanvas(Canvas* _canvas)
+{
+	if (canvas == _canvas) {
+		long temp = uniqueCanvasID;
+		uniqueCanvasID = -1;
+		canvas = nullptr;
+		return temp;
+	}
 }

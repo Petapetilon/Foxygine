@@ -1,6 +1,8 @@
 #pragma once
 #include <math.h>
+#include <string>
 #include <glm.hpp>
+#include "Vector2.h"
 
 
 class Vector3
@@ -43,6 +45,18 @@ public:
 		x = source.x;
 		y = source.y;
 		z = source.z;
+	}
+
+	Vector3(const Vector2& source) {
+		x = source.x;
+		y = source.y;
+		z = 0;
+	}
+
+	Vector3(const glm::vec2& source) {
+		x = source.x;
+		y = source.y;
+		z = 0;
 	}
 
 	Vector3& Normalized()
@@ -97,6 +111,10 @@ public:
 
 	static Vector3 ProjectOnPlane(const Vector3& vec, const Vector3& normal) { return Vector3(vec - Project(vec, normal)); }
 	Vector3& ProjectOnPlane(Vector3& normal) { return *this = Vector3(*this - this->Project(normal)); }
+
+
+	std::string Debug() { return "x: " + std::to_string(x) + ", y: " + std::to_string(y) + ", z: " + std::to_string(z); }
+
 
 	bool operator==(const Vector3& other) const
 	{

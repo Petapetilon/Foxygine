@@ -5,7 +5,7 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Material.h"
 #include "../Peripherals/Window.h"
-#include "../Graphics/UI/ScreenSpaceCanvas.h"
+#include "../Graphics/UI/Canvas.h"
 
 
 
@@ -18,6 +18,7 @@ int Graphics::PointLight_ShadowResolution;
 int Graphics::SpotLight_ShadowResolution;
 
 std::list<MeshRenderer*> Graphics::meshRenderers;
+std::list<Canvas*> Graphics::canvases;
 std::list<Light*> Graphics::lights;
 
 
@@ -26,7 +27,6 @@ std::list<Light*> Graphics::lights;
 void Graphics::RenderShadowPrePassForwarded()
 {
 	for (auto light : lights) {
-		//std::cout << "render this crap for this light" << std::endl;
 		light->GL_RenderShadowMap();
 	}
 }
@@ -34,6 +34,7 @@ void Graphics::RenderShadowPrePassForwarded()
 
 void Graphics::RenderUnlitPassForwarded()
 {
+
 }
 
 
@@ -56,6 +57,9 @@ void Graphics::RenderLitPassForwarded()
 
 void Graphics::RenderUIPassForwarded()
 {
+	for (auto canvas : canvases) {
+		canvas->Draw();
+	}
 }
 
 
@@ -79,16 +83,14 @@ void Graphics::Init()
 void Graphics::RenderFrame() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	RenderShadowPrePassForwarded();
+	//RenderShadowPrePassForwarded();
 	//RenderUnlitPassForwarded();
-	RenderLitPassForwarded();
+	//RenderLitPassForwarded();
 
-	//RenderUIPassForwarded();
+	//if(skyBoxRenderer != nullptr)
+		//skyBoxRenderer->Draw(camera);
 
-	if(skyBoxRenderer != nullptr)
-		skyBoxRenderer->Draw(camera);
-
-	GameObject::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->Draw();
+	RenderUIPassForwarded();
 
 	renderedFrames++;
 }
@@ -116,6 +118,18 @@ void Graphics::UnregisterLight(Light* light)
 }
 
 
+void Graphics::RegisterCanvas(Canvas* canvas)
+{
+	canvases.push_back(canvas);
+}
+
+
+void Graphics::UnregisterCanvas(Canvas* canvas)
+{
+	canvases.remove(canvas);
+}
+
+
 void Graphics::SetSkybox(std::vector<std::string> filePaths)
 {
 	if (skyBoxRenderer == nullptr) {
@@ -129,8 +143,13 @@ void Graphics::SetSkybox(std::vector<std::string> filePaths)
 void Graphics::OnWindowResize(int width, int height)
 {
 	if (width && height) {
-		camera->ResetCamera((float)width / (float)height);
 		glViewport(0, 0, width, height);
+		camera->ResetCamera((float)width / (float)height);
+
+		for (auto canvas : canvases) {
+			canvas->OnWindowResize();
+		}
+
 		RenderFrame();
 	}
 }

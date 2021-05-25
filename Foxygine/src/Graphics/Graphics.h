@@ -12,6 +12,7 @@ class SkyboxRenderer;
 class Shader;
 class Light;
 class Camera;
+class Canvas;
 
 
 class Graphics
@@ -21,6 +22,7 @@ private:
 	static Shader* currentlyBoundShader;
 
 	static std::list<MeshRenderer*> meshRenderers;
+	static std::list<Canvas*> canvases;
 	static std::list<Light*> lights;
 
 
@@ -43,10 +45,15 @@ public:
 
 	static void Init();
 	static void RenderFrame();
+
 	static void RegisterMeshRenderer(MeshRenderer*);
 	static void UnregeisterMeshRenderer(MeshRenderer*);
 	static void RegisterLight(Light*);
 	static void UnregisterLight(Light*);
+	static void RegisterCanvas(Canvas*);
+	static void UnregisterCanvas(Canvas*);
+
+
 	static void SetSkybox(std::vector<std::string> filePaths);
 	static void OnWindowResize(int width, int height);
 	static void FinishLoadingResources();

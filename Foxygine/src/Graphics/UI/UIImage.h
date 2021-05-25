@@ -18,12 +18,14 @@ protected:
 	Mesh* mesh;
 
 	void GL_SetupData();
+	
+	void OnTransformChanged() override;
 
 public:
 	UIImage();
-	UIImage(UIElement* parent);
-	UIImage(UIElement* parent, std::string textureFilePath);
-	UIImage(UIElement* parent, std::shared_ptr<Texture2D> texture);
+	UIImage(std::string name, UIElement* parent);
+	UIImage(std::string name, UIElement* parent, std::string textureFilePath);
+	UIImage(std::string name, UIElement* parent, std::shared_ptr<Texture2D> texture);
 
 	void Draw() override;
 };
