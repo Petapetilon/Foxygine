@@ -137,10 +137,48 @@ void Mesh::SetPositions(const std::vector<Vector3> _positions)
 }
 
 
+void Mesh::ReplacePosition(unsigned int index, Vector3 position)
+{
+	if(index < positions.size())
+		positions[index] = position;
+}
+
+
+void Mesh::AppendPosition(Vector3 position)
+{
+	positions.push_back(position);
+}
+
+
+void Mesh::ClearPositions()
+{
+	positions.clear();
+}
+
+
 void Mesh::SetNormals(const std::vector<Vector3> _normals)
 {
 	normals = _normals;
 	IncludeMeshData(MeshData::Normals);
+}
+
+
+void Mesh::ReplaceNormal(unsigned int index, Vector3 normal)
+{
+	if (index < normals.size())
+		normals[index] = normal;
+}
+
+
+void Mesh::AppendNormal(Vector3 normal)
+{
+	normals.push_back(normal);
+}
+
+
+void Mesh::ClearNormals()
+{
+	normals.clear();
 }
 
 
@@ -151,10 +189,50 @@ void Mesh::SetUVs(const std::vector<Vector2> _uvs)
 }
 
 
+void Mesh::ReplaceUV(unsigned int index, Vector2 uv)
+{
+	if (index < uvs.size())
+		uvs[index] = uv;
+}
+
+
+void Mesh::AppendUV(Vector2 uv)
+{
+	uvs.push_back(uv);
+}
+
+
+void Mesh::ClearUVs()
+{
+	uvs.clear();
+}
+
+
 void Mesh::SetIndices(const std::vector<unsigned int> _indices)
 {
 	indices = _indices;
 	IncludeMeshData(MeshData::Indices);
+}
+
+
+void Mesh::ReplaceIndex(unsigned int indexPosition, unsigned int newIndex)
+{
+	if (indices.size() < indexPosition)
+		indices[indexPosition] = newIndex;
+}
+
+
+void Mesh::AppendIndices(unsigned int a, unsigned int b, unsigned c)
+{
+	indices.push_back(a);
+	indices.push_back(b);
+	indices.push_back(c);
+}
+
+
+void Mesh::ClearIndices()
+{
+	indices.clear();
 }
 
 

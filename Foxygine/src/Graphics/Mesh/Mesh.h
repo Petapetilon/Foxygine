@@ -46,9 +46,25 @@ public:
 	void IncludeMeshData(MeshData includedData);
 
 	void SetPositions(const std::vector<Vector3> _positions);
+	void ReplacePosition(unsigned int index, Vector3 position);
+	void AppendPosition(Vector3 position);
+	void ClearPositions();
+
 	void SetNormals(const std::vector<Vector3> _normals);
+	void ReplaceNormal(unsigned int index, Vector3 normal);
+	void AppendNormal(Vector3 normal);
+	void ClearNormals();
+
 	void SetUVs(const std::vector<Vector2> _uvs);
+	void ReplaceUV(unsigned int index, Vector2 position);
+	void AppendUV(Vector2 position);
+	void ClearUVs();
+
 	void SetIndices(const std::vector<unsigned int> indices);
+	void ReplaceIndex(unsigned int indexPosition, unsigned int newIndex);
+	void AppendIndices(unsigned int a, unsigned int b, unsigned c);
+	void ClearIndices();
+
 	void RecalculateNormals();
 	void RecalculateBounds();	
 };
