@@ -277,6 +277,17 @@ std::shared_ptr<Shader> Shader::CreateSkyboxShader(std::string _name)
 }
 
 
+std::shared_ptr<Shader> Shader::CreateEnvironmentShader(std::string _name)
+{
+	ShaderLibrary::RegisterShader(new Shader(_name));
+	auto shader = ShaderLibrary::GetShader(_name);
+	shader->LoadShaderResource("res\\VertexShader\\SkyBoxVert.vert", ShaderType::VertexShader);
+	shader->LoadShaderResource("res\\FragmentShader\\Environment.frag", ShaderType::FragmentShader);
+	shader->GL_IsLitShader = false;
+	return std::shared_ptr<Shader>(shader);
+}
+
+
 void Shader::GL_UnbindPrograms()
 {
 	GL_Call(glUseProgram(0));

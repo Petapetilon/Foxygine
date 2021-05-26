@@ -8,7 +8,9 @@ public:
 	float x;
 	float y;
 
+
 	Vector2() { x = y = 0; }
+
 
 	Vector2(float _x, float _y) {
 		x = _x;

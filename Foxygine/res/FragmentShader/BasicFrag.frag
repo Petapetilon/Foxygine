@@ -5,6 +5,8 @@ struct MaterialProps {
 	float specular;
 	float glossiness;
 	float metallic;
+	vec2 uvScale;
+	vec2 uvOffset;
 };
 
 out vec4 FragColor;
@@ -72,16 +74,19 @@ float ShadowCalculation(){
 	float shadow;
 	
 	vec2 texelSize = 1.0 / textureSize(u_ShadowDepthMap, 0);
-	for(int x = -1; x <= 1; ++x)
+
+	if(closestDepth == 1) return 1;
+
+	for(int x = -2; x <= 2; ++x)
 	{
-		for(int y = -1; y <= 1; ++y)
+		for(int y = -2; y <= 2; ++y)
 		{
 		    float pcfDepth = texture(u_ShadowDepthMap, projCoords.xy + vec2(x, y) * texelSize).r; 
 		    shadow += currentDepth - bias < pcfDepth ? 1.0 : 0.1;        
 		}    
 	}
 	
-	return shadow /= 9.0;
+	return shadow /= 16.0;
 } 
 
 
@@ -102,14 +107,16 @@ vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragme
 
 void main() {
 	//Normal Map
-	vec3 mappedVertexNormal = (TBN * normalize(texture2D(u_NormalMap, vertexUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
+	vec2 adjustedUV = vertexUV * u_MaterialProps.uvScale + u_MaterialProps.uvOffset;
+
+	vec3 mappedVertexNormal = (TBN * normalize(texture2D(u_NormalMap, adjustedUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
 	mappedVertexNormal += vertexNormal * (1 - u_NormTexEnabled);
 	mappedVertexNormal = normalize(mappedVertexNormal);
 
 
 	//Color Map wih fallback
-	vec3 color = texture2D(u_ColorTexture, vertexUV).xyz * float(u_ColTexEnabled) + u_MaterialProps.color.xyz * float(1 - u_ColTexEnabled);
-	color = texture2D(u_ColorTexture, vertexUV).xyz;
+	//vec3 color = texture2D(u_ColorTexture, adjustedUV).xyz * float(u_ColTexEnabled) + u_MaterialProps.color.xyz * float(1 - u_ColTexEnabled);
+	vec3 color = texture2D(u_ColorTexture, adjustedUV).xyz;
 
 	float specular = 1;
 

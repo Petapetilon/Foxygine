@@ -24,7 +24,7 @@ public:
 	Texture2D();
 	~Texture2D();
 	bool LoadTexture2DInline(std::string filePath, std::string _name, Wrapping, Filtering);
-	void LoadTexture2D(std::string filePath, std::string _name, Wrapping, Filtering);
+	bool LoadTexture2D(std::string filePath, std::string _name, Wrapping, Filtering);
 	bool FinishLoading() override;
 	void SetWrapping(Wrapping) override;
 	void SetFiltering(Filtering) override;

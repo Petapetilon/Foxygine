@@ -22,21 +22,8 @@ Material::Material(std::string materialName, std::string _shaderName)
 	mainColor.g = 1;
 	mainColor.b = 1;
 	normalMappingStrength = 1;
-}
-
-
-void Material::SetMainColor(Color color)
-{
-	mainColor.a = color.a;
-	mainColor.r = color.r;
-	mainColor.g = color.g;
-	mainColor.b = color.b;
-}
-
-
-void Material::SetNormalMappingStrength(float strength)
-{
-	normalMappingStrength = strength;
+	uvScale = Vector2(1, 1);
+	uvOffset = Vector2(0, 0);
 }
 
 
@@ -140,6 +127,8 @@ void Material::GL_SetProperties()
 {
 	//shader->SetShaderPass(new ShaderPassColor(&mainColor, "u_MaterialProps.color"));
 	GL_Call(glUniform4f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MaterialProps.color"), mainColor.r, mainColor.g, mainColor.b, mainColor.a));
+	GL_Call(glUniform2f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MaterialProps.uvScale"), uvScale.x, uvScale.y));
+	GL_Call(glUniform2f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MaterialProps.uvOffset"), uvOffset.x, uvOffset.y));
 
 	for (auto prop : materialProps) {
 		//shader->SetShaderPass(new ShaderPassVec1(&prop->propertyValue, "u_MaterialProps." + prop->shaderPassName));

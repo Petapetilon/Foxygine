@@ -63,6 +63,7 @@ public:
 	static std::shared_ptr<Shader> CreateBasicLitUIShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicUnlitUIShader(std::string _name);
 	static std::shared_ptr<Shader> CreateSkyboxShader(std::string _name);
+	static std::shared_ptr<Shader> CreateEnvironmentShader(std::string _name);
 	static void GL_UnbindPrograms();
 
 

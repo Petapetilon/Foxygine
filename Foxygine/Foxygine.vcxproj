@@ -190,6 +190,7 @@
     <None Include="res\BasicFragment.shader" />
     <None Include="res\BasicVertex.shader" />
     <None Include="res\FragmentShader\BasicFrag.frag" />
+    <None Include="res\FragmentShader\Environment.frag" />
     <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
     <None Include="res\FragmentShader\SkyBoxFrag.frag" />
     <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />

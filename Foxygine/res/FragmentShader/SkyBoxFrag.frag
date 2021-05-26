@@ -2,6 +2,8 @@
 
 struct MaterialProps {
 	vec4 color;
+	vec2 uvScale;
+	vec2 uvOffset;
 };
 
 out vec4 FragColor;

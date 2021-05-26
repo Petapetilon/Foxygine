@@ -133,6 +133,7 @@
     <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
     <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
     <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />
+    <None Include="res\FragmentShader\Environment.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">

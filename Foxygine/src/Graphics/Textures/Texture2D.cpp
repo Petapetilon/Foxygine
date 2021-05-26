@@ -74,7 +74,7 @@ bool Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wr
 }
 
 
-void Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
+bool Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
 	filePath = _filePath;
 	if (loadingThread.joinable()) {
@@ -88,6 +88,7 @@ void Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping
 
 	glGenTextures(1, &GL_TextureID);
 	loadingThread = std::thread(&Texture2D::LoadImage, this);
+	return true;
 }
 
 

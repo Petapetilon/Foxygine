@@ -30,8 +30,6 @@ private:
 	std::list<std::shared_ptr<MaterialProperty>> materialProps;
 	std::list<std::shared_ptr<TextureProperty>> textureProps;
 	std::shared_ptr<Shader> shader;
-	Color mainColor;
-	float normalMappingStrength;
 
 	std::string textureSlotUniforms[17] = {
 		"u_ColorTexture",
@@ -39,7 +37,7 @@ private:
 		"u_DisplacementMap",
 		"u_SpecularMap",
 		"u_MetallicMap",
-		"Custom_1",
+		"u_ReflectionMap",
 		"Custom_2",
 		"Custom_3",
 		"Custom_4",
@@ -60,7 +58,7 @@ public:
 		DisplacementMap = 2,
 		Specular = 3,
 		Metallic = 4,
-		Custom_1 = 5,
+		ReflectionMap = 5,
 		Custom_2 = 6,
 		Custom_3 = 7,
 		Custom_4 = 8,
@@ -71,17 +69,20 @@ public:
 		Custom_9 = 13,
 		Custom_10 = 14,
 		Custom_11 = 15,
-		Skybox = 16
+		Skybox = 16,
+		Environment = 17
 	};
 
 
 	std::string shaderName;
 	std::string name;
 
+	Color mainColor;
+	float normalMappingStrength;
+	Vector2 uvScale;
+	Vector2 uvOffset;
+	
 	Material(std::string materialName, std::string shaderName);
-
-	void SetMainColor(Color);
-	void SetNormalMappingStrength(float);
 
 	void CreateMaterialProperty(std::string propertyName, std::string shaderPassName, float propertyValue);
 	void SetMaterialProperty(std::string propertyName, float value);

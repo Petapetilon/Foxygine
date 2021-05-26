@@ -69,7 +69,7 @@ void Graphics::Init()
 	skyBoxRenderer = nullptr;
 	camera = nullptr;
 	renderedFrames = 0;
-	CSM_ShadowResolution = 2048;
+	CSM_ShadowResolution = 4096;
 	PointLight_ShadowResolution = 2048;
 	SpotLight_ShadowResolution = 2048;
 
@@ -83,12 +83,12 @@ void Graphics::Init()
 void Graphics::RenderFrame() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//RenderShadowPrePassForwarded();
+	RenderShadowPrePassForwarded();
 	//RenderUnlitPassForwarded();
-	//RenderLitPassForwarded();
+	RenderLitPassForwarded();
 
-	//if(skyBoxRenderer != nullptr)
-		//skyBoxRenderer->Draw(camera);
+	if(skyBoxRenderer != nullptr)
+		skyBoxRenderer->Draw(camera);
 
 	RenderUIPassForwarded();
 
@@ -137,6 +137,16 @@ void Graphics::SetSkybox(std::vector<std::string> filePaths)
 	}
 
 	skyBoxRenderer->SetSkybox(filePaths);
+}
+
+
+void Graphics::SetEnvironment(std::string filePath)
+{
+	if (skyBoxRenderer == nullptr) {
+		skyBoxRenderer = new SkyboxRenderer;
+	}
+
+	skyBoxRenderer->SetEnvironment(filePath);
 }
 
 

@@ -8,6 +8,7 @@ class SkyboxRenderer : public MeshRenderer
 {
 public:
 	void SetSkybox(std::vector<std::string> filePaths);
+	void SetEnvironment(std::string filePath);
 	void Draw(std::shared_ptr<Camera> drawingCam) override;
 };
 

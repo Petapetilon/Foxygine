@@ -54,7 +54,9 @@ public:
 	static void UnregisterCanvas(Canvas*);
 
 
+	/// <param name="filePaths">left, right, down, up, front, back</param>
 	static void SetSkybox(std::vector<std::string> filePaths);
+	static void SetEnvironment(std::string filePath);
 	static void OnWindowResize(int width, int height);
 	static void FinishLoadingResources();
 	static Shader* GL_GetCurrentlyBoundShader();

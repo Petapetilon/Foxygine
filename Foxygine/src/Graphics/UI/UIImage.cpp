@@ -21,7 +21,7 @@ void UIImage::GL_SetupData()
 	GL_Call(glGenBuffers(1, &GL_IndexBufferObject));
 
 	SetMaterial(std::shared_ptr<Material>(new Material("imageMat", "Basic Unlit UI")));
-	material->SetMainColor(Color(1, 1, 1, 1.f));
+	material->mainColor = Color(1, 1, 1, 1.f);
 	mesh = new Mesh();
 
 	std::vector<Vector3> points;
