@@ -185,6 +185,7 @@
     <ClCompile Include="src\Graphics\UI\UIElement.cpp" />
     <ClCompile Include="src\Graphics\UI\UIText.cpp" />
     <ClCompile Include="src\Graphics\UI\UIImage.cpp" />
+    <ClCompile Include="src\Graphics\Textures\TextureLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicFragment.shader" />
@@ -194,13 +195,17 @@
     <None Include="res\FragmentShader\ShadowDepthMapFrag.frag" />
     <None Include="res\FragmentShader\SkyBoxFrag.frag" />
     <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />
+    <None Include="res\FragmentShader\UnlitColor.frag" />
     <None Include="res\GeoShader\BasicGeometry.geom" />
+    <None Include="res\TessellationShader\BasicTessControl.tesc" />
+    <None Include="res\TessellationShader\BasicTessEval.tese" />
     <None Include="res\VertexShader\BasicVert.vert" />
     <None Include="res\VertexShader\ShadowDepthMapVert.vert" />
     <None Include="res\VertexShader\SkyBoxVert.vert" />
     <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Foxygine Include.h" />
     <ClInclude Include="src\GameObject\Object.h" />
     <ClInclude Include="src\Graphics\UI\BoundingRect.h" />
     <ClInclude Include="src\Graphics\Mesh\InstancedMeshRenderer.h" />
@@ -251,6 +256,7 @@
     <ClInclude Include="src\Graphics\UI\UIElement.h" />
     <ClInclude Include="src\Graphics\UI\UIText.h" />
     <ClInclude Include="src\Graphics\UI\UIImage.h" />
+    <ClInclude Include="src\Graphics\Textures\TextureLibrary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

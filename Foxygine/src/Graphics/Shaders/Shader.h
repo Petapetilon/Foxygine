@@ -34,8 +34,11 @@ protected:
 public:
 	enum class ShaderType {
 		VertexShader,
+		TessControlShader,
+		TessEvalShader,
 		GeometryShader,
-		FragmentShader
+		FragmentShader,
+		ComputeShader
 	};
 
 	std::string name;
@@ -56,6 +59,10 @@ public:
 	void SetValueColor(std::string uniformName, Color value);
 	void SetValueMat3(std::string uniformName, glm::mat3 value);
 	void SetValueMat4(std::string uniformName, glm::mat4 value);
+
+	void EnableTesselation();
+	void DisableTesselation();
+
 
 	static std::shared_ptr<Shader> CreateEmptyShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);

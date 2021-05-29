@@ -13,7 +13,6 @@ protected :
 	int texWidth;
 	int texHeight;
 	int colorChannels;
-	std::string filePath;
 	std::thread loadingThread;
 	bool loadingFinished;
 

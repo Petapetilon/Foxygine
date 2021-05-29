@@ -25,7 +25,7 @@ void SkyboxRenderer::SetSkybox(std::vector<std::string> filePaths)
 	SetMaterial(std::shared_ptr<Material>(new Material("skyboxMat", "Internal_Skybox_Shader")));
 	auto cubeMap = new CubeMap();
 	if (cubeMap->LoadCubeMap(filePaths, "skyboxCubeMap", Texture::Wrapping::ClampEdge, Texture::Filtering::Linear)) {
-		material->CreateTextureProperty("Skybox", std::shared_ptr<Texture>(cubeMap), Material::TextureSlot::Environment);
+		material->CreateTextureProperty("Skybox", std::shared_ptr<Texture>(cubeMap), Material::TextureSlot::Skybox);
 		material->mainColor = Color(1.f, 1, 1, 1);
 		isActive = true;
 	}
@@ -49,7 +49,7 @@ void SkyboxRenderer::SetEnvironment(std::string filePath)
 
 	SetMaterial(std::shared_ptr<Material>(new Material("environmentMat", "Internal_Environment_Shader")));
 	auto environmentMap = new Texture2D();
-	if (environmentMap->LoadTexture2D(filePath, "environmentMap", Texture::Wrapping::ClampEdge, Texture::Filtering::Linear)) {
+	if (environmentMap->LoadTexture2D(filePath, "environmentMap", Texture::Wrapping::Repeat, Texture::Filtering::Linear)) {
 		material->CreateTextureProperty("Environment", std::shared_ptr<Texture>(environmentMap), Material::TextureSlot::Environment);
 		material->mainColor = Color(1.f, 1, 1, 1);
 		isActive = true;

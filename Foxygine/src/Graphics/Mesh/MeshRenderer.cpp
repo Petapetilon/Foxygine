@@ -124,6 +124,23 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+
+#ifdef DRAW_WIREFRAME
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+	glDisable(GL_DEPTH_TEST);
+	glLineWidth(3);
+	
+	auto wireFrameShader = ShaderLibrary::GL_BindTessellatedWireframeShader();
+	wireFrameShader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
+	drawingCam->GL_SetCameraUniform(wireFrameShader);
+	GL_Call(glPatchParameteri(GL_PATCH_VERTICES, 3));
+	glDrawElements(GL_PATCHES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glEnable(GL_DEPTH_TEST);
+#endif
 }
 
 

@@ -1,5 +1,6 @@
 #include "ShaderLibrary.h"
 #include <iostream>
+#include "../Rendering/Camera.h"
 
 
 std::list<std::shared_ptr<Shader>> ShaderLibrary::registeredShaders;
@@ -37,4 +38,33 @@ std::shared_ptr<Shader> ShaderLibrary::GetShader(std::string name)
 
 	std::cout << "Shader not found: " << name << std::endl;
 	return nullptr;
+}
+
+
+std::shared_ptr<Shader> ShaderLibrary::GL_BindWireframeShader()
+{
+	auto shader = GetShader("Internal_Wireframe");
+	if (shader == nullptr) {
+		shader = Shader::CreateEmptyShader("Internal_Wireframe");
+		shader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", Shader::ShaderType::VertexShader);
+		shader->LoadShaderResource("res\\FragmentShader\\UnlitColor.frag", Shader::ShaderType::FragmentShader);
+	}
+
+	shader->GL_BindProgram();
+	return std::shared_ptr<Shader>(shader);
+}
+
+std::shared_ptr<Shader> ShaderLibrary::GL_BindTessellatedWireframeShader()
+{
+	auto shader = GetShader("Internal_TessWireframe");
+	if (shader == nullptr) {
+		shader = Shader::CreateEmptyShader("Internal_TessWireframe");
+		shader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", Shader::ShaderType::VertexShader);
+		shader->LoadShaderResource("res\\FragmentShader\\UnlitColor.frag", Shader::ShaderType::FragmentShader);
+		shader->LoadShaderResource("res\\TessellationShader\\BasicTessControl.tesc", Shader::ShaderType::TessControlShader);
+		shader->LoadShaderResource("res\\TessellationShader\\BasicTessEval.tese", Shader::ShaderType::TessEvalShader);
+	}
+
+	shader->GL_BindProgram();
+	return std::shared_ptr<Shader>(shader);
 }

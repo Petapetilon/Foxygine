@@ -3,6 +3,7 @@
 #include "../Shaders/Shader.h"
 #include <thread>
 #include "stb_image.h"
+#include "TextureLibrary.h"
 
 
 bool CubeMap::FinishLoading()
@@ -29,9 +30,6 @@ bool CubeMap::FinishLoading()
 }
 
 
-/// <summary>
-/// right, left, top, bottom, front, back
-/// </summary>
 bool CubeMap::LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
 	if (filePaths.size() != 6) {
@@ -39,10 +37,21 @@ bool CubeMap::LoadCubeMapInline(std::vector<std::string> filePaths, std::string 
 		return false;
 	}
 
+	name = _name;
+	textureFile = filePaths[0] + ", " + filePaths[1] + ", " + filePaths[2] + ", " + filePaths[3] + ", " + filePaths[4] + ", " + filePaths[5];
+	setWrapping = textureWrapping;
+	setFiltering = textureFiltering;
+
+	if (!TextureLibrary::RegisterTexture(this)) {
+		std::cout << "Copying Data from existing Texture" << std::endl;
+		GL_CopyData(TextureLibrary::FindTexture(textureFile));
+		return true;
+	}
+
 	loadingFinished = false;
 	stbi_set_flip_vertically_on_load(true);
-	name = _name;
 
+	TextureLibrary::RegisterTexture(this);
 	glGenTextures(1, &GL_TextureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, GL_TextureID);
 
@@ -80,10 +89,21 @@ bool CubeMap::LoadCubeMap(std::vector<std::string> filePaths, std::string _name,
 		return false;
 	}
 
+	name = _name;
+	textureFile = filePaths[0] + ", " + filePaths[1] + ", " + filePaths[2] + ", " + filePaths[3] + ", " + filePaths[4] + ", " + filePaths[5];
+	//setWrapping = textureWrapping;
+	//setFiltering = textureFiltering;
+
+	//if (!TextureLibrary::RegisterTexture(this)) {
+	//	std::cout << "Copying Data from existing Texture" << std::endl;
+	//	GL_CopyData(TextureLibrary::FindTexture(textureFile));
+	//	return true;
+	//}
+
 	loadingFinished = false;
 	stbi_set_flip_vertically_on_load(true);
-	name = _name;
 
+	//TextureLibrary::RegisterTexture(this);
 	glGenTextures(1, &GL_TextureID);
 
 	textures = new CubeMapTexture[6];

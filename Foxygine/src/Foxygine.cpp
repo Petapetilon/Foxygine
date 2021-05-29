@@ -1,4 +1,5 @@
 #include "Foxygine.h"
+#include "Foxygine Include.h"
 #include "GameObject/SimpleCamera.h"
 #include "Graphics/Graphics.h"
 #include <vector>
@@ -24,6 +25,8 @@ void Foxygine::StartFoxygine()
     //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_back.png");
     //Graphics::SetSkybox(skyboxTextures);
     Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
+    //auto tex = new Texture2D();
+    //tex->LoadTexture2D("res\\textures\\Environment\\misty_pines_4k.png", "environment2", Texture::Wrapping::Repeat, Texture::Filtering::Nearest);
 
     //Camera
     auto cameraGo = GameObject::CreateGameObject("cameraGO");

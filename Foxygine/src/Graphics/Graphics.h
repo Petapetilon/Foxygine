@@ -5,6 +5,11 @@
 #include <list>
 #include <iostream>
 #include <thread>
+#include "../Foxygine.h"
+
+#ifdef WIREFRAME_DEBUG
+	#define DRAW_WIREFRAME
+#endif
 
 
 class MeshRenderer;

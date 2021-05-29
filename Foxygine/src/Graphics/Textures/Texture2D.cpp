@@ -1,6 +1,7 @@
 #include "Texture2D.h"
 #include "../Shaders/Shader.h"
 #include <iostream>
+#include "TextureLibrary.h"
 
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -11,7 +12,7 @@
 
 void Texture2D::LoadImage()
 {
-	texData = stbi_load(filePath.c_str(), &texWidth, &texHeight, &colorChannels, 0);
+	texData = stbi_load(textureFile.c_str(), &texWidth, &texHeight, &colorChannels, 0);
 }
 
 
@@ -20,22 +21,22 @@ void Texture2D::GL_RegisterImage()
 	glBindTexture(GL_TEXTURE_2D, GL_TextureID);
 	SetWrapping(setWrapping);
 	SetFiltering(setFiltering);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	if (texData) {
 		if (colorChannels == 3) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
+			GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texData));
+			//GL_Call(gluBuild2DMipmaps(GL_TEXTURE_2D, 3, texWidth, texHeight, GL_RGB, GL_UNSIGNED_BYTE, texData));
 		}
 		else if (colorChannels == 4) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+			GL_Call(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData));
+			//GL_Call(gluBuild2DMipmaps(GL_TEXTURE_2D, 3, texWidth, texHeight, GL_RGBA, GL_UNSIGNED_BYTE, texData));
 		}
 	
 		GL_Call(glGenerateMipmap(GL_TEXTURE_2D));
 	}
 	else {
 		std::cout << " - failed!" << std::endl;
-		std::cout << "Texture could not be Loaded from: " << filePath << std::endl;
+		std::cout << "Texture could not be Loaded from: " << textureFile << std::endl;
 	}
 }
 
@@ -59,15 +60,24 @@ Texture2D::~Texture2D()
 
 bool Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
-	std::cout << "Loading Texture Resource: " << _filePath << std::endl;
-	stbi_set_flip_vertically_on_load(true);
 	name = _name;
+	textureFile = _filePath;
 	setWrapping = textureWrapping;
 	setFiltering = textureFiltering;
 
+	//Check wether this texture was already loaded
+	if (!TextureLibrary::RegisterTexture(this)) {
+		std::cout << "Copying Data from existing Texture" << std::endl;
+		GL_CopyData(TextureLibrary::FindTexture(textureFile));
+		loadingFinished = true;
+		return true;
+	}
+
+	TextureLibrary::RegisterTexture(this);
 	glGenTextures(1, &GL_TextureID);
 
-	filePath = _filePath;
+	std::cout << "Loading Texture Resource: " << _filePath << std::endl;
+	stbi_set_flip_vertically_on_load(true);
 	loadingThread = std::thread(&Texture2D::LoadImage, this);
 	loadingFinished = false;
 	return FinishLoading();
@@ -76,7 +86,19 @@ bool Texture2D::LoadTexture2DInline(std::string _filePath, std::string _name, Wr
 
 bool Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping textureWrapping = Wrapping::Repeat, Filtering textureFiltering = Filtering::Linear)
 {
-	filePath = _filePath;
+	name = _name;
+	textureFile = _filePath;
+	setWrapping = textureWrapping;
+	setFiltering = textureFiltering;
+	
+	//Check wether this texture was already loaded
+	if (!TextureLibrary::RegisterTexture(this)) {
+		std::cout << "Copying Data from existing Texture" << std::endl;
+		GL_CopyData(TextureLibrary::FindTexture(textureFile));
+		loadingFinished = true;
+		return true;
+	}
+
 	if (loadingThread.joinable()) {
 		std::cout << "Wait for Texture Resource to finish loading: " << _filePath << " - aborted" << std::endl;
 		loadingThread.join();
@@ -84,8 +106,8 @@ bool Texture2D::LoadTexture2D(std::string _filePath, std::string _name, Wrapping
 
 	std::cout << "Loading Texture Resource in background: " << _filePath << std::endl;
 	stbi_set_flip_vertically_on_load(true);
-	name = _name;
 
+	TextureLibrary::RegisterTexture(this);
 	glGenTextures(1, &GL_TextureID);
 	loadingThread = std::thread(&Texture2D::LoadImage, this);
 	return true;
@@ -96,7 +118,7 @@ bool Texture2D::FinishLoading()
 {
 	if (loadingFinished) return true;
 
-	std::cout << "Waiting for Texture Resource to finish loading: " << filePath;
+	std::cout << "Waiting for Texture Resource to finish loading: " << textureFile;
 	if (loadingThread.joinable()) {
 		loadingThread.join();
 	}
@@ -175,10 +197,10 @@ void Texture2D::SetFiltering(Filtering textureFiltering)
 	setFiltering = textureFiltering;
 
 	if (textureFiltering == Filtering::Nearest) {
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	}
 	else {
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
 }
 

@@ -1,4 +1,5 @@
 #include "Graphics/Graphics.h"
+#include "Foxygine Include.h"
 #include "Foxygine.h"
 #include <GLFW/glfw3.h>
 

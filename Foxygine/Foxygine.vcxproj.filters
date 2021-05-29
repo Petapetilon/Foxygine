@@ -120,6 +120,9 @@
     <ClCompile Include="src\GameObject\Object.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Textures\TextureLibrary.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -134,6 +137,9 @@
     <None Include="res\VertexShader\UIScreenSpaceVert.vert" />
     <None Include="res\FragmentShader\UIScreenSpaceFrag.frag" />
     <None Include="res\FragmentShader\Environment.frag" />
+    <None Include="res\TessellationShader\BasicTessControl.tesc" />
+    <None Include="res\TessellationShader\BasicTessEval.tese" />
+    <None Include="res\FragmentShader\UnlitColor.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">
@@ -284,6 +290,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\Object.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Textures\TextureLibrary.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Foxygine Include.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

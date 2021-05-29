@@ -77,17 +77,28 @@ void Shader::LoadShaderResource(std::string shaderFilePath, ShaderType shaderTyp
 
 	switch (shaderType)
 	{
-	case Shader::ShaderType::VertexShader:
+	case ShaderType::VertexShader:
 		shaderID = ShaderHandeling::CompileShader(GL_VERTEX_SHADER, shaderSource);
+		break;
+
+	case ShaderType::TessControlShader:
+		shaderID = ShaderHandeling::CompileShader(GL_TESS_CONTROL_SHADER, shaderSource);
+		break;
+
+	case ShaderType::TessEvalShader:
+		shaderID = ShaderHandeling::CompileShader(GL_TESS_EVALUATION_SHADER, shaderSource);
 		break;
 
 	case Shader::ShaderType::GeometryShader:
 		shaderID = ShaderHandeling::CompileShader(GL_GEOMETRY_SHADER, shaderSource);
 		break;
 
-	case Shader::ShaderType::FragmentShader:
+	case ShaderType::FragmentShader:
 		shaderID = ShaderHandeling::CompileShader(GL_FRAGMENT_SHADER, shaderSource);
 		break;
+
+	case ShaderType::ComputeShader:
+		shaderID = ShaderHandeling::CompileShader(GL_COMPUTE_SHADER, shaderSource);
 	}
 
 	std::cout << "Loading Shader Resource: " << shaderFilePath << " for " << name << std::endl;
@@ -237,6 +248,8 @@ std::shared_ptr<Shader> Shader::CreateBasicLitShader(std::string _name)
 	auto shader = ShaderLibrary::GetShader(_name);
 	shader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", ShaderType::VertexShader);
 	shader->LoadShaderResource("res\\FragmentShader\\BasicFrag.frag", ShaderType::FragmentShader);
+	//shader->LoadShaderResource("res\\TessellationShader\\BasicTessControl.tesc", ShaderType::TessControlShader);
+	//shader->LoadShaderResource("res\\TessellationShader\\BasicTessEval.tese", ShaderType::TessEvalShader);
 	shader->GL_IsLitShader = true;
 	return std::shared_ptr<Shader>(shader);
 }
