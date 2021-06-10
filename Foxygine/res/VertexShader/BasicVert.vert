@@ -15,6 +15,14 @@ out vec2 vertexUV;
 out vec4 lightSpaceFragPos;
 out mat3 TBN;
 
+out vec3 modelPosition;
+
+out vec3 vertexPosition_FS_IN;
+out vec3 vertexNormal_FS_IN;
+out vec2 vertexUV_FS_IN;
+out vec4 lightSpaceFragPos_FS_IN;
+out mat3 TBN_FS_IN;
+
 
 
 //Uniforms
@@ -46,4 +54,15 @@ void main() {
 	vertexUV = l_UV;
 
 	lightSpaceFragPos = u_LightSpaceMatrix * vec4(vertexPosition, 1);
+	modelPosition = vec3(u_ObjectTransform[3][0], u_ObjectTransform[3][1], u_ObjectTransform[3][2]);
+
+
+	//vec3 dist = vertexPosition - u_CameraPosition.xyz;
+	//LODLevel = int((dist.x * dist.x + dist.y * dist.y + dist.z * dist.z) / 200000);
+
+	vertexPosition_FS_IN = vertexPosition;
+	vertexNormal_FS_IN = vertexNormal;
+	vertexUV_FS_IN = vertexUV;
+	lightSpaceFragPos_FS_IN = lightSpaceFragPos;
+	TBN_FS_IN = TBN;
 }

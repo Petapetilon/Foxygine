@@ -64,14 +64,21 @@ void Foxygine::StartFoxygine()
     groundMaterial->uvScale = Vector2(100, 100);
 
 
+    //Cube mat
     auto colorTex = std::shared_ptr<Texture2D>(new Texture2D());
-    colorTex->LoadTexture2D("res\\textures\\rockCol.jpg", "brickCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    colorTex->LoadTexture2D("res\\textures\\Rocks01_col.jpg", "brickcol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
     basicMaterial3->CreateTextureProperty("color", std::shared_ptr<Texture>(colorTex), Material::TextureSlot::BaseColor);
 
-    auto colorNrm = std::shared_ptr<Texture2D>(new Texture2D());
-    colorNrm->LoadTexture2D("res\\textures\\rockNrm.jpg", "brickNrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    basicMaterial3->CreateTextureProperty("normal", std::shared_ptr<Texture>(colorNrm), Material::TextureSlot::NormalMap);
+    //auto colorNrm = std::shared_ptr<Texture2D>(new Texture2D());
+    //colorNrm->LoadTexture2D("res\\textures\\Rocks01_nrm.jpg", "rocknrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    //basicMaterial3->CreateTextureProperty("normal", std::shared_ptr<Texture>(colorNrm), Material::TextureSlot::NormalMap);
 
+    //auto colorDisp = std::shared_ptr<Texture2D>(new Texture2D());
+    //colorDisp->LoadTexture2D("res\\textures\\Rocks01_disp.jpg", "rockdisp", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+    //basicMaterial3->CreateTextureProperty("disp", std::shared_ptr<Texture>(colorDisp), Material::TextureSlot::DisplacementMap);
+
+
+    //Ground Mat
     auto groundTex = std::shared_ptr<Texture2D>(new Texture2D());
     groundTex->LoadTexture2D("res\\textures\\4K-ground_cracked-diffuse.jpg", "groundCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
     groundMaterial->CreateTextureProperty("color", std::shared_ptr<Texture>(groundTex), Material::TextureSlot::BaseColor);
@@ -102,16 +109,16 @@ void Foxygine::StartFoxygine()
 
 
 
-    auto canvasGo = GameObject::CreateGameObject("canvasGo");
-    canvasGo->AddComponent<ScreenSpaceCanvas>(new ScreenSpaceCanvas());
-    auto canvas = canvasGo->GetComponent<ScreenSpaceCanvas>();
-    auto img = new UIImage("image", canvas, colorTex);
-    canvas->AddElement(img);
-    canvas->SetPosition(Vector2I(0, 0));
-
-    img->SetPosition(Vector2I(250, 250));
-    img->SetSizePixelAbsolute(Vector2I(250, 250));
-    img->SetRotation(90);
+    //auto canvasGo = GameObject::CreateGameObject("canvasGo");
+    //canvasGo->AddComponent<ScreenSpaceCanvas>(new ScreenSpaceCanvas());
+    //auto canvas = canvasGo->GetComponent<ScreenSpaceCanvas>();
+    //auto img = new UIImage("image", canvas, colorTex);
+    //canvas->AddElement(img);
+    //canvas->SetPosition(Vector2I(0, 0));
+    //
+    //img->SetPosition(Vector2I(250, 250));
+    //img->SetSizePixelAbsolute(Vector2I(250, 250));
+    //img->SetRotation(90);
 }
 
 
@@ -144,7 +151,7 @@ void Foxygine::UpdateFoxygine(float deltaTime)
 
     
     GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
-    GameObjectHandler::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->FindElement("image")->SetRotation((float)Graphics::renderedFrames / (float)10);
+   // GameObjectHandler::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->FindElement("image")->SetRotation((float)Graphics::renderedFrames / (float)10);
 }
 
 

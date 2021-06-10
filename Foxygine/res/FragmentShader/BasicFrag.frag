@@ -12,11 +12,11 @@ struct MaterialProps {
 out vec4 FragColor;
 
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec2 vertexUV;
-in vec4 lightSpaceFragPos;
-in mat3 TBN;
+in vec3 vertexPosition_FS_IN;
+in vec3 vertexNormal_FS_IN;
+in vec2 vertexUV_FS_IN;
+in vec4 lightSpaceFragPos_FS_IN;
+in mat3 TBN_FS_IN;
 
 
 uniform int u_RenderedFrames;
@@ -57,7 +57,7 @@ uniform vec4 u_AmbientLight;
 
 float ShadowCalculation(){
     // perform perspective divide
-    vec3 projCoords = lightSpaceFragPos.xyz / lightSpaceFragPos.w;
+    vec3 projCoords = lightSpaceFragPos_FS_IN.xyz / lightSpaceFragPos_FS_IN.w;
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
@@ -77,16 +77,16 @@ float ShadowCalculation(){
 
 	if(closestDepth == 1) return 1;
 
-	for(int x = -2; x <= 2; ++x)
+	for(int x = -1; x <= 1; ++x)
 	{
-		for(int y = -2; y <= 2; ++y)
+		for(int y = -1; y <= 1; ++y)
 		{
 		    float pcfDepth = texture(u_ShadowDepthMap, projCoords.xy + vec2(x, y) * texelSize).r; 
 		    shadow += currentDepth - bias < pcfDepth ? 1.0 : 0.1;        
 		}    
 	}
 	
-	return shadow /= 16.0;
+	return shadow /= 9.0;
 } 
 
 
@@ -107,10 +107,10 @@ vec3 CalculateDirectionalColor(int index, vec3 normal, vec3 viewDir, vec3 fragme
 
 void main() {
 	//Normal Map
-	vec2 adjustedUV = vertexUV * u_MaterialProps.uvScale + u_MaterialProps.uvOffset;
+	vec2 adjustedUV = vertexUV_FS_IN * u_MaterialProps.uvScale + u_MaterialProps.uvOffset;
 
-	vec3 mappedVertexNormal = (TBN * normalize(texture2D(u_NormalMap, adjustedUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
-	mappedVertexNormal += vertexNormal * (1 - u_NormTexEnabled);
+	vec3 mappedVertexNormal = (TBN_FS_IN * normalize(texture2D(u_NormalMap, adjustedUV).rgb * 2.0 - 1.0)) * u_NormTexEnabled;
+	mappedVertexNormal += vertexNormal_FS_IN * (1 - u_NormTexEnabled);
 	mappedVertexNormal = normalize(mappedVertexNormal);
 
 
@@ -121,7 +121,7 @@ void main() {
 	float specular = 1;
 
 
-	vec3 fragToCam = vertexPosition.xyz - u_CameraPosition.xyz;	
+	vec3 fragToCam = vertexPosition_FS_IN.xyz - u_CameraPosition.xyz;	
 	vec3 viewDir = normalize(fragToCam);
 
 	vec3 composedColor = color * u_AmbientLight.xyz;

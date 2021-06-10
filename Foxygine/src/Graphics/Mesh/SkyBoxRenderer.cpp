@@ -70,6 +70,7 @@ void SkyboxRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	//Binding GL ShaderProg
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
 	shader->GL_BindProgram();
 
 	//Material Uniforms
@@ -78,13 +79,10 @@ void SkyboxRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	//Camera Uniforms
 	drawingCam->GL_SetCameraUniformForSkybox(std::shared_ptr<Shader>(shader));
 
-
-	//Applying Uniform Data
-	//shader->GL_SetUniforms();
-
 	//Gl Draw Call
 	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
 
+	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
 	glEnable(GL_CULL_FACE);
 	GL_Call(glBindVertexArray(0));

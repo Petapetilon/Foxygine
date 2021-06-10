@@ -21,6 +21,7 @@ protected:
 	bool castShadow;
 	bool receiveShadow;
 
+
 public:
 	MeshRenderer(const std::string& objFile, bool _castShadow);
 	MeshRenderer();

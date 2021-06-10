@@ -6,6 +6,7 @@
 #include "../Lights/Light.h"
 #include "../../GameObject/GameObject.h"
 #include "../../GameObject/Transform.h"
+#include "../../Peripherals/Window.h"
 #include "../Shaders/Shader.h"
 #include "../Rendering/Camera.h"
 
@@ -112,8 +113,7 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 		drawingCam->GL_SetCameraUniform(std::shared_ptr<Shader>(shader));
 
 		//Graphics Uniforms
-		int renderedFrames = Graphics::renderedFrames;
-		shader->SetValueVec1I("u_RenderedFrames", renderedFrames);
+		shader->SetValueVec1I("u_RenderedFrames", Graphics::renderedFrames);
 	}
 
 	//Material Uniforms
@@ -129,16 +129,21 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glLineWidth(3);
 	
 	auto wireFrameShader = ShaderLibrary::GL_BindTessellatedWireframeShader();
 	wireFrameShader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
+	wireFrameShader->SetValueVec1I("u_RenderedFrames", Graphics::renderedFrames);
+	wireFrameShader->SetValueVec2("u_ScreenRes", Window::GetInstance()->GetWindowResolution());
 	drawingCam->GL_SetCameraUniform(wireFrameShader);
 	GL_Call(glPatchParameteri(GL_PATCH_VERTICES, 3));
 	glDrawElements(GL_PATCHES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
+	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 #endif
 }

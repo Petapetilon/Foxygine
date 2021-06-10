@@ -250,6 +250,8 @@ std::shared_ptr<Shader> Shader::CreateBasicLitShader(std::string _name)
 	shader->LoadShaderResource("res\\FragmentShader\\BasicFrag.frag", ShaderType::FragmentShader);
 	//shader->LoadShaderResource("res\\TessellationShader\\BasicTessControl.tesc", ShaderType::TessControlShader);
 	//shader->LoadShaderResource("res\\TessellationShader\\BasicTessEval.tese", ShaderType::TessEvalShader);
+	//shader->LoadShaderResource("res\\FragmentShader\\UnlitColor.frag", ShaderType::FragmentShader);
+
 	shader->GL_IsLitShader = true;
 	return std::shared_ptr<Shader>(shader);
 }
