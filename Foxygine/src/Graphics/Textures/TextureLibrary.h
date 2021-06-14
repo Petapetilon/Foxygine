@@ -15,6 +15,10 @@ private:
 public:
 	static bool RegisterTexture(Texture*);
 	static void UnregisterTexture(Texture*);
-	static Texture* FindTexture(std::string);
+	static Texture* FindTexture(std::string file);
+	static bool TryFindTexture(std::string file, Texture* result);
+
+	static Texture* FindTextureByName(std::string textureName);
+	static bool TryFindTextureByName(std::string textureName, Texture* result);
 };
 

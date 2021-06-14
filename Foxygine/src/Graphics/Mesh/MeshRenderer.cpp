@@ -164,6 +164,16 @@ void MeshRenderer::DrawShadowMap(Light* light)
 }
 
 
+Component* MeshRenderer::Copy(std::size_t& compHash)
+{
+	auto copy = new MeshRenderer();
+	copy->SetMesh(mesh);
+	copy->SetMaterial(material);
+	copy->castShadow = castShadow;
+	compHash = typeid(copy).hash_code();
+	return copy;
+}
+
 void MeshRenderer::OnAttach()
 {
 	Graphics::RegisterMeshRenderer(this);

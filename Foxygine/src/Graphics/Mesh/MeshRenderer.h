@@ -30,6 +30,8 @@ public:
 	virtual void SetMesh(std::shared_ptr<Mesh> _mesh);
 	virtual void Draw(std::shared_ptr<Camera> _drawingCamera) override;
 	virtual void DrawShadowMap(Light* light);
+
+	virtual Component* Copy(std::size_t& compHash) override;
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 };

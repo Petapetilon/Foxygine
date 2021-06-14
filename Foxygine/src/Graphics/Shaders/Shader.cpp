@@ -256,6 +256,16 @@ std::shared_ptr<Shader> Shader::CreateBasicLitShader(std::string _name)
 	return std::shared_ptr<Shader>(shader);
 }
 
+std::shared_ptr<Shader> Shader::CreatePBRShader(std::string _name)
+{
+	ShaderLibrary::RegisterShader(new Shader(_name));
+	auto shader = ShaderLibrary::GetShader(_name);
+	shader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", ShaderType::VertexShader);
+	shader->LoadShaderResource("res\\FragmentShader\\PBRFrag.frag", ShaderType::FragmentShader);
+	shader->GL_IsLitShader = true;
+	return std::shared_ptr<Shader>(shader);
+}
+
 
 std::shared_ptr<Shader> Shader::CreateBasicUnlitShader(std::string _name)
 {

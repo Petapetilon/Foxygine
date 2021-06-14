@@ -2,19 +2,22 @@
 #include "../Graphics.h"
 #include "../Shaders/Shader.h"
 #include "../../GameObject/Transform.h"
+#include "Lighting.h"
 
 
-PointLight::PointLight(Color _color, float _intensity)
+PointLight::PointLight(Color _color, float _intensity, bool _drawShadow)
 {
 	color = _color;
 	intensity = _intensity;
+	drawShadow = _drawShadow;
 }
 
 
-PointLight::PointLight(Color _color)
+PointLight::PointLight(Color _color, bool _drawShadow)
 {
 	color = _color;
 	intensity = 1;
+	drawShadow = _drawShadow;
 }
 
 
@@ -41,14 +44,48 @@ void PointLight::GL_SetLightingPasses(int _index)
 
 }
 
+bool PointLight::GL_FillLightPass(Lighting::LightPass* pass)
+{
+	if (isActive) {
+		pass->pos = transform->Position();
+		pass->dir = transform->Forward();
+		pass->color = color;
+		pass->intensity = intensity;
+		pass->type = (Lighting::LightType)type;
+		return true;
+	}
+
+	return false;
+}
+
+
+void PointLight::GL_RenderShadowMap()
+{
+}
+
+
+bool PointLight::GetShadowCapabilities()
+{
+	return false;
+}
+
+
+Component* PointLight::Copy(std::size_t& compHash)
+{
+	compHash = typeid(PointLight).hash_code();
+	return new PointLight(color, intensity, drawShadow);
+}
+
 
 void PointLight::OnAttach()
 {
 	Graphics::RegisterLight(this);
+	Lighting::RegisterLight(this);
 }
 
 
 void PointLight::OnDetach()
 {
 	Graphics::UnregisterLight(this);
+	Lighting::UnregisterLight(this);
 }

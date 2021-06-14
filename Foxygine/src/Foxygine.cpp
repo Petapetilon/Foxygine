@@ -16,20 +16,11 @@ Foxygine::~Foxygine() {}
 
 void Foxygine::StartFoxygine()
 {
-    //std::vector<std::string> skyboxTextures;
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_left.png");
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_right.png");
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_down.png");
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_up.png");
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_front.png");
-    //skyboxTextures.push_back("res\\textures\\Skybox\\blue skybox_back.png");
-    //Graphics::SetSkybox(skyboxTextures);
-    Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
-    //auto tex = new Texture2D();
-    //tex->LoadTexture2D("res\\textures\\Environment\\misty_pines_4k.png", "environment2", Texture::Wrapping::Repeat, Texture::Filtering::Nearest);
-
+    Graphics::SetSkybox("res\\textures\\Skybox", "blue skybox", "png");
+    //Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
+   
     //Camera
-    auto cameraGo = GameObject::CreateGameObject("cameraGO");
+    auto cameraGo = GameObject::CreateGameObject("Player");
     cameraGo->transform->SetPosition(Vector3(0, -1, -10));
     cameraGo->transform->Rotate(Vector3(1, 0, 0), 20.f);
     auto resolution = Window::GetInstance()->GetWindowResolution();
@@ -44,50 +35,33 @@ void Foxygine::StartFoxygine()
     lightGo->transform->SetRotation(0, 100, 20, true);
     lightGo->transform->Translate(lightGo->transform->Forward() * -10);
 
+    auto pointLightGo = GameObject::CreateGameObject("pointLightGo");
+    pointLightGo->AddComponent<PointLight>(new PointLight(Color(.2f, .7f, .6f, 1), 1.f));
+    pointLightGo->transform->Translate(10, 0, 0);
 
 
 
 
-    auto basicMaterial2 = new Material("basicMaterial2", "Basic Lit");
-    basicMaterial2->CreateMaterialProperty("Glossiness", "glossiness", .75);
-    basicMaterial2->CreateMaterialProperty("Metallic", "metallic", .75f);
     
-    auto basicMaterial3 = new Material("basicMaterial3", "Basic Lit");
+    auto basicMaterial3 = new PBRMaterial();
     basicMaterial3->mainColor = Color(1.f, 1.f, 1.f, 1.f);
-    basicMaterial3->CreateMaterialProperty("Glossiness", "glossiness", .5f);
-    basicMaterial3->CreateMaterialProperty("Metallic", "metallic", 0);
+    //basicMaterial3->LoadAlbedoTexture("res\\textures\\Rocks01_col.jpg");
+    //basicMaterial3->LoadNormalMap("res\\textures\\Rocks01_nrm.jpg");
+    basicMaterial3->mainColor = Color(1, 0, 1, 1.f);
+    basicMaterial3->SetRoughness(.1f);
+    basicMaterial3->SetMetallic(.9f);
 
-    auto groundMaterial = new Material("groundMaterial", "Basic Lit");
+    auto groundMaterial = new PBRMaterial();
     groundMaterial->mainColor = Color(1, 1, 1, 1.f);
-    groundMaterial->CreateMaterialProperty("Glossiness", "glossiness", .05f);
-    groundMaterial->CreateMaterialProperty("Metallic", "metallic", 0);
     groundMaterial->uvScale = Vector2(100, 100);
+    groundMaterial->normalMappingStrength = .4f;
+    groundMaterial->SetRoughness(.75f);
+    groundMaterial->SetMetallic(.05f);
+    groundMaterial->LoadAlbedoTexture("res\\textures\\4K-ground_cracked-diffuse.jpg");
+    groundMaterial->LoadNormalMap("res\\textures\\4K-ground_cracked-normal.jpg");
 
 
-    //Cube mat
-    auto colorTex = std::shared_ptr<Texture2D>(new Texture2D());
-    colorTex->LoadTexture2D("res\\textures\\Rocks01_col.jpg", "brickcol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    basicMaterial3->CreateTextureProperty("color", std::shared_ptr<Texture>(colorTex), Material::TextureSlot::BaseColor);
 
-    //auto colorNrm = std::shared_ptr<Texture2D>(new Texture2D());
-    //colorNrm->LoadTexture2D("res\\textures\\Rocks01_nrm.jpg", "rocknrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    //basicMaterial3->CreateTextureProperty("normal", std::shared_ptr<Texture>(colorNrm), Material::TextureSlot::NormalMap);
-
-    //auto colorDisp = std::shared_ptr<Texture2D>(new Texture2D());
-    //colorDisp->LoadTexture2D("res\\textures\\Rocks01_disp.jpg", "rockdisp", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    //basicMaterial3->CreateTextureProperty("disp", std::shared_ptr<Texture>(colorDisp), Material::TextureSlot::DisplacementMap);
-
-
-    //Ground Mat
-    auto groundTex = std::shared_ptr<Texture2D>(new Texture2D());
-    groundTex->LoadTexture2D("res\\textures\\4K-ground_cracked-diffuse.jpg", "groundCol", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    groundMaterial->CreateTextureProperty("color", std::shared_ptr<Texture>(groundTex), Material::TextureSlot::BaseColor);
-
-    auto groundNrm = std::shared_ptr<Texture2D>(new Texture2D());
-    groundNrm->LoadTexture2D("res\\textures\\4K-ground_cracked-normal.jpg", "groundNrm", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
-    groundMaterial->CreateTextureProperty("normal", std::shared_ptr<Texture>(groundNrm), Material::TextureSlot::NormalMap);
-
-    groundMaterial->normalMappingStrength = .25f;
 
 
 
@@ -97,9 +71,9 @@ void Foxygine::StartFoxygine()
     groundGo->transform->Scale(Vector3(1000, 1, 1000));
     groundGo->transform->Translate(Vector3(0, -2.5f, 0));
   
-    auto smoothSphere2 = GameObject::CreateGameObject("smoothSphere");
+    auto smoothSphere2 = GameObject::CreateGameObject("sphere");
     smoothSphere2->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj", true));
-    smoothSphere2->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial2));
+    smoothSphere2->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial3));
     smoothSphere2->transform->SetPosition(Vector3(-5, 0, 0));
  
     auto cube = GameObject::CreateGameObject("cube");
@@ -150,8 +124,19 @@ void Foxygine::UpdateFoxygine(float deltaTime)
     }
 
     
-    GameObjectHandler::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
+    GameObject::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
+    GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("roughness", b);
+    GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("metallic", r);
+    GameObject::FindGameObject("pointLightGo")->transform->SetPosition(Vector3(sinf(Graphics::renderedFrames * .005f) * 10, 1, cosf(Graphics::renderedFrames * .005f) * 10));
    // GameObjectHandler::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->FindElement("image")->SetRotation((float)Graphics::renderedFrames / (float)10);
+
+    if (Keyboard::GetKey(KeyCode::L_Ctrl)) {
+        auto player = GameObject::FindGameObject("Player");
+        auto bullet = GameObject::CreateInstance(GameObject::FindGameObject("sphere"));
+        bullet->transform->SetPosition(player->transform->Position() * -1);
+        bullet->AddComponent<KinematikBody>(new KinematikBody());
+        bullet->GetComponent<KinematikBody>()->SetKinematikVelocity(player->transform->Forward() * -10, 200, true);
+    }
 }
 
 

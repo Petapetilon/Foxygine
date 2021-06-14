@@ -59,9 +59,14 @@ public:
 	static void UnregisterCanvas(Canvas*);
 
 
-	/// <param name="filePaths">left, right, down, up, front, back</param>
+	/// <summary> Files are: left, right, down, up, front, back </summary>
 	static void SetSkybox(std::vector<std::string> filePaths);
+
+	/// <summary> Sets the Skybox from the Given Folder by Loading Textures with the given Filename and appending _left, _right, _up, _down, _front, _back</summary>
+	static void SetSkybox(std::string relativeDir, std::string fileName, std::string fileType);
+
 	static void SetEnvironment(std::string filePath);
+
 	static void OnWindowResize(int width, int height);
 	static void FinishLoadingResources();
 	static Shader* GL_GetCurrentlyBoundShader();

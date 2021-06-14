@@ -22,7 +22,11 @@ private:
 	Vector3 rotation;
 
 public:
+	GameObject* gameObject;
+
 	Transform();
+
+	void CopyTo(Transform* transform);
 
 	void SetRotation(Vector3);
 	void SetRotation(float, float, float, bool);

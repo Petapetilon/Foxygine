@@ -5,9 +5,11 @@
 #include <memory>
 
 
+
+
 #define FOXYGINE_DEBUG
 #define USE_NAME_LOOKUP
-#define WIREFRAME_DEBUG
+//#define WIREFRAME_DEBUG
 //#define USE_CACHE
 
 

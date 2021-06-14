@@ -8,12 +8,13 @@
 
 
 class Texture;
+class Texture2D;
 class SkyboxRenderer;
 
 class Material
 {
-enum class TextureSlot;
-private:
+protected:
+	enum class TextureSlot;
 	struct MaterialProperty {
 		std::string propertyName;
 		std::string shaderPassName;
@@ -27,6 +28,7 @@ private:
 	};
 
 
+	Material();
 	std::list<std::shared_ptr<MaterialProperty>> materialProps;
 	std::list<std::shared_ptr<TextureProperty>> textureProps;
 	std::shared_ptr<Shader> shader;
@@ -35,10 +37,10 @@ private:
 		"u_ColorTexture",
 		"u_NormalMap",
 		"u_DisplacementMap",
-		"u_SpecularMap",
+		"u_RoughnessMap",
 		"u_MetallicMap",
+		"u_AOMap",
 		"u_ReflectionMap",
-		"Custom_2",
 		"Custom_3",
 		"Custom_4",
 		"Custom_5",
@@ -56,10 +58,10 @@ public:
 		BaseColor = 0,
 		NormalMap = 1,
 		DisplacementMap = 2,
-		Specular = 3,
-		Metallic = 4,
-		ReflectionMap = 5,
-		Custom_2 = 6,
+		RoughnessMap = 3,
+		MetallicMap = 4,
+		AOMap = 5,
+		ReflectionMap = 6,
 		Custom_3 = 7,
 		Custom_4 = 8,
 		Custom_5 = 9,
@@ -84,14 +86,23 @@ public:
 	
 	Material(std::string materialName, std::string shaderName);
 
+	void LoadAlbedoTexture(std::string filePath);
+	void SetAlbedoTexture(std::shared_ptr<Texture2D> texture);
+	void SetAlbedoTexture(std::string textureName);
+
+	void LoadNormalMap(std::string filePath);
+	void SetNormalMap(std::shared_ptr<Texture2D> texture);
+	void SetNormalMap(std::string textureName);
+
 	void CreateMaterialProperty(std::string propertyName, std::string shaderPassName, float propertyValue);
-	void SetMaterialProperty(std::string propertyName, float value);
+	bool SetMaterialProperty(std::string propertyName, float value);
 	void DeleteMaterialProperty(std::string propertyName);
 
 	void CreateTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture, Material::TextureSlot textureType);
 	void SetCustomTexturePropertyUniformMapping(Material::TextureSlot textureSlot, std::string uniformName);
-	void SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture);
+	bool SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture);
 	void DeleteTextureProperty(std::string propertyName);
+	bool TryFindTexturePropertyOfTextureSlot(Material::TextureSlot textureType, std::string& result);
 
 	void FinishLoadingResources();
 	void GL_SetProperties();

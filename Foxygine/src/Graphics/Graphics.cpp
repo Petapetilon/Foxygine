@@ -6,6 +6,7 @@
 #include "Rendering/Material.h"
 #include "../Peripherals/Window.h"
 #include "../Graphics/UI/Canvas.h"
+#include "Lights/Lighting.h"
 
 
 
@@ -140,6 +141,23 @@ void Graphics::SetSkybox(std::vector<std::string> filePaths)
 }
 
 
+void Graphics::SetSkybox(std::string relativeDir, std::string fileName, std::string fileType)
+{
+	if (skyBoxRenderer == nullptr)
+		skyBoxRenderer = new SkyboxRenderer();
+
+	std::vector<std::string> files;
+	files.push_back(relativeDir + "\\" + fileName + "_left." + fileType);
+	files.push_back(relativeDir + "\\" + fileName + "_right." + fileType);
+	files.push_back(relativeDir + "\\" + fileName + "_down." + fileType);
+	files.push_back(relativeDir + "\\" + fileName + "_up." + fileType);
+	files.push_back(relativeDir + "\\" + fileName + "_front." + fileType);
+	files.push_back(relativeDir + "\\" + fileName + "_back." + fileType);
+
+	skyBoxRenderer->SetSkybox(files);
+}
+
+
 void Graphics::SetEnvironment(std::string filePath)
 {
 	if (skyBoxRenderer == nullptr) {
@@ -189,10 +207,10 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 	int k = 0;
 	currentlyBoundShader = shader;
 	if (currentlyBoundShader->GetShaderLitType()) {
-		for (auto light : lights) {
-			light->GL_SetLightingPasses(k++);
-			//light->GL_SetShadowPasses();
-		}
+		Lighting::GL_SetLightUniforms();
+		//for (auto light : lights) {
+		//	light->GL_SetLightingPasses(k++);
+		//}
 
 		//std::cout << "binding fucking texture again for this fucking shader: " << shader->name << std::endl;
 		//currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));

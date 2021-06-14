@@ -123,6 +123,15 @@
     <ClCompile Include="src\Graphics\Textures\TextureLibrary.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Rendering\PBRMaterial.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Lights\Lighting.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\KinematikBody.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\BasicVertex.shader" />
@@ -140,6 +149,7 @@
     <None Include="res\TessellationShader\BasicTessControl.tesc" />
     <None Include="res\TessellationShader\BasicTessEval.tese" />
     <None Include="res\FragmentShader\UnlitColor.frag" />
+    <None Include="res\FragmentShader\PBRFrag.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">
@@ -296,6 +306,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Foxygine Include.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Rendering\PBRMaterial.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Lights\Lighting.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\KinematikBody.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

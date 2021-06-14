@@ -13,7 +13,7 @@
 void DirectionalLight::ComposeLightSpaceMatrices()
 {
     if (!useCSM) {
-        glm::mat4 lightProj = glm::ortho(-50.f, 50.f, -50.f, 50.f, 1.f, 200.f);
+        glm::mat4 lightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.f, 200.f);
         lightSpaceMatrix = lightProj * *transform->GetGlobalMatrix();
 
         Vector3 cameraPositionPlane = Graphics::camera->transform->Position();
@@ -212,12 +212,32 @@ void DirectionalLight::GL_SetLightingPasses(int _index)
 
     auto forward = gameObject->transform->Forward();
     shader->SetValueVec3("u_LightDirection[" + index + "]", forward);
+    shader->SetValueVec3("u_LightPosition[" + index + "]", position);
 
     if (!useCSM) {
         shader->SetValueMat4("u_LightSpaceMatrix", lightSpaceMatrix);
         GL_Call(glActiveTexture(GL_TEXTURE8));
         glBindTexture(GL_TEXTURE_2D, GL_ShadowMapObject[0]);
     }
+}
+
+
+bool DirectionalLight::GL_FillLightPass(Lighting::LightPass* pass)
+{
+    if (isActive) {
+        pass->pos = position;
+        pass->dir = transform->Forward();
+        pass->color = color;
+        pass->intensity = intensity;
+        pass->type = (Lighting::LightType)type;
+        pass->LSM = lightSpaceMatrix;
+        Graphics::GL_GetCurrentlyBoundShader()->SetValueMat4("u_LightSpaceMatrix", lightSpaceMatrix);
+        GL_Call(glActiveTexture(GL_TEXTURE8));
+        glBindTexture(GL_TEXTURE_2D, GL_ShadowMapObject[0]);
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -262,6 +282,7 @@ bool DirectionalLight::GetShadowCapabilities()
 void DirectionalLight::OnAttach()
 {
     Graphics::RegisterLight(this);
+    Lighting::RegisterLight(this);
     ComposeLightSpaceMatrices();
 
     shadowMapShader = std::shared_ptr<Shader>(ShaderLibrary::GetShader("Internal_Directional_Shadow_Shader"));
@@ -280,11 +301,13 @@ void DirectionalLight::OnAttach()
 void DirectionalLight::OnDetach()
 {
     Graphics::UnregisterLight(this);
+    Lighting::UnregisterLight(this);
 }
 
 void DirectionalLight::OnPreRender()
 {
     ComposeLightSpaceMatrices();
+    position = transform->Forward() * 10000.f;
 }
 
 

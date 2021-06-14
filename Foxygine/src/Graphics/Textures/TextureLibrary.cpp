@@ -25,5 +25,45 @@ void TextureLibrary::UnregisterTexture(Texture* tex)
 
 Texture* TextureLibrary::FindTexture(std::string file)
 {
-	return textures[file];
+	if(textures.find(file) != textures.end())
+		return textures[file];
+	return nullptr;
+}
+
+
+bool TextureLibrary::TryFindTexture(std::string file, Texture* result)
+{
+	if (textures.find(file) != textures.end()) {
+		result = textures[file];
+		return true;
+	}
+
+	result = nullptr;
+	return false;
+}
+
+
+Texture* TextureLibrary::FindTextureByName(std::string textureName)
+{
+	for (auto tex : textures) {
+		if (tex.first == textureName) {
+			return tex.second;
+		}
+	}
+
+	return nullptr;
+}
+
+
+bool TextureLibrary::TryFindTextureByName(std::string textureName, Texture* result)
+{
+	for (auto tex : textures) {
+		if (tex.first == textureName) {
+			result = tex.second;
+			return true;
+		}
+	}
+
+	result = nullptr;
+	return false;
 }

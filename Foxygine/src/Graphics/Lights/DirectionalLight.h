@@ -30,11 +30,13 @@ private:
     unsigned int CSMSplits;
     std::shared_ptr<Shader> shadowMapShader;
     bool useCSM;
+    bool drawShadow;
+    Vector3 position;
 
     void ComposeLightSpaceMatrices();
 
 public:
-    int type = (int)LightType::Directional;
+    const int type = (int)Lighting::LightType::Directional;
 
     DirectionalLight(Color _color, float _intensity);
     DirectionalLight(Color _color);
@@ -44,6 +46,7 @@ public:
 
 
     void GL_SetLightingPasses(int index) override;
+    bool GL_FillLightPass(Lighting::LightPass* pass) override;
     void GL_RenderShadowMap() override;
     bool GetShadowCapabilities() override;
     void OnAttach() override;

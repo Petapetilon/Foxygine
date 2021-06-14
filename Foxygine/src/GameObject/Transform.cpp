@@ -15,8 +15,19 @@ Transform::Transform()
 	globalTransformation = mat4(1);
 }
 
+
+void Transform::CopyTo(Transform* transform)
+{
+	transform->position = position;
+	transform->rotation = rotation;
+	transform->scale = scale;
+	transform->globalTransformation = globalTransformation;
+}
+
+
 void Transform::SetRotation(Vector3 eulerAngles)
 {
+	gameObject->OnTransformChanged();
 }
 
 

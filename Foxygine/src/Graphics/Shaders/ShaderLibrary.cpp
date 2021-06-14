@@ -40,6 +40,20 @@ std::shared_ptr<Shader> ShaderLibrary::GetShader(std::string name)
 	return nullptr;
 }
 
+bool ShaderLibrary::TryGetShader(std::string name, std::shared_ptr<Shader>& result)
+{
+	for (auto shader : registeredShaders) {
+		if (shader->name == name) {
+			result = std::shared_ptr<Shader>(shader);
+			return true;
+		}
+	}
+
+	std::cout << "Shader not found: " << name << std::endl;
+	result = nullptr;
+	return false;
+}
+
 
 std::shared_ptr<Shader> ShaderLibrary::GL_BindWireframeShader()
 {

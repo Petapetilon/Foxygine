@@ -12,6 +12,7 @@ public:
 	static bool RegisterShader(Shader* _shader);
 	static void UnregisterShader(Shader* _shader);
 	static std::shared_ptr<Shader> GetShader(std::string name);
+	static bool TryGetShader(std::string name, std::shared_ptr<Shader>& result);
 
 	static std::shared_ptr<Shader> GL_BindWireframeShader();
 	static std::shared_ptr<Shader> GL_BindTessellatedWireframeShader();

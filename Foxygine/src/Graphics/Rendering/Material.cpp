@@ -3,6 +3,23 @@
 #include "Camera.h"
 #include "../Shaders/Shader.h"
 #include "../Textures/Texture2D.h"
+#include "../../Foxygine Include.h"
+#include "../Textures/TextureLibrary.h"
+
+
+Material::Material()
+{
+	//In case Shader does not exist
+	if (shader == nullptr) {
+		std::cout << "Shader not found! Creating Shader with given Name: " << shaderName << std::endl;
+		shader = std::shared_ptr<Shader>(Shader::CreateBasicLitShader(shaderName));
+	}
+
+	mainColor = Color(1, 1, 1, 1.f);
+	uvScale = Vector2(1, 1);
+	uvOffset = Vector2(0, 0);
+	normalMappingStrength = 1;
+}
 
 
 Material::Material(std::string materialName, std::string _shaderName)
@@ -17,13 +34,106 @@ Material::Material(std::string materialName, std::string _shaderName)
 		shader = std::shared_ptr<Shader>(Shader::CreateBasicLitShader(shaderName));
 	}
 
-	mainColor.a = 1;
-	mainColor.r = 1;
-	mainColor.g = 1;
-	mainColor.b = 1;
-	normalMappingStrength = 1;
+	mainColor = Color(1, 1, 1, 1.f);
 	uvScale = Vector2(1, 1);
 	uvOffset = Vector2(0, 0);
+	normalMappingStrength = 1;
+}
+
+
+void Material::LoadAlbedoTexture(string filePath)
+{
+	Texture2D* tex = nullptr;
+	if (!TextureLibrary::TryFindTexture(filePath, tex)) {
+		tex = new Texture2D();
+		tex->LoadTexture2D(filePath, name + "_albedoTex", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+	}
+
+	std::string propName;
+	if (TryFindTexturePropertyOfTextureSlot(TextureSlot::BaseColor, propName)) {
+		SetTextureProperty(propName, std::shared_ptr<Texture>(tex));
+	}
+	else {
+		propName = name + "_albedoTex";
+		CreateTextureProperty(propName, std::shared_ptr<Texture>(tex), TextureSlot::BaseColor);
+	}
+}
+
+
+void Material::SetAlbedoTexture(std::shared_ptr<Texture2D> texture)
+{
+	string propName;
+	if (TryFindTexturePropertyOfTextureSlot(TextureSlot::BaseColor, propName)) {
+		SetTextureProperty(propName, texture);
+	}
+	else {
+		propName = name + "_albedoTex";
+		CreateTextureProperty(propName, std::shared_ptr<Texture>(texture), TextureSlot::BaseColor);
+	}
+}
+
+
+void Material::SetAlbedoTexture(std::string textureName)
+{
+	Texture2D* tex = nullptr;
+	if (TextureLibrary::TryFindTextureByName(textureName, tex)) {
+		string propName;
+		if (TryFindTexturePropertyOfTextureSlot(TextureSlot::BaseColor, propName)) {
+			SetTextureProperty(propName, std::shared_ptr<Texture>(tex));
+		}
+		else {
+			propName = name + "_albedoTex";
+			CreateTextureProperty(propName, std::shared_ptr<Texture>(tex), TextureSlot::BaseColor);
+		}
+	}
+}
+
+
+void Material::LoadNormalMap(std::string filePath)
+{
+	Texture2D* tex = nullptr;
+	if (!TextureLibrary::TryFindTexture(filePath, tex)) {
+		tex = new Texture2D();
+		tex->LoadTexture2D(filePath, name + "_normalMap", Texture::Wrapping::Repeat, Texture::Filtering::Linear);
+	}
+
+	string propName;
+	if (TryFindTexturePropertyOfTextureSlot(TextureSlot::NormalMap, propName)) {
+		SetTextureProperty(propName, std::shared_ptr<Texture>(tex));
+	}
+	else {
+		propName = name + "_normalMap";
+		CreateTextureProperty(propName, std::shared_ptr<Texture>(tex), TextureSlot::NormalMap);
+	}
+}
+
+
+void Material::SetNormalMap(std::shared_ptr<Texture2D> texture)
+{
+	string propName;
+	if (TryFindTexturePropertyOfTextureSlot(TextureSlot::NormalMap, propName)) {
+		SetTextureProperty(propName, texture);
+	}
+	else {
+		propName = name + "_normalMap";
+		CreateTextureProperty(propName, std::shared_ptr<Texture>(texture), TextureSlot::NormalMap);
+	}
+}
+
+
+void Material::SetNormalMap(std::string textureName)
+{
+	Texture2D* tex = nullptr;
+	if (TextureLibrary::TryFindTextureByName(textureName, tex)) {
+		string propName;
+		if (TryFindTexturePropertyOfTextureSlot(TextureSlot::NormalMap, propName)) {
+			SetTextureProperty(propName, std::shared_ptr<Texture>(tex));
+		}
+		else {
+			propName = name + "_normalMap";
+			CreateTextureProperty(propName, std::shared_ptr<Texture>(tex), TextureSlot::NormalMap);
+		}
+	}
 }
 
 
@@ -44,13 +154,16 @@ void Material::CreateMaterialProperty(std::string propertyName, std::string shad
 }
 
 
-void Material::SetMaterialProperty(std::string propertyName, float value)
+bool Material::SetMaterialProperty(std::string propertyName, float value)
 {
 	for (auto prop : materialProps) {
 		if (prop->propertyName == propertyName) {
 			prop->propertyValue = value;
+			return true;
 		}
 	}
+
+	return false;
 }
 
 
@@ -86,15 +199,17 @@ void Material::CreateTextureProperty(std::string propertyName, std::shared_ptr<T
 }
 
 
-void Material::SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture)
+bool Material::SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture)
 {
 	for (auto prop : textureProps) {
 		if (prop->propertyName == propertyName) {
 			prop->texture = std::shared_ptr<Texture>(texture);
 			prop->texture->GL_GetUniform(std::shared_ptr<Shader>(shader), textureSlotUniforms[(unsigned int)prop->textureSlot]);
-			return;
+			return true;
 		}
 	}
+
+	return false;
 }
 
 
@@ -112,6 +227,19 @@ void Material::DeleteTextureProperty(std::string propertyName)
 			return;
 		}
 	}
+}
+
+
+bool Material::TryFindTexturePropertyOfTextureSlot(Material::TextureSlot textureType, std::string& result)
+{
+	for (auto prop : textureProps) {
+		if (prop->textureSlot == textureType) {
+			result = prop->propertyName;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -158,11 +286,11 @@ void Material::GL_SetProperties()
 			DispEnable = 1;
 			break;
 			
-		case TextureSlot::Specular:
+		case TextureSlot::RoughnessMap:
 			SpecEnable = 1;
 			break;
 			
-		case TextureSlot::Metallic:
+		case TextureSlot::MetallicMap:
 			MetEnable = 1;
 			break;
 
@@ -175,7 +303,7 @@ void Material::GL_SetProperties()
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_ColTexEnabled"), ColEnable));
 	GL_Call(glUniform1f(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_NormTexEnabled"), NormEnable));
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_DispTexEnabled"), DispEnable));
-	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_SpecTexEnabled"), SpecEnable));
+	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_RghTexEnabled"), SpecEnable));
 	GL_Call(glUniform1i(glGetUniformLocation(shader->GL_GetShaderProgram(), "u_MetTexEnabled"), MetEnable));
 }
 

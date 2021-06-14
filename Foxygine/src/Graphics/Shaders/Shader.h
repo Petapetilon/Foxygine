@@ -66,6 +66,7 @@ public:
 
 	static std::shared_ptr<Shader> CreateEmptyShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitShader(std::string _name);
+	static std::shared_ptr<Shader> CreatePBRShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicUnlitShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicLitUIShader(std::string _name);
 	static std::shared_ptr<Shader> CreateBasicUnlitUIShader(std::string _name);
