@@ -6,6 +6,11 @@ layout(location = 1) in vec3 l_Normal;
 layout(location = 2) in vec2 l_UV;
 layout(location = 3) in vec3 l_Tangent;
 layout(location = 4) in vec3 l_Bitangent;
+
+layout(location = 5) in vec4 i_TransRow1;
+layout(location = 6) in vec4 i_TransRow2;
+layout(location = 7) in vec4 i_TransRow3;
+layout(location = 8) in vec4 i_TransRow4;
  
 
 //Out Pass
@@ -37,13 +42,21 @@ uniform vec4 u_CameraPosition;
 uniform vec4 u_CameraDirection;
 
 
+uniform int u_InstancedRendering;
+
+
 
 void main() {
-	vertexPosition = (u_ObjectTransform * vec4(l_Position, 1)).xyz;
-	gl_Position = u_CameraWorldToScreen * vec4(vertexPosition, 1);
-	//gl_Position = u_LightSpaceMatrix * vec4(vertexPosition, 1);
+	mat4 modelMatrix;
+	if(u_InstancedRendering > 0)
+		modelMatrix = mat4(i_TransRow1, i_TransRow2, i_TransRow3, i_TransRow4);
+	else
+		modelMatrix = u_ObjectTransform;
 
-	mat3 normalMatrix = mat3(transpose(inverse(u_ObjectTransform)));
+	vertexPosition = (modelMatrix * vec4(l_Position, 1)).xyz;
+	gl_Position = u_CameraWorldToScreen * vec4(vertexPosition, 1);
+
+	mat3 normalMatrix = mat3(transpose(inverse(modelMatrix)));
 	vertexNormal = normalMatrix * l_Normal;
 
 	vec3 T = normalize(normalMatrix * l_Tangent);
@@ -54,11 +67,8 @@ void main() {
 	vertexUV = l_UV;
 
 	lightSpaceFragPos = u_LightSpaceMatrix * vec4(vertexPosition, 1);
-	modelPosition = vec3(u_ObjectTransform[3][0], u_ObjectTransform[3][1], u_ObjectTransform[3][2]);
+	modelPosition = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
 
-
-	//vec3 dist = vertexPosition - u_CameraPosition.xyz;
-	//LODLevel = int((dist.x * dist.x + dist.y * dist.y + dist.z * dist.z) / 200000);
 
 	vertexPosition_FS_IN = vertexPosition;
 	vertexNormal_FS_IN = vertexNormal;

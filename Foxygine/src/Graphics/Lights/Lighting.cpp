@@ -55,6 +55,7 @@ void Lighting::GL_SetLightUniforms()
 			types.push_back((int)pass->type);
 		}
 	}
+	delete pass;
 
 
 	auto shaderProg = Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram();

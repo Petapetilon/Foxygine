@@ -30,6 +30,8 @@ void Graphics::RenderShadowPrePassForwarded()
 	for (auto light : lights) {
 		light->GL_RenderShadowMap();
 	}
+
+	Lighting::GL_SetLightUniforms();
 }
 
 
@@ -70,7 +72,7 @@ void Graphics::Init()
 	skyBoxRenderer = nullptr;
 	camera = nullptr;
 	renderedFrames = 0;
-	CSM_ShadowResolution = 4096;
+	CSM_ShadowResolution = 8192;
 	PointLight_ShadowResolution = 2048;
 	SpotLight_ShadowResolution = 2048;
 
@@ -203,25 +205,14 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 {
 	if (shader == nullptr) return;
 
-	int lightCount = lights.size();
-	int k = 0;
 	currentlyBoundShader = shader;
-	if (currentlyBoundShader->GetShaderLitType()) {
+	if (currentlyBoundShader->GetShaderLitType()) 
 		Lighting::GL_SetLightUniforms();
-		//for (auto light : lights) {
-		//	light->GL_SetLightingPasses(k++);
-		//}
-
-		//std::cout << "binding fucking texture again for this fucking shader: " << shader->name << std::endl;
-		//currentlyBoundShader->SetShaderPass(new ShaderPassVec1I(&lightCount, "u_NumberLights"));
-		currentlyBoundShader->SetValueVec1I("u_NumberLights", lightCount);
-	}
 }
 
 
 void Graphics::RenderShadowPass(Light* light)
 {
-	//std::cout << "filing fucking buffer" << std::endl;
 	for (auto renderer : meshRenderers) {
 		renderer->DrawShadowMap(light);
 	}

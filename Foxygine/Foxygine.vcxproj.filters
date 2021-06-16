@@ -108,7 +108,7 @@
     <ClCompile Include="src\Graphics\UI\UIText.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\InstancedMeshRenderer.cpp">
+    <ClCompile Include="src\Graphics\Mesh\InstanceRenderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\UI\BoundingRect.cpp">
@@ -290,7 +290,7 @@
     <ClInclude Include="src\Graphics\UI\UIText.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Mesh\InstancedMeshRenderer.h">
+    <ClInclude Include="src\Graphics\Mesh\InstanceRenderer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\UI\BoundingRect.h">

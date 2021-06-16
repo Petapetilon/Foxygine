@@ -18,8 +18,11 @@ private:
 	bool terminate;
 
 public:
-	void Update(float deltaTime) override;
+	void FixedUpdate(float deltaTime) override;
 	void SetKinematikVelocity(Vector3 velocity, float length, bool terminateObject = false);
 	void SetKinematikAngularVelocity(Vector3 axis, float speed);
+
+	Component* Copy(std::size_t& compHash) override;
+	Component* CopyLinked(std::size_t& compHash) override;
 };
 

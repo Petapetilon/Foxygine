@@ -20,15 +20,15 @@ void Foxygine::StartFoxygine()
     //Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
    
     //Camera
-    auto cameraGo = GameObject::CreateGameObject("Player");
-    cameraGo->transform->SetPosition(Vector3(0, -1, -10));
-    cameraGo->transform->Rotate(Vector3(1, 0, 0), 20.f);
+    player = GameObject::CreateGameObject("Player");
+    player->transform->SetPosition(Vector3(0, -1, -10));
+    player->transform->Rotate(Vector3(1, 0, 0), 20.f);
     auto resolution = Window::GetInstance()->GetWindowResolution();
 
-    cameraGo->AddComponent<Camera>(new Camera());
-    auto cam = cameraGo->GetComponent<Camera>();
+    player->AddComponent<Camera>(new Camera());
+    auto cam = player->GetComponent<Camera>();
     cam->SetupCamera(glm::radians(70.f), (float)resolution.x / (float)resolution.y, .001f, 1000.f);
-    cameraGo->AddComponent<SimpleCamera>(new SimpleCamera());
+    player->AddComponent<SimpleCamera>(new SimpleCamera());
 
     auto lightGo = GameObject::CreateGameObject("lightGo");
     lightGo->AddComponent<DirectionalLight>(new DirectionalLight(Color(1, .9f, .7f, 1.f), 1));
@@ -80,6 +80,10 @@ void Foxygine::StartFoxygine()
     cube->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\cube.obj", true));
     cube->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(basicMaterial3));
 
+    auto empty = GameObject::CreateGameObject("empty");
+    
+    bullet = smoothSphere2;
+    bullet->AddComponent<KinematikBody>(new KinematikBody());
 
 
 
@@ -128,19 +132,18 @@ void Foxygine::UpdateFoxygine(float deltaTime)
     GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("roughness", b);
     GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("metallic", r);
     GameObject::FindGameObject("pointLightGo")->transform->SetPosition(Vector3(sinf(Graphics::renderedFrames * .005f) * 10, 1, cosf(Graphics::renderedFrames * .005f) * 10));
-   // GameObjectHandler::FindGameObject("canvasGo")->GetComponent<ScreenSpaceCanvas>()->FindElement("image")->SetRotation((float)Graphics::renderedFrames / (float)10);
-
-    if (Keyboard::GetKey(KeyCode::L_Ctrl)) {
-        auto player = GameObject::FindGameObject("Player");
-        auto bullet = GameObject::CreateInstance(GameObject::FindGameObject("sphere"));
-        bullet->transform->SetPosition(player->transform->Position() * -1);
-        bullet->AddComponent<KinematikBody>(new KinematikBody());
-        bullet->GetComponent<KinematikBody>()->SetKinematikVelocity(player->transform->Forward() * -10, 200, true);
-    }
 }
 
 
-void Foxygine::FixedUpdateFoxygine(float deltaTime) {}
+void Foxygine::FixedUpdateFoxygine(float deltaTime) {
+    if (Keyboard::GetKey(KeyCode::L_Ctrl)) {
+        //auto player = GameObject::FindGameObject("Player");
+        auto instance = GameObject::CreateLinkedInstance(bullet);
+        instance->transform->SetPosition(player->transform->Position() * -1);
+        //instance->AddComponent<KinematikBody>(new KinematikBody());
+        instance->GetComponent<KinematikBody>()->SetKinematikVelocity(player->transform->Forward() * -100, 200, true);
+    }
+}
 
 
 void Foxygine::EndFoxygine() {}

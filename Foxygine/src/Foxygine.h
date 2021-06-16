@@ -12,11 +12,15 @@
 //#define WIREFRAME_DEBUG
 //#define USE_CACHE
 
+class GameObject;
+
 
 class Foxygine
 {
 public:
 	float r, g, b;
+	std::shared_ptr<GameObject> bullet;
+	std::shared_ptr<GameObject> player;
 
 	Foxygine();
 	~Foxygine();
@@ -25,6 +29,7 @@ public:
 	void UpdateFoxygine(float deltaTime);
 	void FixedUpdateFoxygine(float deltaTime);
 	void EndFoxygine();
+
 
 
 private:

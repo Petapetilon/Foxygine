@@ -3,13 +3,15 @@
 #include "GameObject.h"
 
 
-void KinematikBody::Update(float deltaTime)
+void KinematikBody::FixedUpdate(float deltaTime)
 {
 	if (velocitySet) {
-		if(terminate)
-			if ((startPosition - transform->Position()).SqrMagnitude() > maxDistance) 
-			gameObject->Destroy();
-		
+		if (terminate)
+			if ((startPosition - transform->Position()).SqrMagnitude() > maxDistance * maxDistance) {
+				gameObject->Destroy();
+				return;
+			}
+
 		transform->Translate(velocity * deltaTime);
 	}
 
@@ -17,6 +19,7 @@ void KinematikBody::Update(float deltaTime)
 		transform->Rotate(axis, speed);
 	}
 }
+
 
 void KinematikBody::SetKinematikVelocity(Vector3 _velocity, float length, bool terminateObject)
 {
@@ -28,10 +31,25 @@ void KinematikBody::SetKinematikVelocity(Vector3 _velocity, float length, bool t
 	gameObject->SetActive(true);
 }
 
+
 void KinematikBody::SetKinematikAngularVelocity(Vector3 _axis, float _speed)
 {
 	axis = _axis;
 	speed = _speed;
 	angularSet = true;
 	gameObject->SetActive(true);
+}
+
+
+Component* KinematikBody::Copy(std::size_t& compHash)
+{
+	compHash = typeid(this).hash_code();
+	return new KinematikBody();
+}
+
+
+Component* KinematikBody::CopyLinked(std::size_t& compHash)
+{
+	compHash = typeid(this).hash_code();
+	return new KinematikBody();
 }

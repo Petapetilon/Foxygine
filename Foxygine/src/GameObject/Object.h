@@ -10,9 +10,10 @@ protected:
 public:
 	std::string name;
 
-	void SetActive(bool);
 	bool GetActiveSelf();
+	virtual void SetActive(bool);
 	virtual void OnEnable() {}
 	virtual void OnDisable() {}
+	virtual void OnDestroy() {}
 };
 

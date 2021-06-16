@@ -21,8 +21,8 @@ private:
 		}
 
 		ComponentNode() {}
-		void Destroy() {
-			//delete[] comp;
+		~ComponentNode() {
+			delete comp;
 		}
 
 		Component* comp;
@@ -31,19 +31,22 @@ private:
 
 
 	std::list<std::shared_ptr<ComponentNode>> components;
+	bool markedForDestroy;
 
 	GameObject(std::string _name);
 
 public:
 	Transform* transform;
 	long uniqueID;
+
+
+	~GameObject();
 	
 	
 	static std::shared_ptr<GameObject> CreateGameObject(std::string _name);
 	static std::shared_ptr<GameObject> CreateGameObject();
 	static std::shared_ptr<GameObject> CreateInstance(std::shared_ptr<GameObject> original);
-	static std::shared_ptr<GameObject> CreateInstance(std::shared_ptr<GameObject> original, Vector3 position);
-	static std::shared_ptr<GameObject> CreateInstance(std::shared_ptr<GameObject> original, Vector3 position, Vector3 rotation);
+	static std::shared_ptr<GameObject> CreateLinkedInstance(std::shared_ptr<GameObject> original);
 	static std::shared_ptr<GameObject> FindGameObject(std::string _name);
 	static bool FindAllGameObjects(std::string _name, std::shared_ptr<std::list<std::shared_ptr<GameObject>>> results);
 
@@ -61,7 +64,7 @@ public:
 			}
 		}
 		
-		components.push_back(std::make_shared<ComponentNode>(ComponentNode(component, typeid(Comp*).hash_code())));
+		components.push_back(std::shared_ptr<ComponentNode>(new ComponentNode(component, typeid(Comp*).hash_code())));
 		((Component*)component)->gameObject = this;
 		((Component*)component)->transform = transform;
 		((Component*)component)->OnAttach();
@@ -85,7 +88,7 @@ public:
 	bool TryGetComponent(Comp* foundComp) {
 		for (auto compPtr : components) {
 			if (compPtr->compTypeHash == typeid(Comp*).hash_code()) {
-				foundComp = compPtr->comp;
+				foundComp = (Comp*)compPtr->comp;
 				return true;
 			}
 		}
@@ -104,12 +107,13 @@ public:
 				compPtr->comp->gameObject = nullptr;
 				compPtr->comp->transform = nullptr;
 				compPtr->comp->OnDetach();
-				return compPtr->comp;
+				return (Comp*)compPtr->comp;
 			}
 		}
 	}
 
 
+	virtual void SetActive(bool active) override;
 	virtual void OnEnable() override;
 	virtual void OnDisable() override;
 

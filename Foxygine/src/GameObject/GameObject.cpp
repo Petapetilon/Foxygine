@@ -13,6 +13,12 @@ GameObject::GameObject(std::string _name)
 }
 
 
+GameObject::~GameObject()
+{
+	delete transform;
+}
+
+
 std::shared_ptr<GameObject> GameObject::CreateGameObject(std::string _name)
 {
 	return std::shared_ptr<GameObject>(GameObjectHandler::RegisterGameObject(std::shared_ptr<GameObject>(new GameObject(_name))));
@@ -43,20 +49,24 @@ std::shared_ptr<GameObject> GameObject::CreateInstance(std::shared_ptr<GameObjec
 }
 
 
-std::shared_ptr<GameObject> GameObject::CreateInstance(std::shared_ptr<GameObject> original, Vector3 position)
+std::shared_ptr<GameObject> GameObject::CreateLinkedInstance(std::shared_ptr<GameObject> original)
 {
-	auto go = CreateInstance(original);
-	go->transform->SetPosition(position);
+	auto go = CreateGameObject(original->name + "-Copy");
+
+	original->transform->CopyTo(go->transform);
+
+	std::size_t currentCopiedHash;
+	Component* currentCopiedComp;
+	for (auto comp : original->components) {
+		currentCopiedComp = comp->comp->CopyLinked(currentCopiedHash);
+
+		if (currentCopiedHash != -1)
+			go->AddComponent(currentCopiedComp, currentCopiedHash);
+	}
+
 	return go;
 }
 
-std::shared_ptr<GameObject> GameObject::CreateInstance(std::shared_ptr<GameObject> original, Vector3 position, Vector3 rotation)
-{
-	auto go = CreateInstance(original);
-	go->transform->SetPosition(position);
-	go->transform->SetRotation(rotation);
-	return go;
-}
 
 std::shared_ptr<GameObject> GameObject::FindGameObject(std::string _name)
 {
@@ -70,12 +80,29 @@ bool GameObject::FindAllGameObjects(std::string _name, std::shared_ptr<std::list
 }
 
 
+void GameObject::SetActive(bool active)
+{
+	__super::SetActive(active);
+	if (active) 
+		OnEnable();
+	else
+		OnDisable();
+
+	//if (markedForDestroy)
+	//	delete this;
+}
+
+
 void GameObject::OnEnable()
 {
 	GameObjectHandler::SetGameObjectActiveStatus(*this, true);
 	for (auto compPtr : components) {
+		compPtr->comp->isActive = true;
 		compPtr->comp->OnEnable();
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
@@ -83,14 +110,18 @@ void GameObject::OnDisable()
 {
 	GameObjectHandler::SetGameObjectActiveStatus(*this, false);
 	for (auto compPtr : components) {
+		compPtr->comp->isActive = false;
 		compPtr->comp->OnDisable();
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
 void GameObject::AddComponent(Component* comp, std::size_t compHash)
 {
-	components.push_back(std::make_shared<ComponentNode>(ComponentNode(comp, compHash)));
+	components.push_back(std::shared_ptr<ComponentNode>(new ComponentNode(comp, compHash)));
 	comp->gameObject = this;
 	comp->transform = transform;
 	comp->OnAttach();
@@ -114,6 +145,9 @@ void GameObject::Update(float deltaTime)
 		if (compPtr->comp->isActive)
 			compPtr->comp->Update(deltaTime);
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
@@ -123,6 +157,9 @@ void GameObject::FixedUpdate(float deltaTime)
 		if (compPtr->comp->isActive)
 			compPtr->comp->FixedUpdate(deltaTime);
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
@@ -131,6 +168,9 @@ void GameObject::OnPreRender()
 	for (auto compPtr : components) {
 		compPtr->comp->OnPreRender();
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
@@ -139,6 +179,9 @@ void GameObject::OnPostRender()
 	for (auto compPtr : components) {
 		compPtr->comp->OnPostRender();
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
@@ -147,15 +190,18 @@ void GameObject::OnTransformChanged()
 	for (auto compPtr : components) {
 		compPtr->comp->OnTransformChanged();
 	}
+
+	//if (markedForDestroy)
+	//	delete this;
 }
 
 
 void GameObject::Destroy()
 {
-	//for (auto comp : components)
-	//	comp->Destroy();
-	//
-	//components.~list();
-	//delete[] transform;
-	//GameObjectHandler::UnregisterGameObject(std::shared_ptr<GameObject>(this));
+	markedForDestroy = true;
+	GameObjectHandler::UnregisterGameObject(this);
+
+	for(auto comp : components) {
+		comp->comp->OnDestroy();
+	}
 }

@@ -23,6 +23,7 @@ private:
 
 public:
 	GameObject* gameObject;
+	bool hasChanged;
 
 	Transform();
 
@@ -45,7 +46,7 @@ public:
 	Vector3 Up();
 	Vector3 Position();
 	Vector3 Rotation();
-	Vector3 Scale();
+	Vector3 GetScale();
 
 	glm::mat4 GetOrientationMatrix();
 	glm::mat4* GetGlobalMatrix();

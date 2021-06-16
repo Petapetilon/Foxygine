@@ -19,6 +19,7 @@ public:
 	virtual void FixedUpdate(float deltaTime) {}
 
 	virtual Component* Copy(std::size_t& compHashResult) { compHashResult = -1; return nullptr; }
+	virtual Component* CopyLinked(std::size_t& compHashResult) { compHashResult = -1; return nullptr; }
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
 	virtual void OnPreRender() {}

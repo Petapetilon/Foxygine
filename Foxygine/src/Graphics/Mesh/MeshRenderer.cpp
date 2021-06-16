@@ -1,5 +1,6 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
+#include "InstanceRenderer.h"
 #include "../Graphics.h"
 #include "../Shaders/Shader.h"
 #include "../Rendering/Material.h"
@@ -44,16 +45,6 @@ MeshRenderer::MeshRenderer()
 }
 
 
-MeshRenderer::~MeshRenderer()
-{
-	Graphics::UnregeisterMeshRenderer(this);
-
-	GL_Call(glDeleteVertexArrays(1, &GL_VertexArrayObject));
-	GL_Call(glDeleteBuffers(1, &GL_VertexBufferObject));
-	GL_Call(glDeleteBuffers(1, &GL_IndexBufferObject));
-}
-
-
 void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 {
 	mesh = std::shared_ptr<Mesh>(_mesh);
@@ -66,7 +57,7 @@ void MeshRenderer::SetMesh(std::shared_ptr<Mesh> _mesh)
 	GL_Call(glBindBuffer(GL_ARRAY_BUFFER, GL_VertexBufferObject));
 	GL_Call(glBufferData(GL_ARRAY_BUFFER, 
 		GL_BufferData->serializedVertexData.size() * sizeof(GL_FLOAT),
-		&GL_BufferData->serializedVertexData[0], GL_STATIC_DRAW));
+		GL_BufferData->serializedVertexData.data(), GL_STATIC_DRAW));
 
 
 	//Vertex Buffer Object Layout 
@@ -120,10 +111,17 @@ void MeshRenderer::Draw(std::shared_ptr<Camera> drawingCam) {
 	material->GL_SetProperties();
 
 	//Object Uniforms
-	shader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call
-	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+	if (instanceRenderers.size() > 0) {
+		shader->SetValueVec1I("u_InstancedRendering", 1);
+		GL_Call(glDrawElementsInstanced(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, 0, instanceRenderers.size()));
+	}
+	else {
+		shader->SetValueVec1I("u_InstancedRendering", 0);
+		shader->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
+		glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+	}
 
 #ifdef DRAW_WIREFRAME
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -160,7 +158,104 @@ void MeshRenderer::DrawShadowMap(Light* light)
 	Graphics::GL_GetCurrentlyBoundShader()->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
 
 	//Gl Draw Call
-	glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+	//glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+	if (instanceRenderers.size() > 0) {
+		Graphics::GL_GetCurrentlyBoundShader()->SetValueVec1I("u_InstancedRendering", 1);
+		GL_Call(glDrawElementsInstanced(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, 0, instanceRenderers.size()));
+	}
+	else {
+		Graphics::GL_GetCurrentlyBoundShader()->SetValueVec1I("u_InstancedRendering", 0);
+		Graphics::GL_GetCurrentlyBoundShader()->SetValueMat4("u_ObjectTransform", *transform->GetGlobalMatrix());
+		glDrawElements(GL_TRIANGLES, GL_BufferData->serializedIndices.size(), GL_UNSIGNED_INT, nullptr);
+	}
+}
+
+
+void MeshRenderer::LinkInstanceRenderer(InstanceRenderer* renderer)
+{
+	if (mesh == nullptr) return;
+
+	instanceRenderers[renderer->gameObject->uniqueID] = renderer;
+	renderer->mainRenderer = this;
+	renderer->instanceIndex = instanceRenderers.size() - 1;
+
+	if (instanceRenderers.size() == 0) {
+		glDeleteBuffers(1, &GL_InstanceDataBufferObject);
+		gameObject->RemoveComponent<InstanceRenderer>();
+		return;
+	}
+
+	if (instanceRenderers.size() == 1) {
+		GL_InstanceBufferData = new float[16 * 1024];
+		glGenBuffers(1, &GL_InstanceDataBufferObject);
+
+		GL_Call(glBindVertexArray(GL_VertexArrayObject));
+		GL_Call(glBindBuffer(GL_ARRAY_BUFFER, GL_InstanceDataBufferObject));
+		GL_Call(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 16 * 1024, GL_InstanceBufferData, GL_DYNAMIC_DRAW));
+
+		GL_Call(glEnableVertexAttribArray(5));
+		GL_Call(glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)(0 * sizeof(float))));
+		GL_Call(glEnableVertexAttribArray(6));
+		GL_Call(glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)(4 * sizeof(float))));
+		GL_Call(glEnableVertexAttribArray(7));
+		GL_Call(glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)(8 * sizeof(float))));
+		GL_Call(glEnableVertexAttribArray(8));
+		GL_Call(glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)(12 * sizeof(float))));
+
+
+		GL_Call(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		GL_Call(glVertexAttribDivisor(5, 1));
+		GL_Call(glVertexAttribDivisor(6, 1));
+		GL_Call(glVertexAttribDivisor(7, 1));
+		GL_Call(glVertexAttribDivisor(8, 1));
+		GL_Call(glBindVertexArray(0));
+
+
+		InstanceRenderer* myInstance = nullptr;
+		gameObject->AddComponent<InstanceRenderer>(new InstanceRenderer(this));
+	}
+
+	renderer->mainRenderer->UpdateInstanceRendererData(renderer);
+}
+
+
+void MeshRenderer::UnlinkInstanceRenderer(InstanceRenderer* renderer)
+{
+	instanceRenderers.erase(renderer->gameObject->uniqueID);
+	renderer->mainRenderer = nullptr;
+
+	short k = 0;
+	for (auto instance : instanceRenderers) {
+		instance.second->instanceIndex = k++;
+	}
+}
+
+
+void MeshRenderer::UpdateInstanceRendererData(InstanceRenderer* renderer)
+{
+	auto mat = *renderer->transform->GetGlobalMatrix();
+	GL_InstanceBufferData[renderer->instanceIndex * 16] = mat[0][0];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 1] = mat[0][1];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 2] = mat[0][2];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 3] = mat[0][3];
+
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 4] = mat[1][0];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 5] = mat[1][1];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 6] = mat[1][2];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 7] = mat[1][3];
+
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 8] = mat[2][0];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 9] = mat[2][1];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 10] = mat[2][2];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 11] = mat[2][3];
+
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 12] = mat[3][0];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 13] = mat[3][1];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 14] = mat[3][2];
+	GL_InstanceBufferData[renderer->instanceIndex * 16 + 15] = mat[3][3];
+
+	GL_Call(glBindBuffer(GL_ARRAY_BUFFER, GL_InstanceDataBufferObject));
+	GL_Call(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 16 * 1024, GL_InstanceBufferData, GL_DYNAMIC_DRAW));
 }
 
 
@@ -174,6 +269,16 @@ Component* MeshRenderer::Copy(std::size_t& compHash)
 	return copy;
 }
 
+
+Component* MeshRenderer::CopyLinked(std::size_t& compHash)
+{
+	auto copy = new InstanceRenderer(this);
+	copy->mainRenderer = this;
+	compHash = typeid(copy).hash_code();
+	return copy;
+}
+
+
 void MeshRenderer::OnAttach()
 {
 	Graphics::RegisterMeshRenderer(this);
@@ -185,3 +290,16 @@ void MeshRenderer::OnDetach()
 	Graphics::UnregeisterMeshRenderer(this);
 }
 
+
+void MeshRenderer::OnDestroy()
+{
+	Graphics::UnregeisterMeshRenderer(this);
+
+	GL_BufferData.reset();
+	material.reset();
+	mesh.reset();
+
+	GL_Call(glDeleteVertexArrays(1, &GL_VertexArrayObject));
+	GL_Call(glDeleteBuffers(1, &GL_VertexBufferObject));
+	GL_Call(glDeleteBuffers(1, &GL_IndexBufferObject));
+}

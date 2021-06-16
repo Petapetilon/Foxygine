@@ -27,7 +27,6 @@ void Transform::CopyTo(Transform* transform)
 
 void Transform::SetRotation(Vector3 eulerAngles)
 {
-	gameObject->OnTransformChanged();
 }
 
 
@@ -45,6 +44,8 @@ void Transform::SetRotation(float x , float y, float z, bool localy)
 		globalTransformation = rotationMatrix * globalTransformation;
 		globalTransformation = translate(globalTransformation, (vec3)position);
 	}
+
+	hasChanged = true;
 }
 
 
@@ -54,6 +55,8 @@ void Transform::Rotate(Vector3 axis, float angle)
 	globalTransformation = rotate(globalTransformation, glm::radians(angle), (vec3)axis);
 	//globalTransformation = translate(globalTransformation, (vec3)position);
 	extractEulerAngleXYZ(globalTransformation, rotation.x, rotation.y, rotation.z);
+
+	hasChanged = true;
 }
 
 void Transform::Rotate(float x, float y, float z, bool localy)
@@ -70,6 +73,8 @@ void Transform::Rotate(float x, float y, float z, bool localy)
 		globalTransformation = rotationMatrix * globalTransformation;
 		globalTransformation = translate(globalTransformation, (vec3)position);
 	}
+
+	hasChanged = true;
 }
 
 
@@ -80,6 +85,7 @@ void Transform::RotateAround(Vector3 pos, Vector3 axis, float angle)
 	globalTransformation = rotate(globalTransformation, glm::radians(angle), (vec3)axis);
 	globalTransformation = translate(globalTransformation, -translation);
 	extractEulerAngleXYZ(globalTransformation, rotation.x, rotation.y, rotation.z);
+
 }
 
 
@@ -88,6 +94,8 @@ void Transform::SetPosition(Vector3 pos)
 	glm::vec3 translation = pos - position;
 	globalTransformation = translate(globalTransformation, translation);
 	position = pos;
+
+	hasChanged = true;
 }
 
 
@@ -97,6 +105,8 @@ void Transform::SetPosition(float _x, float _y, float _z)
 	glm::vec3 translation = pos - position;
 	globalTransformation = translate(globalTransformation, translation);
 	position = pos;
+
+	hasChanged = true;
 }
 
 
@@ -105,6 +115,8 @@ void Transform::Translate(Vector3 translation)
 	glm::vec3 trans = translation;
 	globalTransformation = translate(globalTransformation, trans);
 	position = position + translation;
+
+	hasChanged = true;
 }
 
 
@@ -113,12 +125,16 @@ void Transform::Translate(float _x, float _y, float _z)
 	glm::vec3 trans(_x, _y, _z);
 	globalTransformation = translate(globalTransformation, trans);
 	position = position + trans;
+
+	hasChanged = true;
 }
 
 void Transform::Scale(Vector3 _scale)
 {
 	scale = _scale;
 	globalTransformation = glm::scale(globalTransformation, (vec3)scale);
+
+	hasChanged = true;
 }
 
 
@@ -162,7 +178,7 @@ Vector3 Transform::Rotation()
 	return rotation;
 }
 
-Vector3 Transform::Scale()
+Vector3 Transform::GetScale()
 {
 	return scale;
 }

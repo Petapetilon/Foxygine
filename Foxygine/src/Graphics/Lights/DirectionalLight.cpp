@@ -13,7 +13,7 @@
 void DirectionalLight::ComposeLightSpaceMatrices()
 {
     if (!useCSM) {
-        glm::mat4 lightProj = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.f, 200.f);
+        glm::mat4 lightProj = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 1.f, 200.f);
         lightSpaceMatrix = lightProj * *transform->GetGlobalMatrix();
 
         Vector3 cameraPositionPlane = Graphics::camera->transform->Position();
@@ -304,10 +304,13 @@ void DirectionalLight::OnDetach()
     Lighting::UnregisterLight(this);
 }
 
+
 void DirectionalLight::OnPreRender()
 {
-    ComposeLightSpaceMatrices();
-    position = transform->Forward() * 10000.f;
+    if (transform->hasChanged) {
+        ComposeLightSpaceMatrices();
+        position = transform->Forward() * 10000.f;
+    }
 }
 
 
