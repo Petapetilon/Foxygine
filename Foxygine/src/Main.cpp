@@ -26,6 +26,37 @@ void Pause(KeyCode key, KeyState state) {
         cursorShown = !cursorShown;
     }
 }
+
+
+void CheckGlewError(int initCode) {
+    switch (initCode)
+    {
+    case 0:
+        std::cout << "Glew OK!" << std::endl;
+        return;
+
+    case 1:
+        std::cout << "No GL Version found!" << std::endl;
+        break;
+
+    case 2:
+        std::cout << "Minimal GL Version is 1.1!" << std::endl;
+        break;
+
+    case 3:
+        std::cout << "Minimal GLX Version is 1.2!" << std::endl;
+        break;
+
+    case 4:
+        std::cout << "No GLX Display found!" << std::endl;
+        break;
+        
+    default:
+        break;
+    }
+
+    __debugbreak();
+}
 #endif
 
 
@@ -40,7 +71,12 @@ int main(void)
     Mouse::SetupMouse();
     Foxygine foxygine;
 
-    if (glewInit() != GLEW_OK)   std::cout << "GlewInit Error" << std::endl;
+#ifdef FOXYGINE_DEBUG
+    CheckGlewError(glewInit());
+#elif
+    glewInit();
+#endif // FOXYGINE_DEBUG
+
     std::cout << glGetString(GL_VERSION) << std::endl;
     
     glEnable(GL_DEPTH_TEST);

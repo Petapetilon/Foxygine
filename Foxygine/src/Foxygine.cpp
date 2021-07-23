@@ -127,10 +127,10 @@ void Foxygine::UpdateFoxygine(float deltaTime)
         if (b > 1) b = 1;
     }
 
-    
-    GameObject::FindGameObject("cube")->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
-    GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("roughness", b);
-    GameObject::FindGameObject("cube")->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("metallic", r);
+    auto cubeGo = GameObject::FindGameObject("cube");
+    cubeGo->transform->Rotate(Vector3(r, g, b), glm::degrees(deltaTime));
+    cubeGo->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("roughness", b);
+    cubeGo->GetComponent<MeshRenderer>()->GetMaterial()->SetMaterialProperty("metallic", r);
     GameObject::FindGameObject("pointLightGo")->transform->SetPosition(Vector3(sinf(Graphics::renderedFrames * .005f) * 10, 1, cosf(Graphics::renderedFrames * .005f) * 10));
 }
 
