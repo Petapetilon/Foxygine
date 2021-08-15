@@ -16,8 +16,8 @@ Foxygine::~Foxygine() {}
 
 void Foxygine::StartFoxygine()
 {
-    Graphics::SetSkybox("res\\textures\\Skybox", "blue skybox", "png");
-    //Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
+    //Graphics::SetSkybox("res\\textures\\Skybox", "blue skybox", "png");
+    Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
    
     //Camera
     player = GameObject::CreateGameObject("Player");
@@ -60,6 +60,12 @@ void Foxygine::StartFoxygine()
     groundMaterial->LoadAlbedoTexture("res\\textures\\4K-ground_cracked-diffuse.jpg");
     groundMaterial->LoadNormalMap("res\\textures\\4K-ground_cracked-normal.jpg");
 
+    auto waterShader = Shader::CreateEmptyShader("waterShader");
+    waterShader->LoadShaderResource("res\\VertexShader\\BasicVert.vert", Shader::ShaderType::VertexShader);
+    waterShader->LoadShaderResource("res\\FragmentShader\\WaterFrag.frag", Shader::ShaderType::VertexShader);
+
+    auto waterMaterial = new Material("waterMat", "waterShader");
+    waterMaterial->mainColor = Color(.25f, .75f, 1, .5f);
 
 
 
@@ -70,6 +76,10 @@ void Foxygine::StartFoxygine()
     groundGo->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(groundMaterial));
     groundGo->transform->Scale(Vector3(1000, 1, 1000));
     groundGo->transform->Translate(Vector3(0, -2.5f, 0));
+
+    auto waterGo = GameObject::CreateInstance(groundGo);
+    waterGo->transform->Translate(Vector3(0, 1, 0));
+    waterGo->GetComponent<MeshRenderer>()->SetMaterial(std::shared_ptr<Material>(waterMaterial));
   
     auto smoothSphere2 = GameObject::CreateGameObject("sphere");
     smoothSphere2->AddComponent<MeshRenderer>(new MeshRenderer("res\\meshes\\IcoS.obj", true));

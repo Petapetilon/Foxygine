@@ -26,6 +26,7 @@ private:
 	static std::list<GameObject*> activeGameObjectList;
 	static std::vector<long> toDeleteObjects;
 	static std::vector<std::string> toDeleteNames;
+	static unsigned long startUpTime;
 	static unsigned long currentSystemTime;
 	static unsigned long lastUpdateSystemTime;
 	static unsigned long lastFixedUpdateSystemTime;
@@ -39,6 +40,7 @@ private:
 public:
 	static double lastUpdateDeltaTime;
 	static double lastFixedUpdateDeltaTime;
+	static double timeSinceStartup;
 
 	static std::shared_ptr<GameObject> RegisterGameObject(std::shared_ptr<GameObject>);
 	static void UnregisterGameObject(GameObject*);

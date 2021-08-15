@@ -6,6 +6,7 @@
 #include "Rendering/Material.h"
 #include "../Peripherals/Window.h"
 #include "../Graphics/UI/Canvas.h"
+#include "..\GameObject\GameObjectHandler.h"
 #include "Lights/Lighting.h"
 #include "Textures/Texture.h"
 
@@ -209,6 +210,11 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 	currentlyBoundShader = shader;
 	if (currentlyBoundShader->GetShaderLitType()) 
 		Lighting::GL_SetLightUniforms();
+
+	currentlyBoundShader->SetValueVec3("u_Time", Vector3(
+		GameObjectHandler::lastUpdateDeltaTime,
+		GameObjectHandler::lastFixedUpdateDeltaTime,
+		GameObjectHandler::timeSinceStartup));
 }
 
 

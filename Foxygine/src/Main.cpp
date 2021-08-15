@@ -106,12 +106,13 @@ int main(void)
         // 3.Invokes PostRender
         // 4.Joins Input Threads
         // 5.Invokes Update
-        // 6.Invokes FixeUpdate if needed 
+        // 6.Invokes FixedUpdate if needed 
         GameObjectHandler::TickHandler(foxygine);
 
         // 1.Swap front and back buffers 
         // 2.Displays FPS
         // 3.Polls Events
+        // 4.Dispatches Input Threads
         glfwSwapBuffers(Window::GetInstance()->GLFW_GetWindow());
         Window::GetInstance()->DisplayFPS();
         glfwPollEvents();

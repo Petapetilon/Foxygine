@@ -17,9 +17,11 @@ std::list<GameObject*> GameObjectHandler::activeGameObjectList;
 std::vector<long> GameObjectHandler::toDeleteObjects;
 std::vector<std::string> GameObjectHandler::toDeleteNames;
 unsigned long GameObjectHandler::currentSystemTime;
+unsigned long GameObjectHandler::startUpTime;
 unsigned long GameObjectHandler::lastUpdateSystemTime;
 unsigned long GameObjectHandler::lastFixedUpdateSystemTime;
 long GameObjectHandler::latestUniqueGameObjectID;
+double GameObjectHandler::timeSinceStartup;
 double GameObjectHandler::lastUpdateDeltaTime;
 double GameObjectHandler::lastFixedUpdateDeltaTime;
 
@@ -110,6 +112,7 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 {
 	//Measures Time
 	currentSystemTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	timeSinceStartup = (currentSystemTime - startUpTime) / 1000.0;
 
 	InvokeOnPreRender();
 	//std::thread thread(UpdateThread, foxygine);

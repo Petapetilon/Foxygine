@@ -54,6 +54,10 @@ bool Window::SetupWindow(Vector2I windowSize, std::string _windowName)
     if (!glfwInit())
         return false;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     //glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
     windowWidth = windowSize.x;

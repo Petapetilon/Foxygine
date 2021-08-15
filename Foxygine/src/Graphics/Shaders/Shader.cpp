@@ -47,6 +47,17 @@ unsigned int Shader::GL_GetShaderProgram() {
 bool Shader::GL_BindProgram() { 
 	if (Graphics::GL_GetCurrentlyBoundShader() == nullptr || Graphics::GL_GetCurrentlyBoundShader()->GL_GetShaderProgram() != GL_ShaderProgram) {
 		GL_Call(glUseProgram(GL_ShaderProgram)); 
+
+		if (GL_Transparent) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SourceFac, GL_DestFac);
+			//glDepthMask(GL_FALSE);
+		}
+		else {
+			glDisable(GL_BLEND);
+			//glDepthMask(GL_TRUE);
+		}
+
 		Graphics::GL_SetCurrentlyBoundShader(this);
 		return true;
 	}
@@ -230,6 +241,17 @@ void Shader::SetValueMat4(std::string uniformName, glm::mat4 value)
 #else
 	GL_Call(glUniformMatrix4fv(glGetUniformLocation(GL_ShaderProgram, uniformName.c_str()), 1, GL_FALSE, &value[0][0]));
 #endif
+}
+
+void Shader::MakeTransparent(GLenum sourceFac, GLenum destFac)
+{
+	GL_Transparent = true;
+	GL_SourceFac = sourceFac; GL_DestFac = destFac;
+}
+
+void Shader::MakeOpaque()
+{
+	GL_Transparent = false;
 }
 
 

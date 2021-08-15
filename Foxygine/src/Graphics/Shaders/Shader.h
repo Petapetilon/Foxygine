@@ -22,6 +22,9 @@ class Shader {
 protected:
 	bool GL_IsLitShader;
 	unsigned int GL_ShaderProgram;
+	GLenum GL_SourceFac;
+	GLenum GL_DestFac;
+	bool GL_Transparent;
 	std::list<ShaderPass*> shaderPasses;
 
 	//Cache
@@ -59,6 +62,9 @@ public:
 	void SetValueColor(std::string uniformName, Color value);
 	void SetValueMat3(std::string uniformName, glm::mat3 value);
 	void SetValueMat4(std::string uniformName, glm::mat4 value);
+
+	void MakeTransparent(GLenum sourceFac, GLenum destFac);
+	void MakeOpaque();
 
 	void EnableTesselation();
 	void DisableTesselation();
