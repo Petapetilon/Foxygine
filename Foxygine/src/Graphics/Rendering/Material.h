@@ -33,7 +33,7 @@ protected:
 	std::list<std::shared_ptr<TextureProperty>> textureProps;
 	std::shared_ptr<Shader> shader;
 
-	std::string textureSlotUniforms[17] = {
+	std::string textureSlotUniforms[18] = {
 		"u_ColorTexture",
 		"u_NormalMap",
 		"u_DisplacementMap",
@@ -51,6 +51,7 @@ protected:
 		"Custom_10",
 		"Custom_11",
 		"u_Skybox",
+		"u_Environment"
 	};
 
 public:
@@ -96,11 +97,13 @@ public:
 
 	void CreateMaterialProperty(std::string propertyName, std::string shaderPassName, float propertyValue);
 	bool SetMaterialProperty(std::string propertyName, float value);
+	float GetMaterialProperty(std::string propertyName);
 	void DeleteMaterialProperty(std::string propertyName);
 
 	void CreateTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture, Material::TextureSlot textureType);
 	void SetCustomTexturePropertyUniformMapping(Material::TextureSlot textureSlot, std::string uniformName);
 	bool SetTextureProperty(std::string propertyName, std::shared_ptr<Texture> texture);
+	std::shared_ptr<Texture> GetTextureProperty(std::string propertyName);
 	void DeleteTextureProperty(std::string propertyName);
 	bool TryFindTexturePropertyOfTextureSlot(Material::TextureSlot textureType, std::string& result);
 

@@ -30,6 +30,7 @@ protected:
 public:
 	bool LoadCubeMapInline(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
 	bool LoadCubeMap(std::vector<std::string> filePaths, std::string _name, Wrapping, Filtering);
+	void Create(std::string _name, Wrapping, Filtering);
 	bool FinishLoading() override;
 	void SetWrapping(Wrapping) override;
 	void SetFiltering(Filtering) override;

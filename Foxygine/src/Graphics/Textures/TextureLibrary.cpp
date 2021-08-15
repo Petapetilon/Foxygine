@@ -25,6 +25,9 @@ void TextureLibrary::UnregisterTexture(Texture* tex)
 
 Texture* TextureLibrary::FindTexture(std::string file)
 {
+	//for (auto tex : textures)
+	//	std::cout << tex.second->name << std::endl;
+
 	if(textures.find(file) != textures.end())
 		return textures[file];
 	return nullptr;

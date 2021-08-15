@@ -10,10 +10,10 @@ out vec4 FragColor;
 
 in vec3 textureCoords;
 
-layout(binding = 16) uniform samplerCube u_ColorTexture;
+layout(binding = 16) uniform samplerCube u_Skybox;
 uniform MaterialProps u_MaterialProps;
 
 
 void main() {
-	FragColor = vec4(texture(u_ColorTexture, textureCoords).xyz * u_MaterialProps.color.xyz, 1);
+	FragColor = vec4(texture(u_Skybox, textureCoords).xyz * u_MaterialProps.color.xyz, 1);
 }

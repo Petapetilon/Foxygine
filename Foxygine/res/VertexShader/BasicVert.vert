@@ -27,10 +27,15 @@ out vec3 vertexNormal_FS_IN;
 out vec2 vertexUV_FS_IN;
 out vec4 lightSpaceFragPos_FS_IN;
 out mat3 TBN_FS_IN;
+out vec3 IBL_FS_IN;
 
 
 
 //Uniforms
+layout(binding = 17) uniform sampler2D u_Environment;
+layout(binding = 16) uniform samplerCube u_Skybox;
+
+
 uniform int u_RenderedFrames;
 
 uniform mat4 u_ObjectTransform;
@@ -75,4 +80,5 @@ void main() {
 	vertexUV_FS_IN = vertexUV;
 	lightSpaceFragPos_FS_IN = lightSpaceFragPos;
 	TBN_FS_IN = TBN;
+	IBL_FS_IN = texture(u_Skybox, l_Normal).xyz;
 }

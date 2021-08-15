@@ -7,6 +7,7 @@
 #include "../Peripherals/Window.h"
 #include "../Graphics/UI/Canvas.h"
 #include "Lights/Lighting.h"
+#include "Textures/Texture.h"
 
 
 
@@ -216,4 +217,16 @@ void Graphics::RenderShadowPass(Light* light)
 	for (auto renderer : meshRenderers) {
 		renderer->DrawShadowMap(light);
 	}
+}
+
+bool Graphics::TryGetSkybox(std::string& result)
+{
+	std::string texturePropName;
+	auto mat = skyBoxRenderer->GetMaterial();
+	if (mat->TryFindTexturePropertyOfTextureSlot(Material::TextureSlot::Skybox, texturePropName)) {
+		result = mat->GetTextureProperty(texturePropName)->name;
+		return true;
+	}
+
+	return false;
 }

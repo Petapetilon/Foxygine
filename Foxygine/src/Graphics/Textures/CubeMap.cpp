@@ -94,11 +94,11 @@ bool CubeMap::LoadCubeMap(std::vector<std::string> filePaths, std::string _name,
 	//setWrapping = textureWrapping;
 	//setFiltering = textureFiltering;
 
-	//if (!TextureLibrary::RegisterTexture(this)) {
-	//	std::cout << "Copying Data from existing Texture" << std::endl;
-	//	GL_CopyData(TextureLibrary::FindTexture(textureFile));
-	//	return true;
-	//}
+	if (!TextureLibrary::RegisterTexture(this)) {
+		std::cout << "Copying Data from existing Texture" << std::endl;
+		GL_CopyData(TextureLibrary::FindTexture(textureFile));
+		return true;
+	}
 
 	loadingFinished = false;
 	stbi_set_flip_vertically_on_load(true);
@@ -115,6 +115,32 @@ bool CubeMap::LoadCubeMap(std::vector<std::string> filePaths, std::string _name,
 	}
 
 	return true;
+}
+
+
+void CubeMap::Create(std::string _name, Wrapping textureWrapping, Filtering textureFiltering)
+{
+	name = _name;
+	setWrapping = textureWrapping;
+	setFiltering = textureFiltering;
+
+	if (!TextureLibrary::RegisterTexture(this)) {
+		std::cout << "Copying Data from existing Texture" << std::endl;
+		GL_CopyData(TextureLibrary::FindTexture(textureFile));
+	}
+
+	TextureLibrary::RegisterTexture(this);
+	glGenTextures(1, &GL_TextureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, GL_TextureID);
+
+	int texWidth = 0, texHeight = 0;
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	loadingFinished = true;
 }
 
 

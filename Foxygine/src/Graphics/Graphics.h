@@ -72,5 +72,6 @@ public:
 	static Shader* GL_GetCurrentlyBoundShader();
 	static void GL_SetCurrentlyBoundShader(Shader* shader);
 	static void RenderShadowPass(Light* light);
+	static bool TryGetSkybox(std::string& result);
 };
 

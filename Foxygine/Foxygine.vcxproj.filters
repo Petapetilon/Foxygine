@@ -150,6 +150,8 @@
     <None Include="res\TessellationShader\BasicTessEval.tese" />
     <None Include="res\FragmentShader\UnlitColor.frag" />
     <None Include="res\FragmentShader\PBRFrag.frag" />
+    <None Include="res\FragmentShader\EnvironmentToSkybox.frag" />
+    <None Include="res\VertexShader\EnvironmentToSkybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\Graphics.h">

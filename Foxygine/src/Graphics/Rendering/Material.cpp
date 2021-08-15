@@ -166,6 +166,15 @@ bool Material::SetMaterialProperty(std::string propertyName, float value)
 	return false;
 }
 
+float Material::GetMaterialProperty(std::string propertyName)
+{
+	for (auto prop : materialProps) {
+		if (prop->propertyName == propertyName) {
+			return prop->propertyValue;
+		}
+	}
+}
+
 
 void Material::DeleteMaterialProperty(std::string propertyName)
 {
@@ -210,6 +219,15 @@ bool Material::SetTextureProperty(std::string propertyName, std::shared_ptr<Text
 	}
 
 	return false;
+}
+
+std::shared_ptr<Texture> Material::GetTextureProperty(std::string propertyName)
+{
+	for (auto prop : textureProps) {
+		if (prop->propertyName == propertyName) {
+			return prop->texture;
+		}
+	}
 }
 
 

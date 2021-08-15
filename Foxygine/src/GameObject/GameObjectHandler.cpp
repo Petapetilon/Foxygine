@@ -114,10 +114,15 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 	InvokeOnPreRender();
 	//std::thread thread(UpdateThread, foxygine);
 	Graphics::RenderFrame();
+
+
 	//thread.join()
 	InvokeOnPostRender();
 	Keyboard::JoinInputThreads();
 	Mouse::JoinInputThreads();
+
+	long long updateTimeStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
 	InvokeUpdate((float)lastUpdateDeltaTime, foxygine);
 	lastUpdateDeltaTime = (double)(currentSystemTime - lastUpdateSystemTime) / 1000.0;
 	
@@ -128,6 +133,9 @@ void GameObjectHandler::TickHandler(Foxygine& foxygine)
 		InvokeFixedUpdate((float)lastFixedUpdateDeltaTime, foxygine);
 	}
 	
+	long long updateTimeEnd = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	//std::cout << "Update Time: " << (updateTimeEnd - updateTimeStart) << "ms" << std::endl;
+
 	RegisterObjects();
 	ToggleObjects();
 	DeleteObjects();
