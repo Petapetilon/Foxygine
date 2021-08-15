@@ -38,6 +38,7 @@ layout(binding = 3) uniform sampler2D u_RoughnessMap;
 layout(binding = 4) uniform sampler2D u_MetallicMap;
 layout(binding = 5) uniform sampler2D u_AOMap;
 layout(binding = 8) uniform sampler2D u_ShadowDepthMap;
+layout(binding = 16) uniform samplerCube u_Skybox;
 uniform int u_ColTexEnabled;
 uniform float u_NormTexEnabled;
 uniform int u_RghTexEnabled;
@@ -172,6 +173,30 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 
 
+vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+{
+    float a = roughness*roughness;
+	
+    float phi = 2.0 * PI * Xi.x;
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+	
+    // from spherical coordinates to cartesian coordinates
+    vec3 H;
+    H.x = cos(phi) * sinTheta;
+    H.y = sin(phi) * sinTheta;
+    H.z = cosTheta;
+	
+    // from tangent-space vector to world-space sample vector
+    vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangent   = normalize(cross(up, N));
+    vec3 bitangent = cross(N, tangent);
+	
+    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+    return normalize(sampleVec);
+}
+
+
 void main() {
 	//UV
 	vec2 adjustedUV = vertexUV_FS_IN * u_MaterialProps.uvScale + u_MaterialProps.uvOffset;
@@ -185,41 +210,43 @@ void main() {
 	vec3 albedo = texture2D(u_ColorTexture, adjustedUV).xyz * u_ColTexEnabled * u_MaterialProps.color.xyz + (1 - u_ColTexEnabled) * u_MaterialProps.color.xyz;
 	float roughness = texture(u_RoughnessMap, adjustedUV).x * u_RghTexEnabled + (1 - u_RghTexEnabled) * u_MaterialProps.roughness;
 	float metallic = texture(u_MetallicMap, adjustedUV).x * u_MetTexEnabled + (1 - u_MetTexEnabled) * u_MaterialProps.metallic;
-	vec3 Lo = IBL_FS_IN;
+	vec3 Lo = IBL_FS_IN * albedo * .25;
 
-	//for(int i = 0; i < u_NumberLights; i++){
-	//	vec3 lightPosition = u_LightPosition[i];
-	//
-	//	//PBR
-	//	vec3 N = mappedVertexNormal;
-	//	vec3 V = normalize(u_CameraPosition.xyz - vertexPosition_FS_IN);
-	//	vec3 L = normalize(lightPosition - vertexPosition_FS_IN);
-	//	vec3 H = normalize(V + L);
-	//
-	//	float attenuation = CalculateAttenuation(i);
-	//	attenuation = 1;
-	//	vec3 radiance = u_LightColor[i].xyz * attenuation;
-	//
-	//	vec3 F0 = vec3(0.04); 
-	//	F0      = mix(F0, albedo, metallic);
-	//	vec3 F  = fresnelSchlick(max(dot(H, V), 0.0), F0);
-	//
-	//
-	//	float NDF = DistributionGGX(N, H, roughness);       
-	//	float G   = GeometrySmith(N, V, L, roughness);
-	//
-	//	vec3 numerator    = NDF * G * F;
-	//	float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-	//	vec3 specular     = numerator / max(denominator, 0.001);  
-	//
-	//	vec3 kS = F;
-	//	vec3 kD = vec3(1.0) - kS;
-  	//
-	//	kD *= 1.0 - metallic;
-	//
-	//	float NdotL = max(dot(N, L), 0.0);        
-	//	Lo += (kD * albedo / PI + specular) * radiance * NdotL * CalculateShadow(i);
-	//}
+	for(int i = 0; i < u_NumberLights; i++){
+		vec3 lightPosition = u_LightPosition[i];
+	
+		//PBR
+		vec3 N = mappedVertexNormal;
+		vec3 V = normalize(u_CameraPosition.xyz - vertexPosition_FS_IN);
+		vec3 L = normalize(lightPosition - vertexPosition_FS_IN);
+		vec3 H = normalize(V + L);
+	
+		float attenuation = CalculateAttenuation(i);
+		vec3 radiance = u_LightColor[i].xyz * attenuation;
+	
+		vec3 F0 = vec3(0.04); 
+		F0      = mix(F0, albedo, metallic);
+		vec3 F  = fresnelSchlick(max(dot(H, V), 0.0), F0);
+	
+	
+		float NDF = DistributionGGX(N, H, roughness);       
+		float G   = GeometrySmith(N, V, L, roughness);
+	
+		vec3 numerator    = NDF * G * F;
+		float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+		vec3 specular     = numerator / max(denominator, 0.001);  
+	
+		vec3 kS = F;
+		vec3 kD = vec3(1.0) - kS;
+  	
+		kD *= 1.0 - metallic;
+	
+		float NdotL = max(dot(N, L), 0.0);        
+		Lo += (kD * albedo / PI + specular) * radiance * NdotL * CalculateShadow(i);
+	}
+
+	Lo += albedo * (IBL_FS_IN * sqrt(roughness) + (1 - sqrt(roughness)) * texture(u_Skybox, reflect(vertexPosition_FS_IN - u_CameraPosition.xyz, mappedVertexNormal)).xyz);
+
 	
 	vec3 color = Lo;
     color = color / (color + vec3(1.0));

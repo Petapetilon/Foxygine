@@ -211,6 +211,7 @@ void Graphics::GL_SetCurrentlyBoundShader(Shader* shader)
 	if (currentlyBoundShader->GetShaderLitType()) 
 		Lighting::GL_SetLightUniforms();
 
+	//Time Value
 	currentlyBoundShader->SetValueVec3("u_Time", Vector3(
 		GameObjectHandler::lastUpdateDeltaTime,
 		GameObjectHandler::lastFixedUpdateDeltaTime,
@@ -225,12 +226,12 @@ void Graphics::RenderShadowPass(Light* light)
 	}
 }
 
-bool Graphics::TryGetSkybox(std::string& result)
+bool Graphics::TryGetSkybox(std::shared_ptr<Texture>& result)
 {
 	std::string texturePropName;
 	auto mat = skyBoxRenderer->GetMaterial();
 	if (mat->TryFindTexturePropertyOfTextureSlot(Material::TextureSlot::Skybox, texturePropName)) {
-		result = mat->GetTextureProperty(texturePropName)->name;
+		result = mat->GetTextureProperty(texturePropName);
 		return true;
 	}
 

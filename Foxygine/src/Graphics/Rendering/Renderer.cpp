@@ -11,10 +11,9 @@ void Renderer::SetMaterial(std::shared_ptr<Material> _material)
 	material = std::shared_ptr<Material>(_material);
 	shader = ShaderLibrary::GetShader(_material->shaderName);
 
-	std::string skyboxName;
-	if (Graphics::TryGetSkybox(skyboxName)) {
-		auto stuff = std::shared_ptr<Texture>(TextureLibrary::FindTextureByName(skyboxName));
-		material->CreateTextureProperty("Skybox", std::shared_ptr<Texture>(TextureLibrary::FindTextureByName(skyboxName)), Material::TextureSlot::Skybox);
+	std::shared_ptr<Texture> skyboxTexture;
+	if (Graphics::TryGetSkybox(skyboxTexture)) {
+		material->CreateTextureProperty("Skybox", std::shared_ptr<Texture>(skyboxTexture), Material::TextureSlot::Skybox);
 		std::cout << "loading skybox" << std::endl;
 	}
 }

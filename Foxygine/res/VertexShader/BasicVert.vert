@@ -28,6 +28,7 @@ out vec2 vertexUV_FS_IN;
 out vec4 lightSpaceFragPos_FS_IN;
 out mat3 TBN_FS_IN;
 out vec3 IBL_FS_IN;
+out vec3 IBS_FS_IN;
 
 
 
@@ -81,4 +82,5 @@ void main() {
 	lightSpaceFragPos_FS_IN = lightSpaceFragPos;
 	TBN_FS_IN = TBN;
 	IBL_FS_IN = texture(u_Skybox, l_Normal).xyz;
+	IBS_FS_IN = texture(u_Skybox, reflect(vertexPosition - u_CameraPosition.xyz, vertexNormal)).xyz;
 }

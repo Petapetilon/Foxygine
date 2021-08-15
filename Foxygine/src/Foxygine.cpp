@@ -16,8 +16,8 @@ Foxygine::~Foxygine() {}
 
 void Foxygine::StartFoxygine()
 {
-    //Graphics::SetSkybox("res\\textures\\Skybox", "blue skybox", "png");
-    Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
+    Graphics::SetSkybox("res\\textures\\Skybox", "blue skybox", "png");
+    //Graphics::SetEnvironment("res\\textures\\Environment\\misty_pines_4k.png");
    
     //Camera
     player = GameObject::CreateGameObject("Player");

@@ -18,6 +18,7 @@ class Shader;
 class Light;
 class Camera;
 class Canvas;
+class Texture;
 
 
 class Graphics
@@ -72,6 +73,6 @@ public:
 	static Shader* GL_GetCurrentlyBoundShader();
 	static void GL_SetCurrentlyBoundShader(Shader* shader);
 	static void RenderShadowPass(Light* light);
-	static bool TryGetSkybox(std::string& result);
+	static bool TryGetSkybox(std::shared_ptr<Texture>& result);
 };
 
